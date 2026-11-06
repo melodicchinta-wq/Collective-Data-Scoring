@@ -338,9 +338,13 @@
     </nav>
 
     <div class="user-profile-header">
-      <div class="user-avatar">A</div>
-      <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;">Archer Pro</span>
-    </div>
+  <div class="user-avatar" id="user-avatar-box">A</div>
+  <div style="display: flex; flex-direction: column; line-height: 1.2;">
+    <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;" id="user-name-text">Archer Pro</span>
+    <span style="font-size: 0.7rem; color: #64748b; font-weight: 600;" id="user-club-text">Klub Panahan</span>
+  </div>
+</div>
+
   </header>
 
   <!-- MOBILE SIDEBAR -->
@@ -438,6 +442,30 @@
   <script src="auth.js"></script>
 
   <script>
+    function loadActiveUserProfile() {
+  const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
+  if (activeUser) {
+    const nameText = document.getElementById('user-name-text');
+    const clubText = document.getElementById('user-club-text');
+    const avatarBox = document.getElementById('user-avatar-box');
+    
+    // Masukkan nama dan komunitas dari data login
+    if (nameText && activeUser.name) nameText.innerText = activeUser.name;
+    if (clubText && activeUser.club) clubText.innerText = activeUser.club;
+    
+    // Mengubah inisial avatar otomatis berdasarkan nama
+    if (avatarBox && activeUser.name) {
+      const initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+      avatarBox.innerText = initials || 'A';
+    }
+  }
+}
+
+// Panggil fungsi ini saat halaman selesai dimuat
+document.addEventListener("DOMContentLoaded", function() {
+  loadActiveUserProfile();
+});
+
 function getAccountHistoryKey() {
     const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser')) || { email: 'guest' };
     return `archeryHistory_${activeUser.email}`;
