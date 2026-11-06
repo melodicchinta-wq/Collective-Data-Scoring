@@ -533,10 +533,12 @@
     function syncLiveState() {
       appConfig.activeLiveInput = {
         archerIndex: activeArcherIndex,
+        archerName: appConfig.participants[activeArcherIndex].name, // Tambahkan ini agar sinkron
         arrows: currentArrowsInput.map(i => typeof i === 'object' ? i.val : i)
       };
       localStorage.setItem('archeryConfig', JSON.stringify(appConfig));
     }
+    
 
     function inputScore(val) {
       if(currentArrowsInput.length < appConfig.arrowCount) {
