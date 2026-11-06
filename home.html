@@ -317,6 +317,7 @@
       font-size: 0.9rem;
       outline: none;
       font-weight: 600;
+      width: 100%;
     }
 
     .form-control:focus {
@@ -327,7 +328,7 @@
     /* BUTTON SELECTION GRID */
     .grid-buttons {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
       gap: 10px;
     }
 
@@ -359,7 +360,7 @@
       text-decoration: none;
     }
 
-    /* PARTICIPANT ROW */
+    /* PARTICIPANT ROW - Responsive & Nyaman di HP / Desktop */
     .participant-row {
       background-color: #f8fafc;
       border: 1px solid #e2e8f0;
@@ -373,17 +374,23 @@
     }
 
     @media (max-width: 768px) {
-      .participant-row { grid-template-columns: 1fr; }
+      .participant-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
     }
 
     .btn-danger {
       background-color: #fee2e2;
       border: 1px solid #fecaca;
       color: #ef4444;
-      padding: 10px 12px;
+      padding: 10px 14px;
       border-radius: 10px;
       cursor: pointer;
       font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     /* SUBMIT BUTTON */
@@ -455,8 +462,9 @@
     @media (max-width: 900px) {
       .nav-links-desktop { display: none; }
       .btn-hamburger-mobile { display: block; }
-      .desktop-navbar { padding: 12px 20px; }
-      main { padding: 16px; }
+      .desktop-navbar { padding: 12px 16px; }
+      main { padding: 16px 12px; }
+      .dashboard-card { padding: 16px; border-radius: 16px; }
     }
   </style>
 </head>
@@ -491,8 +499,8 @@
     </nav>
 
     <div class="user-profile-header">
-      <div class="user-avatar">A</div>
-      <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;">Archer Pro</span>
+      <div class="user-avatar" id="user-avatar-box">A</div>
+      <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;" id="user-name-text">Archer Pro</span>
     </div>
   </header>
 
@@ -634,8 +642,8 @@
         <div class="card-header-title" style="flex-wrap: wrap; gap: 8px;">
           <span>👥 Daftar Peserta Panahan</span>
           
-          <div style="display: flex; gap: 8px; align-items: center;">
-            <select id="db-category-picker" class="form-control" style="font-size:0.8rem; padding:8px 12px; border-color:#6366f1; color:#4f46e5; background:#e0e7ff;" onchange="loadParticipantsFromDBCategory(this.value)">
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <select id="db-category-picker" class="form-control" style="font-size:0.8rem; padding:8px 12px; border-color:#6366f1; color:#4f46e5; background:#e0e7ff; width: auto;" onchange="loadParticipantsFromDBCategory(this.value)">
               <option value="">🔍 Ambil dari DB...</option>
               <option value="ALL">✨ Semua Peserta DB</option>
               <option value="Traditional Bow">Traditional Bow</option>
@@ -643,25 +651,11 @@
               <option value="Recurve Bow">Recurve Bow</option>
             </select>
             
-            <button type="button" class="btn-link" onclick="addParticipantRow()" style="background: #18191c; color:#ffffff; padding:8px 14px; border-radius:10px; text-decoration:none;">+ Manual</button>
+            <button type="button" class="btn-link" onclick="addParticipantRow()" style="background: #18191c; color:#ffffff; padding:8px 14px; border-radius:10px; text-decoration:none; white-space: nowrap;">+ Manual</button>
           </div>
         </div>
         
-        <div id="participant-list">
-          <div class="participant-row">
-            <input type="text" class="form-control p-name" placeholder="Nama Pemanah" value="Budi Santoso">
-            <input type="text" class="form-control p-club" placeholder="Nama Klub" value="Sumedang Archery Club">
-            <select class="form-control" title="Nomor Bantalan">
-              <option>Bantalan 1</option>
-              <option>Bantalan 2</option>
-            </select>
-            <select class="form-control" title="Sesi">
-              <option>Sesi 1</option>
-              <option>Sesi 2</option>
-            </select>
-            <button type="button" class="btn-danger" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
-          </div>
-        </div>
+        <div id="participant-list"></div>
       </div>
 
       <!-- SUBMIT BUTTON -->
@@ -696,7 +690,7 @@
 
   <script>
     let activeType = '';
-let isSoloMode = false; // <-- Tambahkan variabel status mode di stringif
+    let isSoloMode = false;
     
     function toggleMobileSidebar() {
       document.getElementById('mobile-sidebar').classList.toggle('active');
@@ -710,13 +704,13 @@ let isSoloMode = false; // <-- Tambahkan variabel status mode di stringif
       const participants = document.getElementById('participants-card');
 
       if(mode === 'solo') {
-        isSoloMode = true; // <-- Set true saat mode solo dipilih
+        isSoloMode = true;
         btnSolo.classList.add('active');
         btnGroup.classList.remove('active');
         eventInfo.style.display = 'none';
         participants.style.display = 'none';
       } else {
-        isSoloMode = false; // <-- Set false saat mode group/event dipilih
+        isSoloMode = false;
         btnGroup.classList.add('active');
         btnSolo.classList.remove('active');
         eventInfo.style.display = 'block';
@@ -742,12 +736,13 @@ let isSoloMode = false; // <-- Tambahkan variabel status mode di stringif
         <select class="form-control" title="Nomor Bantalan">
           <option>Bantalan 1</option>
           <option>Bantalan 2</option>
+          <option>Bantalan 3</option>
         </select>
         <select class="form-control" title="Sesi">
           <option>Sesi 1</option>
           <option>Sesi 2</option>
         </select>
-        <button type="button" class="btn-danger" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
+        <button type="button" class="btn-danger" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i> Hapus</button>
       `;
       list.appendChild(row);
     }
@@ -859,7 +854,6 @@ let isSoloMode = false; // <-- Tambahkan variabel status mode di stringif
       renderModalItems();
     }
 
-    // Script perpindahan Peran
     function switchRole(role) {
       if (role === 'admin') {
         window.location.href = 'pendaftaran.html';
@@ -870,7 +864,20 @@ let isSoloMode = false; // <-- Tambahkan variabel status mode di stringif
       }
     }
 
-    // Set nilai otomatis sesuai halaman yang aktif saat ini (Sinkronisasi Desktop & Mobile)
+    function loadActiveUserProfile() {
+      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
+      if (activeUser) {
+        const nameText = document.getElementById('user-name-text');
+        const avatarBox = document.getElementById('user-avatar-box');
+        
+        if (nameText && activeUser.name) nameText.innerText = activeUser.name;
+        if (avatarBox && activeUser.name) {
+          const initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+          avatarBox.innerText = initials || 'A';
+        }
+      }
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
       const path = window.location.pathname;
       let currentRole = 'admin';
@@ -884,61 +891,63 @@ let isSoloMode = false; // <-- Tambahkan variabel status mode di stringif
       
       if (deskPicker) deskPicker.value = currentRole;
       if (mobPicker) mobPicker.value = currentRole;
+
+      loadActiveUserProfile();
+
+      // Otomatis isi baris pertama peserta dengan akun yang sedang aktif/login agar tidak kosong
+      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
+      const list = document.getElementById('participant-list');
+      if (list && list.children.length === 0) {
+        addParticipantRow(activeUser ? activeUser.name : 'Pemanah Utama', activeUser ? activeUser.club : 'Independen');
+      }
     });
 
     function goToScoring() {
-    const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser')) || { name: 'Pemanah Solo', club: 'Independen' };
-    const activeJarakBtn = document.querySelector('#grid-jarak .btn-option.active');
-    const jarakVal = activeJarakBtn ? activeJarakBtn.innerText : '18 m';
-    
-    let participants = [];
+      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser')) || { name: 'Pemanah Solo', club: 'Independen' };
+      const activeJarakBtn = document.querySelector('#grid-jarak .btn-option.active');
+      const jarakVal = activeJarakBtn ? activeJarakBtn.innerText : '18 m';
+      
+      let participants = [];
 
-    if (isSoloMode) {
-      // MODE SOLO: Otomatis memakai Akun yang sedang Login
-      participants.push({
-        name: activeUser.name,
-        club: activeUser.club || 'Independen',
-        scores: []
-      });
-    } else {
-      // MODE BARENG: Membaca input peserta
-      const names = document.querySelectorAll('.p-name');
-      const clubs = document.querySelectorAll('.p-club');
-      for(let i=0; i<names.length; i++) {
-        if(names[i].value.trim() !== '') {
-          participants.push({
-            name: names[i].value.trim(),
-            club: clubs[i].value.trim() || 'Independen',
-            scores: []
-          });
+      if (isSoloMode) {
+        participants.push({
+          name: activeUser.name,
+          club: activeUser.club || 'Independen',
+          scores: []
+        });
+      } else {
+        const names = document.querySelectorAll('.p-name');
+        const clubs = document.querySelectorAll('.p-club');
+        for(let i=0; i<names.length; i++) {
+          if(names[i].value.trim() !== '') {
+            participants.push({
+              name: names[i].value.trim(),
+              club: clubs[i].value.trim() || 'Independen',
+              scores: []
+            });
+          }
         }
       }
+
+      if(participants.length === 0) {
+        alert('Masukkan minimal 1 peserta untuk memulai!');
+        return;
+      }
+
+      const config = {
+        eventName: isSoloMode ? `Latihan Solo - ${activeUser.name}` : (document.getElementById('event-name').value || 'Internal Match'),
+        location: document.getElementById('event-location') ? document.getElementById('event-location').value : 'Lapangan Panahan',
+        busur: document.getElementById('select-busur').value,
+        jarak: jarakVal,
+        arrowCount: parseInt(document.getElementById('select-arrow').value),
+        totalEnd: parseInt(document.getElementById('select-rambahan').value),
+        participants: participants
+      };
+
+      localStorage.setItem('archeryConfig', JSON.stringify(config));
+      window.location.href = 'scoring.html';
     }
-
-    if(participants.length === 0) {
-      alert('Masukkan minimal 1 peserta untuk memulai!');
-      return;
-    }
-
-    const config = {
-      eventName: isSoloMode ? `Latihan Solo - ${activeUser.name}` : (document.getElementById('event-name').value || 'Internal Match'),
-      location: document.getElementById('event-location') ? document.getElementById('event-location').value : 'Lapangan Panahan',
-      busur: document.getElementById('select-busur').value,
-      jarak: jarakVal,
-      arrowCount: parseInt(document.getElementById('select-arrow').value),
-      totalEnd: parseInt(document.getElementById('select-rambahan').value),
-      participants: participants
-    };
-
-    localStorage.setItem('archeryConfig', JSON.stringify(config));
-    window.location.href = 'scoring.html';
-  }
-
-  // Kosongkan list default pada awal load
-  document.addEventListener('DOMContentLoaded', () => {
-    const list = document.getElementById('participant-list');
-    if (list) list.innerHTML = '';
-  });
   </script>
 </body>
 </html>
+
