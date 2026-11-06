@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -360,7 +361,7 @@
       text-decoration: none;
     }
 
-    /* PARTICIPANT ROW - Responsive & Nyaman di HP / Desktop */
+    /* PARTICIPANT ROW */
     .participant-row {
       background-color: #f8fafc;
       border: 1px solid #e2e8f0;
@@ -456,9 +457,6 @@
       font-weight: 600;
     }
 
-    /* ========================================================= */
-    /* BREAKPOINT: RESPONSIVE HP VS LAPTOP                       */
-    /* ========================================================= */
     @media (max-width: 900px) {
       .nav-links-desktop { display: none; }
       .btn-hamburger-mobile { display: block; }
@@ -470,7 +468,7 @@
 </head>
 <body>
 
-  <!-- 1. DESKTOP NAVBAR (MUNCUL DI LAPTOP/PC) -->
+  <!-- DESKTOP NAVBAR -->
   <header class="desktop-navbar">
     <div style="display: flex; align-items: center; gap: 12px;">
       <button class="btn-hamburger-mobile" onclick="toggleMobileSidebar()">
@@ -488,7 +486,6 @@
       <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
       <a href="pendaftaran.html"><i class="fa-solid fa-users"></i> Registrasi</a>
 
-      <!-- DROPDOWN PERAN DESKTOP -->
       <div class="role-selector-wrapper">
         <select id="app-role-picker-desktop" class="role-select" onchange="switchRole(this.value)">
           <option value="scorer">📱 Scorer (HP)</option>
@@ -498,13 +495,17 @@
       </div>
     </nav>
 
+    <!-- PROFIL HEADER DENGAN NAMA & KOMUNITAS -->
     <div class="user-profile-header">
       <div class="user-avatar" id="user-avatar-box">A</div>
-      <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;" id="user-name-text">Archer Pro</span>
+      <div style="display: flex; flex-direction: column; line-height: 1.2;">
+        <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;" id="user-name-text">Archer Pro</span>
+        <span style="font-size: 0.7rem; color: #64748b; font-weight: 600;" id="user-club-text">Klub Panahan</span>
+      </div>
     </div>
   </header>
 
-  <!-- 2. MOBILE SIDEBAR (MUNCUL SAAT DI HP JIKA TOMBOL DIKLIK) -->
+  <!-- MOBILE SIDEBAR -->
   <div class="mobile-sidebar-overlay" id="mobile-overlay" onclick="toggleMobileSidebar()"></div>
   <aside class="mobile-sidebar" id="mobile-sidebar">
     <div>
@@ -524,7 +525,6 @@
         <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
         <a href="pendaftaran.html"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
 
-        <!-- DROPDOWN PERAN MOBILE -->
         <div class="role-selector-wrapper" style="margin-top: 10px;">
           <select id="app-role-picker-mobile" class="role-select" style="width: 100%;" onchange="switchRole(this.value)">
             <option value="scorer">📱 Scorer (HP)</option>
@@ -540,7 +540,7 @@
     </div>
   </aside>
 
-  <!-- 3. KONTEN UTAMA -->
+  <!-- KONTEN UTAMA -->
   <main>
     <div class="page-navigation">
       <button class="btn-back" onclick="window.history.back()"><i class="fa-solid fa-chevron-left"></i></button>
@@ -550,7 +550,6 @@
       </div>
     </div>
 
-    <!-- TOGGLE MODE (SOLO / BANYAKAN) -->
     <div class="mode-toggle-card">
       <button type="button" class="btn-mode" id="btn-solo" onclick="setMode('solo')">
         <i class="fa-solid fa-user"></i> Solo (Sendiri)
@@ -561,7 +560,6 @@
     </div>
 
     <form onsubmit="event.preventDefault();">
-      <!-- INFORMASI ACARA -->
       <div class="dashboard-card" id="event-info-card">
         <div class="card-header-title">
           <span>🚩 Informasi Acara / Latihan Bersama</span>
@@ -578,7 +576,6 @@
         </div>
       </div>
 
-      <!-- PARAMETER LATIHAN -->
       <div class="dashboard-card">
         <div class="form-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
@@ -637,7 +634,6 @@
         </div>
       </div>
 
-      <!-- DAFTAR PESERTA -->
       <div class="dashboard-card" id="participants-card">
         <div class="card-header-title" style="flex-wrap: wrap; gap: 8px;">
           <span>👥 Daftar Peserta Panahan</span>
@@ -658,7 +654,6 @@
         <div id="participant-list"></div>
       </div>
 
-      <!-- SUBMIT BUTTON -->
       <button type="button" class="btn-submit" onclick="goToScoring()">
         <span>Mulai Sesi & Scoring</span>
         <i class="fa-solid fa-arrow-right"></i>
@@ -666,7 +661,6 @@
     </form>
   </main>
 
-  <!-- MODAL POPUP PENGELOLA OPSI -->
   <div class="modal" id="modal-crud">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
@@ -868,9 +862,11 @@
       const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
       if (activeUser) {
         const nameText = document.getElementById('user-name-text');
+        const clubText = document.getElementById('user-club-text');
         const avatarBox = document.getElementById('user-avatar-box');
         
         if (nameText && activeUser.name) nameText.innerText = activeUser.name;
+        if (clubText && activeUser.club) clubText.innerText = activeUser.club;
         if (avatarBox && activeUser.name) {
           const initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
           avatarBox.innerText = initials || 'A';
@@ -894,7 +890,6 @@
 
       loadActiveUserProfile();
 
-      // Otomatis isi baris pertama peserta dengan akun yang sedang aktif/login agar tidak kosong
       const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
       const list = document.getElementById('participant-list');
       if (list && list.children.length === 0) {
@@ -950,4 +945,3 @@
   </script>
 </body>
 </html>
-
