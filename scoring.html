@@ -323,7 +323,7 @@
     const wrapper = document.getElementById('targetWrapper');
     
     const waletImg = new Image();
-    waletImg.src = "target.jpg"; // Pastikan file gambar bernama target.jpg di folder yang sama
+    waletImg.src = "target.jpg";
 
     let scale = 1, posX = 0, posY = 0, isDragging = false, startX, startY;
 
@@ -338,7 +338,6 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(waletImg, 0, 0);
 
-      // Gambar titik-titik panah yang sudah diinput untuk rambahan saat ini
       currentArrowsInput.forEach((shot, index) => {
         if (shot.x && shot.y) {
           ctx.beginPath();
@@ -389,7 +388,6 @@
 
     window.addEventListener('pointerup', () => { isDragging = false; });
 
-    // Klik pada kanvas target Walet
     canvas.addEventListener('click', (e) => {
       if(currentArrowsInput.length >= appConfig.arrowCount) {
         alert("Arrow sudah penuh untuk rambahan ini!");
@@ -406,17 +404,16 @@
       currentArrowsInput.push({ val: scoreVal, x: clickX, y: clickY });
       drawTargetCanvas();
       renderArrowBoxes();
-      syncLiveState();
+      syncLiveState(); // Live sync real-time aktif
     });
 
-    // Logika Deteksi Warna Walet dengan Toleransi Luas
     function calculateWaletScore(r, g, b, x, y) {
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
       const distance = Math.hypot(x - centerX, y - centerY);
 
       if (distance > canvas.width * 0.38) {
-        return 'M'; // Luar / Miss
+        return 'M';
       }
 
       if (r > 160 && g > 140 && b < 120) {
@@ -442,7 +439,6 @@
 
       return 'M';
     }
-
 
     function toggleMobileSidebar() {
       document.getElementById('mobile-sidebar').classList.toggle('active');
@@ -547,7 +543,7 @@
         currentArrowsInput.push({ val: val, x: null, y: null });
         renderArrowBoxes();
         drawTargetCanvas();
-        syncLiveState();
+        syncLiveState(); // Live sync aktif secara real-time
       } else {
         alert("Arrow sudah penuh, silakan simpan rambahan atau undo.");
       }
@@ -557,7 +553,7 @@
       currentArrowsInput.pop();
       renderArrowBoxes();
       drawTargetCanvas();
-      syncLiveState();
+      syncLiveState(); // Live sync aktif secara real-time
     }
 
     function nextTurnOrRambahan() {
@@ -566,7 +562,6 @@
         return;
       }
 
-      // Ambil hanya nilainya saja untuk disimpan ke data peserta
       const plainValues = currentArrowsInput.map(i => typeof i === 'object' ? i.val : i);
       appConfig.participants[activeArcherIndex].scores.push(plainValues);
       
@@ -776,3 +771,4 @@
   </script>
 </body>
 </html>
+
