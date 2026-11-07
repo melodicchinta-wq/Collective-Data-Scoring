@@ -354,13 +354,9 @@
     </nav>
 
     <div class="user-profile-header">
-  <div class="user-avatar" id="user-avatar-box">A</div>
-  <div style="display: flex; flex-direction: column; line-height: 1.2;">
-    <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;" id="user-name-text">Archer Pro</span>
-    <span style="font-size: 0.7rem; color: #64748b; font-weight: 600;" id="user-club-text">Klub Panahan</span>
-  </div>
+      <div class="user-avatar" id="header-avatar">A</div>
+      <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;" id="header-username">Archer Pro</span>
     </div>
-    
   </header>
 
   <!-- MOBILE SIDEBAR -->
@@ -414,7 +410,7 @@
       <input type="file" id="excel-file-input" accept="*/*" style="display: none;" onchange="handleExcelUpload(event)">
 
       <p style="font-size: 0.8rem; color: #047857; line-height: 1.5; font-weight: 500;">
-        * Upload file Excel/CSV dengan urutan kolom: <strong>No. Registrasi | Nama Lengkap | No. HP/WA | Tgl Lahir | Jenis Kelamin | Alamat Domisili | Kab/Kota | Provinsi | Klub Panahan | Kategori Busur</strong>.
+        * Upload file Excel/CSV dengan urutan kolom: <strong>No. Registrasi | Nama Lengkap | No. HP/WA | Tgl Lahir | Jenis Kelamin | Alamat Domisili | Kab/Kota | Provinsi | Klub Panahan | Kategori Busur</strong>. Data yang diimpor akan otomatis mencatat nama akun Anda sebagai pembuatnya.
       </p>
     </div>
 
@@ -518,6 +514,7 @@
             <tr>
               <th>No</th>
               <th>Waktu Reg</th>
+              <th>Didaftarkan Oleh</th>
               <th>No. Reg</th>
               <th>Nama Lengkap</th>
               <th>No. HP / WA</th>
@@ -539,42 +536,25 @@
 
   <script src="auth.js"></script>
   
+  <script src="auth.js"></script>
+  
+    <script src="auth.js"></script>
+  
   <script>
-    function loadActiveUserProfile() {
-  const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
-  if (activeUser) {
-    const nameText = document.getElementById('user-name-text');
-    const clubText = document.getElementById('user-club-text');
-    const avatarBox = document.getElementById('user-avatar-box');
-    
-    // Masukkan nama dan komunitas dari data login
-    if (nameText && activeUser.name) nameText.innerText = activeUser.name;
-    if (clubText && activeUser.club) clubText.innerText = activeUser.club;
-    
-    // Mengubah inisial avatar otomatis berdasarkan nama
-    if (avatarBox && activeUser.name) {
-      const initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-      avatarBox.innerText = initials || 'A';
+    function getActiveUser() {
+      return JSON.parse(localStorage.getItem('activeArcheryUser')) || { name: 'Admin Tamu', email: 'guest@archery.com', club: 'Independen' };
     }
-  }
-}
 
-// Panggil fungsi ini saat halaman selesai dimuat
-document.addEventListener("DOMContentLoaded", function() {
-  loadActiveUserProfile();
-});
-
-function getAccountDBKey() {
-    const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser')) || { email: 'guest' };
-    return `archeryDatabase_${activeUser.email}`;
-}
+    function getAccountDBKey() {
+      const activeUser = getActiveUser();
+      return `archeryDatabase_${activeUser.email}`;
+    }
     
     function toggleMobileSidebar() {
       document.getElementById('mobile-sidebar').classList.toggle('active');
       document.getElementById('mobile-overlay').classList.toggle('active');
     }
 
-    // Script perpindahan Peran
     function switchRole(role) {
       if (role === 'admin') {
         window.location.href = 'pendaftaran.html';
@@ -585,7 +565,6 @@ function getAccountDBKey() {
       }
     }
 
-    // Set nilai otomatis sesuai halaman yang aktif saat ini (Sinkronisasi Desktop & Mobile)
     document.addEventListener("DOMContentLoaded", function() {
       const path = window.location.pathname;
       let currentRole = 'admin';
@@ -599,37 +578,69 @@ function getAccountDBKey() {
       
       if (deskPicker) deskPicker.value = currentRole;
       if (mobPicker) mobPicker.value = currentRole;
+
+      const activeUser = getActiveUser();
+      const headerUsername = document.getElementById('header-username');
+      const headerAvatar = document.getElementById('header-avatar');
+      if (headerUsername && activeUser.name) {
+        headerUsername.innerText = activeUser.name;
+      }
+      if (headerAvatar && activeUser.name) {
+        headerAvatar.innerText = activeUser.name.charAt(0).toUpperCase();
+      }
+
+      // FITUR UTAMA: Jika database akun ini masih kosong, otomatis buatkan 1 data awal berdasarkan profil user yang sedang login (misal Bima)
+      const currentDBKey = getAccountDBKey();
+      let currentDB = JSON.parse(localStorage.getItem(currentDBKey)) || [];
+      
+      if (currentDB.length === 0) {
+        const now = new Date();
+        const timestamp = now.toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+        
+        const initialUserPeserta = {
+          id: Date.now(),
+          timestamp: timestamp,
+          registeredBy: activeUser.name,
+          noReg: `ARC-${Math.floor(100 + Math.random() * 900)}`,
+          nama: activeUser.name || 'User Baru',
+          noHp: activeUser.phone || '-',
+          tglLahir: '-',
+          jk: 'Laki-laki',
+          alamat: '-',
+          kab: 'Sumedang',
+          prov: 'Jawa Barat',
+          klub: activeUser.club || 'Independen',
+          kategori: 'Traditional Bow'
+        };
+        
+        currentDB.push(initialUserPeserta);
+        localStorage.setItem(currentDBKey, JSON.stringify(currentDB));
+      }
+
+      renderDatabase();
     });
-    
-function deletePeserta(id) {
-  if (confirm('Yakin ingin menghapus peserta ini dari database?')) {
-    const dbKey = getAccountDBKey();
-    let db = JSON.parse(localStorage.getItem(dbKey)) || [];
-    db = db.filter(item => item.id != id);
-    localStorage.setItem(dbKey, JSON.stringify(db));
-    renderDatabase();
-  }
-}
-    // CREATE & UPDATE (SIMPAN / EDIT DATA)
+
     function saveRegistration(e) {
       e.preventDefault();
-      const dbKey = getAccountDBKey(); // Ambil database spesifik akun
+      const dbKey = getAccountDBKey();
+      const activeUser = getActiveUser();
       const editId = document.getElementById('edit-id').value;
       let db = JSON.parse(localStorage.getItem(dbKey)) || [];
 
       if (editId) {
         const index = db.findIndex(item => item.id == editId);
         if (index !== -1) {
-          db[index].noReg = document.getElementById('reg-no').value.trim();
-          db[index].nama = document.getElementById('reg-nama').value.trim();
-          db[index].noHp = document.getElementById('reg-hp').value.trim();
-          db[index].tglLahir = document.getElementById('reg-tgl').value;
-          db[index].jk = document.getElementById('reg-jk').value;
-          db[index].alamat = document.getElementById('reg-alamat').value.trim();
-          db[index].kab = document.getElementById('reg-kab').value.trim();
-          db[index].prov = document.getElementById('reg-prov').value.trim();
-          db[index].klub = document.getElementById('reg-klub').value.trim();
-          db[index].kategori = document.getElementById('reg-kategori').value;
+          db[index].noReg = document.getElementById('reg-no').value.trim() || '-';
+          db[index].nama = document.getElementById('reg-nama').value.trim() || '-';
+          db[index].noHp = document.getElementById('reg-hp').value.trim() || '-';
+          db[index].tglLahir = document.getElementById('reg-tgl').value || '-';
+          db[index].jk = document.getElementById('reg-jk').value || 'Laki-laki';
+          db[index].alamat = document.getElementById('reg-alamat').value.trim() || '-';
+          db[index].kab = document.getElementById('reg-kab').value.trim() || '-';
+          db[index].prov = document.getElementById('reg-prov').value.trim() || '-';
+          db[index].klub = document.getElementById('reg-klub').value.trim() || '-';
+          db[index].kategori = document.getElementById('reg-kategori').value || 'Traditional Bow';
+          db[index].registeredBy = activeUser.name || 'Admin';
         }
         alert('Data peserta berhasil diperbarui!');
       } else {
@@ -639,16 +650,17 @@ function deletePeserta(id) {
         const newPeserta = {
           id: Date.now(),
           timestamp: timestamp,
-          noReg: document.getElementById('reg-no').value.trim(),
-          nama: document.getElementById('reg-nama').value.trim(),
-          noHp: document.getElementById('reg-hp').value.trim(),
-          tglLahir: document.getElementById('reg-tgl').value,
-          jk: document.getElementById('reg-jk').value,
-          alamat: document.getElementById('reg-alamat').value.trim(),
-          kab: document.getElementById('reg-kab').value.trim(),
-          prov: document.getElementById('reg-prov').value.trim(),
-          klub: document.getElementById('reg-klub').value.trim(),
-          kategori: document.getElementById('reg-kategori').value
+          registeredBy: activeUser.name || 'Admin',
+          noReg: document.getElementById('reg-no').value.trim() || '-',
+          nama: document.getElementById('reg-nama').value.trim() || '-',
+          noHp: document.getElementById('reg-hp').value.trim() || '-',
+          tglLahir: document.getElementById('reg-tgl').value || '-',
+          jk: document.getElementById('reg-jk').value || 'Laki-laki',
+          alamat: document.getElementById('reg-alamat').value.trim() || '-',
+          kab: document.getElementById('reg-kab').value.trim() || '-',
+          prov: document.getElementById('reg-prov').value.trim() || '-',
+          klub: document.getElementById('reg-klub').value.trim() || '-',
+          kategori: document.getElementById('reg-kategori').value || 'Traditional Bow'
         };
         db.unshift(newPeserta);
         alert('Berhasil mendaftarkan peserta baru!');
@@ -659,7 +671,6 @@ function deletePeserta(id) {
       renderDatabase();
     }
 
-    // READ (TAMPILKAN DATA KE TABEL)
     function renderDatabase() {
       const dbKey = getAccountDBKey();
       const db = JSON.parse(localStorage.getItem(dbKey)) || [];
@@ -670,7 +681,7 @@ function deletePeserta(id) {
       document.getElementById('db-count').innerText = `${filteredDb.length} Peserta`;
 
       if (filteredDb.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="13" style="text-align:center; color:#64748b; padding:24px;">Belum ada data peserta.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="14" style="text-align:center; color:#64748b; padding:24px;">Belum ada data peserta untuk akun ini.</td></tr>`;
         return;
       }
 
@@ -680,8 +691,9 @@ function deletePeserta(id) {
         tr.innerHTML = `
           <td>${index + 1}</td>
           <td><span style="font-size:0.75rem; color:#64748b;">${item.timestamp || '-'}</span></td>
-          <td><strong style="color:#4f46e5;">${item.noReg || '-'}</strong></td>
-          <td><strong style="color:#0f172a;">${item.nama}</strong></td>
+          <td><span style="font-weight:700; color:#4f46e5;"><i class="fa-solid fa-user-shield"></i> ${item.registeredBy || 'Admin'}</span></td>
+          <td><strong style="color:#0f172a;">${item.noReg || '-'}</strong></td>
+          <td><strong style="color:#0f172a;">${item.nama || '-'}</strong></td>
           <td><span style="color:#0284c7; font-weight:600;">${item.noHp || '-'}</span></td>
           <td>${item.tglLahir || '-'}</td>
           <td>${item.jk || '-'}</td>
@@ -737,7 +749,7 @@ function deletePeserta(id) {
     }
 
     function clearDatabase() {
-      if (confirm('Apakah kamu yakin ingin MENGHAPUS SEMUA data peserta di database?')) {
+      if (confirm('Apakah kamu yakin ingin MENGHAPUS SEMUA data peserta di database akun ini?')) {
         const dbKey = getAccountDBKey();
         localStorage.removeItem(dbKey);
         renderDatabase();
@@ -752,7 +764,6 @@ function deletePeserta(id) {
       document.getElementById('btn-cancel-edit').style.display = 'none';
     }
 
-
     function handleExcelUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -765,6 +776,8 @@ function deletePeserta(id) {
         return;
       }
 
+      const activeUser = getActiveUser();
+      const dbKey = getAccountDBKey();
       const isCSV = fileName.endsWith('.csv');
 
       if (isCSV) {
@@ -779,7 +792,7 @@ function deletePeserta(id) {
             return;
           }
 
-          let db = JSON.parse(localStorage.getItem('archeryDatabase')) || [];
+          let db = JSON.parse(localStorage.getItem(dbKey)) || [];
           let countImported = 0;
           const now = new Date();
           const timestamp = now.toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
@@ -794,14 +807,15 @@ function deletePeserta(id) {
               const newPeserta = {
                 id: Date.now() + Math.random(),
                 timestamp: timestamp,
+                registeredBy: activeUser.name || 'Admin',
                 noReg: row[0] || `ARC-IMP-${i}`,
                 nama: row[1] || 'Peserta',
                 noHp: row[2] || '-',
-                tglLahir: row[3] || '',
+                tglLahir: row[3] || '-',
                 jk: row[4] || 'Laki-laki',
-                alamat: row[5] || '',
-                kab: row[6] || '',
-                prov: row[7] || '',
+                alamat: row[5] || '-',
+                kab: row[6] || '-',
+                prov: row[7] || '-',
                 klub: row[8] || 'Independen',
                 kategori: row[9] || 'Traditional Bow'
               };
@@ -810,7 +824,7 @@ function deletePeserta(id) {
             }
           }
 
-          localStorage.setItem('archeryDatabase', JSON.stringify(db));
+          localStorage.setItem(dbKey, JSON.stringify(db));
           alert(`Berhasil mengimpor ${countImported} peserta dari CSV!`);
           renderDatabase();
         };
@@ -831,7 +845,7 @@ function deletePeserta(id) {
               return;
             }
 
-            let db = JSON.parse(localStorage.getItem('archeryDatabase')) || [];
+            let db = JSON.parse(localStorage.getItem(dbKey)) || [];
             let countImported = 0;
             const now = new Date();
             const timestamp = now.toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
@@ -842,14 +856,15 @@ function deletePeserta(id) {
                 const newPeserta = {
                   id: Date.now() + Math.random(),
                   timestamp: timestamp,
+                  registeredBy: activeUser.name || 'Admin',
                   noReg: row[0] || `ARC-IMP-${i}`,
                   nama: row[1] || 'Peserta',
                   noHp: row[2] || '-',
-                  tglLahir: row[3] || '',
+                  tglLahir: row[3] || '-',
                   jk: row[4] || 'Laki-laki',
-                  alamat: row[5] || '',
-                  kab: row[6] || '',
-                  prov: row[7] || '',
+                  alamat: row[5] || '-',
+                  kab: row[6] || '-',
+                  prov: row[7] || '-',
                   klub: row[8] || 'Independen',
                   kategori: row[9] || 'Traditional Bow'
                 };
@@ -858,7 +873,7 @@ function deletePeserta(id) {
               }
             }
 
-            localStorage.setItem('archeryDatabase', JSON.stringify(db));
+            localStorage.setItem(dbKey, JSON.stringify(db));
             alert(`Berhasil mengimpor ${countImported} peserta dari Excel!`);
             renderDatabase();
           } catch (err) {
@@ -889,8 +904,9 @@ function deletePeserta(id) {
       result.push(current.trim());
       return result.map(val => val.replace(/^["']|["']$/g, ''));
     }
-
-    renderDatabase();
   </script>
+
+
 </body>
 </html>
+
