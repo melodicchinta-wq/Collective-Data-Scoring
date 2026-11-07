@@ -223,7 +223,7 @@
     .modal.active { display: flex; }
     .modal-content { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 24px; width: 100%; max-width: 420px; padding: 24px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
 
-    /* PENYESUAIAN RESPONSIF LAYAR HP */
+    /* PENYESUAIAN RESPONSIF LAYAR HP: Diatur agar kotak podium di tengah dan ukurannya sama rata penuh */
     @media (max-width: 900px) { 
       .nav-links-desktop { display: none; } 
       .btn-hamburger-mobile { display: block; } 
@@ -234,8 +234,15 @@
       .podium-container { 
         display: flex;
         flex-direction: column; 
-        gap: 10px; 
+        align-items: center; /* Membuat semua kotak persis di tengah layar HP */
+        gap: 12px; 
       }
+      
+      .podium-box { 
+        width: 100%; /* Membuat lebar kotak sama rata penuh mengikuti container */
+        max-width: 100%; 
+      }
+
       .podium-box.rank-1-box { 
         transform: none; 
       }
@@ -802,8 +809,6 @@
       const container = document.getElementById('podium-container');
       container.innerHTML = '';
       
-      // Deteksi otomatis: Jika layar HP (lebar <= 900px), urutan dari atas ke bawah adalah [0, 1, 2] (Juara 1 paling atas)
-      // Jika Desktop, urutan podium klasik adalah [1, 0, 2] (Juara 2 di kiri, Juara 1 di tengah, Juara 3 di kanan)
       const isMobile = window.innerWidth <= 900;
       const podiumOrder = isMobile ? [0, 1, 2] : [1, 0, 2];
       
@@ -812,7 +817,6 @@
         if(!p) return;
         const isRank1 = (rankIdx === 0);
         
-        // Logika inisial: 1 huruf jika 1 kata, 2 huruf (kata 1 & 2) jika lebih dari 1 kata
         const nameParts = (p.name || 'User').trim().split(' ').filter(n => n.length > 0);
         let initials = 'A';
         if (nameParts.length >= 2) {
