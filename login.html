@@ -3,65 +3,169 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Akun to - Archery Pro</title>
+  <title>Login & Verifikasi Masa Sewa - Archery Pro</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background-color: #f3f5f9; color: #1e293b; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-    .login-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 24px; width: 100%; max-width: 400px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.3rem; color: #0f172a; margin-bottom: 24px; justify-content: center; }
-    .brand-icon { background-color: #18191c; color: #ffffff; padding: 6px 10px; border-radius: 12px; font-size: 1rem; }
-    .form-group { margin-bottom: 16px; }
-    .form-label { display: block; font-size: 0.8rem; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase; }
-    .form-input { width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 0.95rem; outline: none; transition: all 0.2s; background: #f8fafc; }
-    .form-input:focus { border-color: #6366f1; background: #ffffff; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
-    .btn-login { width: 100%; background: #18191c; color: #ffffff; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
-    .btn-login:hover { background: #0f172a; }
+    
+    .login-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 24px; padding: 32px; width: 100%; max-width: 440px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+    .brand { display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 800; font-size: 1.4rem; color: #0f172a; margin-bottom: 20px; }
+    .brand-icon { background-color: #18191c; color: #ffffff; padding: 6px 12px; border-radius: 12px; font-size: 1.1rem; }
+    
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-group label { font-size: 0.8rem; font-weight: 700; color: #64748b; }
+    .form-control { background-color: #f8fafc; border: 1px solid #e2e8f0; color: #0f172a; padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; outline: none; font-weight: 600; transition: border 0.2s; }
+    .form-control:focus { border-color: #6366f1; background-color: #ffffff; }
+
+    .btn-submit { width: 100%; background-color: #18191c; color: #ffffff; font-weight: 800; font-size: 0.95rem; padding: 14px; border-radius: 12px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(24, 25, 28, 0.15); transition: background 0.2s; margin-top: 10px; }
+    .btn-submit:hover { background-color: #0f172a; }
+    
+    .info-box { background: #e0e7ff; color: #3730a3; padding: 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; line-height: 1.4; margin-bottom: 20px; }
+
+    /* TAMPILAN KARTU TAGIHAN KETIKA SEWA HABIS */
+    .invoice-card { text-align: center; }
+    .invoice-icon { font-size: 2.5rem; margin-bottom: 8px; color: #f59e0b; }
+    .bank-box { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 14px; padding: 12px; margin: 12px 0; text-align: left; font-size: 0.8rem; }
+    .bank-item { display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: 700; color: #0f172a; }
+    
+    /* STYLE QR CODE & TOMBOL WA */
+    .qr-container { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 12px; margin: 12px 0; display: flex; flex-direction: column; align-items: center; }
+    .qr-container img { width: 140px; height: 140px; border-radius: 8px; border: 4px solid #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    
+    .btn-wa { display: flex; align-items: center; justify-content: center; gap: 8px; background-color: #25d366; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 800; width: 100%; cursor: pointer; text-decoration: none; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25); margin-top: 8px; }
+    .btn-back { background: #f1f5f9; color: #64748b; border: none; padding: 10px; border-radius: 10px; font-weight: 700; width: 100%; cursor: pointer; margin-top: 6px; font-size: 0.85rem; }
   </style>
 </head>
 <body>
 
-  <div class="login-card">
+  <div class="login-card" id="card-container">
     <div class="brand">
       <div class="brand-icon">🎯</div>
       <span>ARCHERY<span style="color:#6366f1;">PRO</span></span>
     </div>
-    
-    <form onsubmit="handleLogin(event)">
-      <div class="form-group">
-        <label class="form-label">Nama Lengkap / Pemanah</label>
-        <input type="text" id="loginName" class="form-input" placeholder="Contoh: Ahmad Archer" required>
-      </div>
-      
-      <div class="form-group">
-        <label class="form-label">Email Akun (Unik)</label>
-        <input type="email" id="loginEmail" class="form-input" placeholder="contoh@email.com" required>
+
+    <!-- FORM LOGIN UTAMA -->
+    <div id="view-login">
+      <div class="info-box">
+        <i class="fa-solid fa-circle-info"></i> Masuk dengan akun event / klub kamu untuk mulai mencatat skor panahan.
       </div>
 
-      <div class="form-group">
-        <label class="form-label">Klub / Kontingen</label>
-        <input type="text" id="loginClub" class="form-input" placeholder="Contoh: Sumedang Club" required>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Nama Lengkap / PIC Event *</label>
+          <input type="text" id="login-name" class="form-control" placeholder="Contoh: Bima" required>
+        </div>
+
+        <div class="form-group">
+          <label>Email Akun *</label>
+          <input type="email" id="login-email" class="form-control" placeholder="Contoh: bima@gmail.com" required>
+        </div>
+
+        <div class="form-group">
+          <label>Klub / Instansi *</label>
+          <input type="text" id="login-club" class="form-control" placeholder="Contoh: Sumedang Club" required>
+        </div>
+
+        <button type="submit" class="btn-submit">Masuk ke Aplikasi <i class="fa-solid fa-arrow-right"></i></button>
+      </form>
+    </div>
+
+    <!-- VIEW TAMPILAN TAGIHAN & QR CODE KETIKA MASA SEWA HABIS -->
+    <div id="view-expired" class="invoice-card" style="display: none;">
+      <div class="invoice-icon">⏳</div>
+      <h2 style="color: #0f172a; font-weight: 800; font-size: 1.2rem; margin-bottom: 4px;">Masa Sewa Telah Habis</h2>
+      <p id="expired-desc" style="color: #64748b; font-size: 0.8rem; line-height: 1.4; margin-bottom: 10px;"></p>
+
+      <div class="bank-box">
+        <div style="font-size: 0.7rem; color: #64748b; margin-bottom: 6px; font-weight: 700; text-transform: uppercase;">💳 Transfer Perpanjangan:</div>
+        <div class="bank-item"><span>Bank BJB:</span> <span style="color:#4f46e5;">1234-5678-9010</span></div>
+        <div class="bank-item"><span>DANA / OVO:</span> <span style="color:#0284c7;">0812-3456-7890</span></div>
       </div>
 
-      <button type="submit" class="btn-login">Masuk ke Aplikasi <i class="fa-solid fa-arrow-right"></i></button>
-    </form>
+      <!-- KOTAK QR CODE WHATSAPP -->
+      <div class="qr-container">
+        <span style="font-size: 0.75rem; font-weight: 700; color: #334155; margin-bottom: 8px;"><i class="fa-solid fa-qrcode"></i> Scan QR untuk Konfirmasi WA:</span>
+        <img id="qr-code-img" src="" alt="QR Code WhatsApp Admin">
+      </div>
+
+      <!-- TOMBOL MENGGUNAKAN TAG A HREF STANDAR -->
+      <a id="wa-link" href="#" target="_blank" class="btn-wa">
+        <i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i> Atau Klik Langsung ke WhatsApp
+      </a>
+      <button type="button" class="btn-back" onclick="backToLogin()">← Kembali ke Menu Login</button>
+    </div>
+
   </div>
 
   <script>
     function handleLogin(e) {
       e.preventDefault();
-      const name = document.getElementById('loginName').value;
-      const email = document.getElementById('loginEmail').value;
-      const club = document.getElementById('loginClub').value;
+      
+      const name = document.getElementById('login-name').value.trim();
+      const email = document.getElementById('login-email').value.trim().toLowerCase();
+      const club = document.getElementById('login-club').value.trim();
 
-      const userData = { name, email, club };
-      // Simpan session user aktif
-      localStorage.setItem('activeArcheryUser', JSON.stringify(userData));
+      const adminEmail = "mimin@gmail.com"; 
+      const role = (email === adminEmail) ? "admin" : "klien";
 
-      // Redirect ke halaman utama setup
+      const rentalKey = `archeryRentalExpiry_${email}`;
+      let expiryTime = localStorage.getItem(rentalKey);
+
+      // Jika klien baru dan belum ada data sewa, berikan trial default 2 hari
+      if (!expiryTime && role !== "admin") {
+        expiryTime = new Date().getTime() + (2 * 24 * 60 * 60 * 1000);
+        localStorage.setItem(rentalKey, expiryTime);
+      }
+
+      const currentTime = new Date().getTime();
+
+      // JIKA MASA SEWA HABIS (Kecuali Admin)
+      if (role !== "admin" && currentTime > parseInt(expiryTime)) {
+        const expiredDateStr = new Date(parseInt(expiryTime)).toLocaleDateString('id-ID', { dateStyle: 'full' });
+        
+        document.getElementById('view-login').style.display = 'none';
+        document.getElementById('view-expired').style.display = 'block';
+        
+        document.getElementById('expired-desc').innerHTML = `
+          Masa aktif akun <strong>${name}</strong> (${email}) berakhir pada <em>${expiredDateStr}</em>. Silakan lakukan pembayaran dan scan QR di bawah.
+        `;
+
+        const adminPhone = "6281234567890"; // Ganti dengan nomor WhatsApp kamu
+        const waText = `Halo Admin, saya ingin konfirmasi perpanjangan sewa aplikasi Archery Pro untuk akun:%0A- Nama: ${name}%0A- Email: ${email}%0A- Klub: ${club}%0A%0ABerikut saya lampirkan bukti pembayarannya.`;
+        
+        // Menggunakan link API web WhatsApp resmi
+        const finalWaUrl = `https://api.whatsapp.com/send?phone=${adminPhone}&text=${waText}`;
+
+        // Set langsung ke atribut href tag <a>
+        document.getElementById('wa-link').href = finalWaUrl;
+
+        // Generate QR Code
+        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(finalWaUrl)}`;
+        document.getElementById('qr-code-img').src = qrApiUrl;
+        
+        return;
+      }
+
+      const activeUser = { name, email, club, role };
+      localStorage.setItem('activeArcheryUser', JSON.stringify(activeUser));
+
+      if (role === "admin") {
+        alert("🔓 Login Berhasil! Anda masuk sebagai Admin Utama (Mimin).");
+      } else {
+        alert(`✨ Selamat datang, ${name}! Login berhasil.`);
+      }
+
       window.location.href = 'home.html';
+    }
+
+    function backToLogin() {
+      document.getElementById('view-expired').style.display = 'none';
+      document.getElementById('view-login').style.display = 'block';
     }
   </script>
 </body>
 </html>
+
