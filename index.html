@@ -22,7 +22,7 @@
 
     main { max-width: 1200px; width: 100%; margin: 0 auto; padding: 24px 16px; flex: 1; }
 
-    /* CONTAINER PER SESI / PERMAINAN */
+    /* KOTAK PEMBUNGKUS UNTUK SETIAP TABEL SESI */
     .event-section-wrapper { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 16px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
 
     /* HEADER INFO EVENT */
@@ -59,10 +59,10 @@
   <main>
     <div style="margin-bottom: 20px;">
       <h1 style="font-size: 1.4rem; font-weight: 800; color: #0f172a;">Live Rekap Seluruh Sesi Pertandingan</h1>
-      <p style="font-size: 0.85rem; color: #64748b;">Daftar papan skor seluruh turnamen atau klub dari semua akun yang aktif saat ini.</p>
+      <p style="font-size: 0.85rem; color: #64748b;">Daftar papan skor seluruh turnamen atau klub dari semua akun yang aktif secara bersamaan.</p>
     </div>
 
-    <!-- CONTAINER UTAMA TEMPAT SEMUA TABEL EVENT AKAN DIMUAT -->
+    <!-- CONTAINER UTAMA TEMPAT SEMUA TABEL SESI AKAN DIMUAT BERJEJER -->
     <div id="all-events-container">
       <div style="text-align: center; color: #64748b; padding: 40px; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0;">
         Memuat seluruh sesi pertandingan...
@@ -71,21 +71,31 @@
   </main>
 
   <script>
-    // Fungsi untuk memindai dan merender SEMUA event/sesi dari seluruh akun sekaligus
+    // Fungsi untuk memindai dan merender SEMUA sesi dari seluruh akun secara bersamaan
     function renderAllPublicExcelTables() {
       const container = document.getElementById('all-events-container');
       let configsToRender = [];
 
-      // Scan seluruh localStorage untuk mencari SEMUA konfigurasi event dari akun manapun
+      // Scan seluruh localStorage untuk mencari berbagai bentuk penyimpanan sesi
       for (let i = 0; i < localStorage.length; i++) {
         let key = localStorage.key(i);
         
-        // Cari key yang mengandung kata 'archeryConfig' (baik utama maupun milik akun klub/client)
-        if (key === 'archeryConfig' || key.startsWith('archeryConfig_')) {
+        // Menangkap archeryConfig, archeryConfig_*, maupun riwayat sesi lain
+        if (key === 'archeryConfig' || key.startsWith('archeryConfig_') || key.startsWith('archeryHistory_')) {
           try {
-            let cfg = JSON.parse(localStorage.getItem(key));
-            if (cfg && (cfg.eventName || (cfg.participants && cfg.participants.length > 0))) {
-              configsToRender.push({ key: key, data: cfg });
+            let data = JSON.parse(localStorage.getItem(key));
+            
+            // Jika data berupa array (riwayat), masukkan satu-satu
+            if (Array.isArray(data)) {
+              data.forEach((item, idx) => {
+                if (item && (item.eventName || (item.participants && item.participants.length > 0))) {
+                  configsToRender.push({ key: `${key}_${idx}`, data: item });
+                }
+              });
+            } 
+            // Jika data berupa objek tunggal konfigurasi
+            else if (data && (data.eventName || (data.participants && data.participants.length > 0))) {
+              configsToRender.push({ key: key, data: data });
             }
           } catch(e) {}
         }
@@ -105,7 +115,7 @@
 
       let masterHTML = '';
 
-      // Loop untuk merender setiap sesi/permainan dari semua akun
+      // Loop untuk membuat kotak tabel secara terpisah untuk setiap sesi
       configsToRender.forEach((item, index) => {
         let config = item.data;
         let eventName = config.eventName || `Turnamen Sesi ${index + 1}`;
@@ -114,10 +124,10 @@
         let totalEnd = parseInt(config.totalEnd) || 5;
 
         if (!config.participants || config.participants.length === 0) {
-          return; // Lewati jika sesi kosong
+          return; 
         }
 
-        // Buat Header Tabel Excel
+        // 1. BUAT HEADER TABEL GAYA EXCEL DINAMIS
         let headHTML = `
           <tr>
             <th style="width: 40px; text-align:center;">No</th>
@@ -133,7 +143,7 @@
           </tr>
         `;
 
-        // Proses & Hitung Skor Peserta
+        // 2. PROSES & HITUNG SKOR PESERTA
         let list = config.participants.map((p) => {
           let totalScore = 0;
           let totalX = 0;
@@ -153,10 +163,10 @@
           return { ...p, totalScore, totalX, endScoresSummary };
         });
 
-        // Urutkan peringkat berdasarkan total skor tertinggi
+        // Urutkan peringkat dari skor tertinggi
         list.sort((a, b) => b.totalScore - a.totalScore || b.totalX - a.totalX);
 
-        // Buat Baris Isi Tabel
+        // 3. RENDER ISI TABEL
         let bodyHTML = '';
         list.forEach((p, idx) => {
           bodyHTML += `
