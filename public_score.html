@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Public Scoreboard (Excel Style) - Archery Pro</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: #f1f5f9; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* NAVBAR PUBLIK */
+    .public-navbar { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 14px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02); }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; color: #0f172a; }
+    .brand-icon { background-color: #18191c; color: #ffffff; padding: 6px 10px; border-radius: 12px; font-size: 1rem; }
+    
+    .btn-login-redirect { background: #4f46e5; color: white; padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+    .btn-login-redirect:hover { background: #4338ca; }
+
+    main { max-width: 1200px; width: 100%; margin: 0 auto; padding: 24px 16px; flex: 1; }
+
+    /* PILIHAN AKUN / EVENT */
+    .selector-bar { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 14px 20px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+    .form-control { background-color: #f8fafc; border: 1px solid #e2e8f0; color: #0f172a; padding: 8px 14px; border-radius: 10px; font-size: 0.85rem; outline: none; font-weight: 600; }
+
+    /* HEADER INFO EVENT */
+    .event-info-card { background: #18191c; color: #ffffff; border-radius: 16px; padding: 20px 24px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .live-dot { width: 10px; height: 10px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 6px; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+    /* TABEL GAYA EXCEL (SPREADSHEET STYLE) */
+    .excel-container { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; overflow-x: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+    .excel-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left; white-space: nowrap; }
+    .excel-table th { background-color: #f8fafc; color: #475569; padding: 10px 12px; border-bottom: 2px solid #cbd5e1; border-right: 1px solid #e2e8f0; font-weight: 800; text-transform: uppercase; }
+    .excel-table td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #f1f5f9; color: #334155; }
+    .excel-table tr:hover { background-color: #f8fafc; }
+
+    .badge-x { background: #fef3c7; color: #b45309; padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 0.75rem; }
+    
+    @media (max-width: 768px) {
+      .public-navbar { padding: 12px 16px; }
+      .brand span { font-size: 1rem; }
+      .selector-bar { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR PUBLIK -->
+  <header class="public-navbar">
+    <div class="brand">
+      <div class="brand-icon">🎯</div>
+      <span>ARCHERY<span style="color:#6366f1;">PRO</span> <span style="font-size:0.75rem; background:#e0e7ff; color:#3730a3; padding:2px 8px; border-radius:6px; margin-left:6px;">PUBLIC VIEW</span></span>
+    </div>
+    <a href="index.html" class="btn-login-redirect"><i class="fa-solid fa-right-to-bracket"></i> Login Admin / Scorer</a>
+  </header>
+
+  <main>
+    <!-- DROPDOWN PEMILIH KLUB / EVENT -->
+    <div class="selector-bar">
+      <div style="font-size: 0.85rem; font-weight: 700; color: #475569;">
+        <i class="fa-solid fa-filter" style="color:#4f46e5; margin-right:6px;"></i> Pilih Sesi Klub / Event yang Ingin Ditampilkan:
+      </div>
+      <select id="event-selector" class="form-control" onchange="changeSelectedEvent(this.value)">
+        <!-- Opsi klub akan dimuat otomatis dari localStorage -->
+      </select>
+    </div>
+
+    <!-- INFO EVENT -->
+    <div class="event-info-card">
+      <div>
+        <span style="font-size: 0.75rem; font-weight: 800; color: #22c55e;"><span class="live-dot"></span> LIVE REKAP SKOR PUBLIK</span>
+        <h1 id="pub-event-title" style="font-size: 1.25rem; font-weight: 800; margin-top: 2px;">Memuat Turnamen...</h1>
+        <p id="pub-event-meta" style="font-size: 0.75rem; color: #94a3b8; margin-top: 2px;">Kategori • Jarak</p>
+      </div>
+      <div style="text-align: right;">
+        <span style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase;">Lokasi Pertandingan</span>
+        <div id="pub-event-location" style="font-weight: 700; font-size: 0.85rem;">Lapangan Panahan</div>
+      </div>
+    </div>
+
+    <!-- TABEL REKAP GAYA EXCEL -->
+    <div class="excel-container">
+      <table class="excel-table" id="excel-score-table">
+        <thead id="excel-table-head"></thead>
+        <tbody id="excel-table-body"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    // Memuat daftar event/klub yang tersedia di localStorage
+    function loadEventDropdown() {
+      const selector = document.getElementById('event-selector');
+      selector.innerHTML = '';
+
+      let availableEvents = [];
+
+      // Cek config utama yang sedang aktif
+      const activeConfig = JSON.parse(localStorage.getItem('archeryConfig'));
+      if (activeConfig && activeConfig.eventName) {
+        availableEvents.push({ key: 'archeryConfig', label: `${activeConfig.eventName} (Sesi Utama)` });
+      }
+
+      // Cek juga jika ada data cadangan lain di localStorage
+      for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if (key.startsWith('archeryConfig_')) {
+          try {
+            let cfg = JSON.parse(localStorage.getItem(key));
+            if (cfg && cfg.eventName) {
+              availableEvents.push({ key: key, label: `${cfg.eventName} (${key.replace('archeryConfig_', '')})` });
+            }
+          } catch(e) {}
+        }
+      }
+
+      if (availableEvents.length === 0) {
+        // Fallback default jika belum ada config sama sekali
+        availableEvents.push({ key: 'archeryConfig', label: 'Default Turnamen Archery Pro' });
+      }
+
+      availableEvents.forEach(ev => {
+        let opt = document.createElement('option');
+        opt.value = ev.key;
+        opt.innerText = ev.label;
+        selector.appendChild(opt);
+      });
+
+      // Set pilihan aktif tersimpan
+      const savedSelectedKey = localStorage.getItem('publicSelectedEventKey') || availableEvents[0].key;
+      selector.value = savedSelectedKey;
+      renderPublicExcelTable(savedSelectedKey);
+    }
+
+    function changeSelectedEvent(key) {
+      localStorage.setItem('publicSelectedEventKey', key);
+      renderPublicExcelTable(key);
+    }
+
+    function renderPublicExcelTable(storageKey = 'archeryConfig') {
+      const config = JSON.parse(localStorage.getItem(storageKey)) || JSON.parse(localStorage.getItem('archeryConfig'));
+
+      if (!config || !config.participants || config.participants.length === 0) {
+        document.getElementById('pub-event-title').innerText = "Belum Ada Sesi Pertandingan Aktif";
+        document.getElementById('pub-event-meta').innerText = "-";
+        document.getElementById('pub-event-location').innerText = "-";
+        document.getElementById('excel-table-head').innerHTML = `<tr><th>Informasi</th></tr>`;
+        document.getElementById('excel-table-body').innerHTML = `<tr><td style="text-align:center; color:#64748b; padding:24px;">Belum ada data skor publik untuk sesi ini. Silakan buat sesi di panel admin.</td></tr>`;
+        return;
+      }
+
+      document.getElementById('pub-event-title').innerText = config.eventName || 'Turnamen Archery Pro';
+      document.getElementById('pub-event-meta').innerText = `${config.busur || 'Standard'} • ${config.jarak || '-'} • ${config.totalEnd || 5} Rambahan (${config.arrowCount || 3} Arrow per End)`;
+      document.getElementById('pub-event-location').innerText = config.location || 'Lapangan Utama';
+
+      const totalEnd = parseInt(config.totalEnd) || 5;
+
+      // 1. BUAT HEADER TABEL GAYA EXCEL DINAMIS
+      let headHTML = `
+        <tr>
+          <th style="width: 40px; text-align:center;">No</th>
+          <th>Nama Pemanah</th>
+          <th>Klub / Instansi</th>
+      `;
+      for (let i = 1; i <= totalEnd; i++) {
+        headHTML += `<th style="text-align:center;">End ${i}</th>`;
+      }
+      headHTML += `
+          <th style="text-align:center; background:#e0e7ff; color:#3730a3;">10/X</th>
+          <th style="text-align:center; background:#dcfce7; color:#166534;">Total Skor</th>
+        </tr>
+      `;
+      document.getElementById('excel-table-head').innerHTML = headHTML;
+
+      // 2. PROSES & HITUNG SKOR PESERTA
+      let list = config.participants.map((p) => {
+        let totalScore = 0;
+        let totalX = 0;
+        let endScoresSummary = [];
+
+        for (let i = 0; i < totalEnd; i++) {
+          let endArr = (p.scores && p.scores[i]) ? p.scores[i] : [];
+          let endSum = 0;
+          let formattedArrows = endArr.map(score => {
+            if (score === 'X') { totalScore += 10; totalX += 1; endSum += 10; return 'X'; }
+            else if (score === 'M') { endSum += 0; return 'M'; }
+            else { let val = parseInt(score) || 0; totalScore += val; endSum += val; return val; }
+          });
+          endScoresSummary.push({ arr: formattedArrows, sum: endSum });
+        }
+
+        return { ...p, totalScore, totalX, endScoresSummary };
+      });
+
+      // Urutkan peringkat dari skor tertinggi
+      list.sort((a, b) => b.totalScore - a.totalScore || b.totalX - a.totalX);
+
+      // 3. RENDER ISI TABEL
+      let bodyHTML = '';
+      list.forEach((p, idx) => {
+        bodyHTML += `
+          <tr>
+            <td style="text-align:center; font-weight:700; background:#f8fafc;">${idx + 1}</td>
+            <td><strong style="color:#0f172a;">${p.name}</strong></td>
+            <td><span style="color:#64748b;">${p.club}</span></td>
+        `;
+
+        p.endScoresSummary.forEach(end => {
+          let strArrows = end.arr.length > 0 ? end.arr.join(' | ') : '-';
+          bodyHTML += `<td style="text-align:center;">${strArrows} <span style="font-weight:700; color:#4f46e5; margin-left:4px;">(${end.sum})</span></td>`;
+        });
+
+        bodyHTML += `
+            <td style="text-align:center; font-weight:800;"><span class="badge-x">${p.totalX}X</span></td>
+            <td style="text-align:center; font-weight:800; color:#166534; background:#f0fdf4; font-size:0.9rem;">${p.totalScore}</td>
+          </tr>
+        `;
+      });
+
+      document.getElementById('excel-table-body').innerHTML = bodyHTML;
+    }
+
+    // Jalankan saat pertama kali dibuka & refresh otomatis tiap 2 detik
+    document.addEventListener("DOMContentLoaded", function() {
+      loadEventDropdown();
+    });
+
+    setInterval(() => {
+      const selectedKey = document.getElementById('event-selector').value || 'archeryConfig';
+      renderPublicExcelTable(selectedKey);
+    }, 2000);
+  </script>
+</body>
+</html>
