@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -58,7 +59,7 @@
   <main>
     <div style="margin-bottom: 20px;">
       <h1 style="font-size: 1.4rem; font-weight: 800; color: #0f172a;">Live Rekap Seluruh Sesi Pertandingan</h1>
-      <p style="font-size: 0.85rem; color: #64748b;">Daftar papan skor seluruh turnamen atau klub yang aktif saat ini.</p>
+      <p style="font-size: 0.85rem; color: #64748b;">Daftar papan skor seluruh turnamen atau klub dari semua akun yang aktif saat ini.</p>
     </div>
 
     <!-- CONTAINER UTAMA TEMPAT SEMUA TABEL EVENT AKAN DIMUAT -->
@@ -70,37 +71,33 @@
   </main>
 
   <script>
-    // Fungsi untuk memindai dan merender SEMUA event/sesi sekaligus
+    // Fungsi untuk memindai dan merender SEMUA event/sesi dari seluruh akun sekaligus
     function renderAllPublicExcelTables() {
       const container = document.getElementById('all-events-container');
       let configsToRender = [];
 
-      // 1. Ambil config utama (archeryConfig)
-      const activeConfig = JSON.parse(localStorage.getItem('archeryConfig'));
-      if (activeConfig && activeConfig.eventName) {
-        configsToRender.push({ key: 'archeryConfig', data: activeConfig });
-      }
-
-      // 2. Ambil semua config cadangan lain yang berawalan archeryConfig_ di localStorage
+      // Scan seluruh localStorage untuk mencari SEMUA konfigurasi event dari akun manapun
       for (let i = 0; i < localStorage.length; i++) {
         let key = localStorage.key(i);
-        if (key.startsWith('archeryConfig_')) {
+        
+        // Cari key yang mengandung kata 'archeryConfig' (baik utama maupun milik akun klub/client)
+        if (key === 'archeryConfig' || key.startsWith('archeryConfig_')) {
           try {
             let cfg = JSON.parse(localStorage.getItem(key));
-            if (cfg && cfg.eventName) {
+            if (cfg && (cfg.eventName || (cfg.participants && cfg.participants.length > 0))) {
               configsToRender.push({ key: key, data: cfg });
             }
           } catch(e) {}
         }
       }
 
-      // Jika sama sekali belum ada data pertandingan
+      // Jika sama sekali belum ada data pertandingan dari akun manapun
       if (configsToRender.length === 0) {
         container.innerHTML = `
           <div style="text-align: center; color: #64748b; padding: 40px; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0;">
             <i class="fa-solid fa-folder-open" style="font-size: 2.5rem; margin-bottom: 10px; color: #cbd5e1;"></i>
             <p style="font-weight: 700;">Belum ada sesi pertandingan aktif yang tersimpan.</p>
-            <p style="font-size: 0.8rem; margin-top: 4px;">Silakan buat setup latihan/event terlebih dahulu melalui panel admin.</p>
+            <p style="font-size: 0.8rem; margin-top: 4px;">Silakan buat setup latihan/event terlebih dahulu melalui panel akun masing-masing.</p>
           </div>
         `;
         return;
@@ -108,7 +105,7 @@
 
       let masterHTML = '';
 
-      // Loop untuk setiap sesi/permainan yang ditemukan
+      // Loop untuk merender setiap sesi/permainan dari semua akun
       configsToRender.forEach((item, index) => {
         let config = item.data;
         let eventName = config.eventName || `Turnamen Sesi ${index + 1}`;
@@ -116,25 +113,8 @@
         let eventLocation = config.location || 'Lapangan Utama';
         let totalEnd = parseInt(config.totalEnd) || 5;
 
-        // Jika tidak ada peserta di sesi ini
         if (!config.participants || config.participants.length === 0) {
-          masterHTML += `
-            <div class="event-section-wrapper">
-              <div class="event-info-card">
-                <div>
-                  <span style="font-size: 0.7rem; font-weight: 800; color: #22c55e;"><span class="live-dot"></span> LIVE REKAP</span>
-                  <h2 style="font-size: 1.1rem; font-weight: 800; margin-top: 2px;">${eventName}</h2>
-                  <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 2px;">${eventMeta}</p>
-                </div>
-                <div style="text-align: right;">
-                  <span style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Lokasi</span>
-                  <div style="font-weight: 700; font-size: 0.8rem;">${eventLocation}</div>
-                </div>
-              </div>
-              <p style="text-align:center; color:#64748b; padding:16px; font-size:0.85rem;">Belum ada peserta terdaftar pada sesi ini.</p>
-            </div>
-          `;
-          return;
+          return; // Lewati jika sesi kosong
         }
 
         // Buat Header Tabel Excel
@@ -198,7 +178,6 @@
           `;
         });
 
-        // Gabungkan ke dalam wrapper section lengkap
         masterHTML += `
           <div class="event-section-wrapper">
             <div class="event-info-card">
