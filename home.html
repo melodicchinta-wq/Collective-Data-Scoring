@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -917,11 +918,11 @@
         participants: participants
       };
 
-      // KUNCI UTAMA: Simpan dengan nama unik berdasarkan email akun yang sedang login!
+      // Simpan menggunakan kunci unik berdasarkan email akun yang sedang login
       const userEmail = activeUser.email ? activeUser.email.toLowerCase() : 'umum';
       localStorage.setItem(`archeryConfig_${userEmail}`, JSON.stringify(config));
       
-      // Tetap simpan cadangan ke archeryConfig umum agar kompatibel
+      // Simpan juga ke kunci umum agar scoring tetap berjalan lancar
       localStorage.setItem('archeryConfig', JSON.stringify(config));
 
       window.location.href = 'scoring.html';
@@ -929,4 +930,3 @@
   </script>
 </body>
 </html>
-
