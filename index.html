@@ -21,17 +21,16 @@
 
     main { max-width: 1200px; width: 100%; margin: 0 auto; padding: 24px 16px; flex: 1; }
 
-    /* PILIHAN AKUN / EVENT */
-    .selector-bar { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 14px 20px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-    .form-control { background-color: #f8fafc; border: 1px solid #e2e8f0; color: #0f172a; padding: 8px 14px; border-radius: 10px; font-size: 0.85rem; outline: none; font-weight: 600; }
+    /* CONTAINER PER SESI / PERMAINAN */
+    .event-section-wrapper { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 16px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
 
     /* HEADER INFO EVENT */
-    .event-info-card { background: #18191c; color: #ffffff; border-radius: 16px; padding: 20px 24px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .event-info-card { background: #18191c; color: #ffffff; border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
     .live-dot { width: 10px; height: 10px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 6px; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
     /* TABEL GAYA EXCEL (SPREADSHEET STYLE) */
-    .excel-container { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; overflow-x: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+    .excel-container { overflow-x: auto; }
     .excel-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left; white-space: nowrap; }
     .excel-table th { background-color: #f8fafc; color: #475569; padding: 10px 12px; border-bottom: 2px solid #cbd5e1; border-right: 1px solid #e2e8f0; font-weight: 800; text-transform: uppercase; }
     .excel-table td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #f1f5f9; color: #334155; }
@@ -42,7 +41,6 @@
     @media (max-width: 768px) {
       .public-navbar { padding: 12px 16px; }
       .brand span { font-size: 1rem; }
-      .selector-bar { flex-direction: column; align-items: stretch; }
     }
   </style>
 </head>
@@ -58,179 +56,183 @@
   </header>
 
   <main>
-    <!-- DROPDOWN PEMILIH KLUB / EVENT -->
-    <div class="selector-bar">
-      <div style="font-size: 0.85rem; font-weight: 700; color: #475569;">
-        <i class="fa-solid fa-filter" style="color:#4f46e5; margin-right:6px;"></i> Pilih Sesi Klub / Event yang Ingin Ditampilkan:
-      </div>
-      <select id="event-selector" class="form-control" onchange="changeSelectedEvent(this.value)">
-        <!-- Opsi klub akan dimuat otomatis dari localStorage -->
-      </select>
+    <div style="margin-bottom: 20px;">
+      <h1 style="font-size: 1.4rem; font-weight: 800; color: #0f172a;">Live Rekap Seluruh Sesi Pertandingan</h1>
+      <p style="font-size: 0.85rem; color: #64748b;">Daftar papan skor seluruh turnamen atau klub yang aktif saat ini.</p>
     </div>
 
-    <!-- INFO EVENT -->
-    <div class="event-info-card">
-      <div>
-        <span style="font-size: 0.75rem; font-weight: 800; color: #22c55e;"><span class="live-dot"></span> LIVE REKAP SKOR PUBLIK</span>
-        <h1 id="pub-event-title" style="font-size: 1.25rem; font-weight: 800; margin-top: 2px;">Memuat Turnamen...</h1>
-        <p id="pub-event-meta" style="font-size: 0.75rem; color: #94a3b8; margin-top: 2px;">Kategori • Jarak</p>
+    <!-- CONTAINER UTAMA TEMPAT SEMUA TABEL EVENT AKAN DIMUAT -->
+    <div id="all-events-container">
+      <div style="text-align: center; color: #64748b; padding: 40px; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0;">
+        Memuat seluruh sesi pertandingan...
       </div>
-      <div style="text-align: right;">
-        <span style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase;">Lokasi Pertandingan</span>
-        <div id="pub-event-location" style="font-weight: 700; font-size: 0.85rem;">Lapangan Panahan</div>
-      </div>
-    </div>
-
-    <!-- TABEL REKAP GAYA EXCEL -->
-    <div class="excel-container">
-      <table class="excel-table" id="excel-score-table">
-        <thead id="excel-table-head"></thead>
-        <tbody id="excel-table-body"></tbody>
-      </table>
     </div>
   </main>
 
   <script>
-    // Memuat daftar event/klub yang tersedia di localStorage
-    function loadEventDropdown() {
-      const selector = document.getElementById('event-selector');
-      selector.innerHTML = '';
+    // Fungsi untuk memindai dan merender SEMUA event/sesi sekaligus
+    function renderAllPublicExcelTables() {
+      const container = document.getElementById('all-events-container');
+      let configsToRender = [];
 
-      let availableEvents = [];
-
-      // Cek config utama yang sedang aktif
+      // 1. Ambil config utama (archeryConfig)
       const activeConfig = JSON.parse(localStorage.getItem('archeryConfig'));
       if (activeConfig && activeConfig.eventName) {
-        availableEvents.push({ key: 'archeryConfig', label: `${activeConfig.eventName} (Sesi Utama)` });
+        configsToRender.push({ key: 'archeryConfig', data: activeConfig });
       }
 
-      // Cek juga jika ada data cadangan lain di localStorage
+      // 2. Ambil semua config cadangan lain yang berawalan archeryConfig_ di localStorage
       for (let i = 0; i < localStorage.length; i++) {
         let key = localStorage.key(i);
         if (key.startsWith('archeryConfig_')) {
           try {
             let cfg = JSON.parse(localStorage.getItem(key));
             if (cfg && cfg.eventName) {
-              availableEvents.push({ key: key, label: `${cfg.eventName} (${key.replace('archeryConfig_', '')})` });
+              configsToRender.push({ key: key, data: cfg });
             }
           } catch(e) {}
         }
       }
 
-      if (availableEvents.length === 0) {
-        // Fallback default jika belum ada config sama sekali
-        availableEvents.push({ key: 'archeryConfig', label: 'Default Turnamen Archery Pro' });
-      }
-
-      availableEvents.forEach(ev => {
-        let opt = document.createElement('option');
-        opt.value = ev.key;
-        opt.innerText = ev.label;
-        selector.appendChild(opt);
-      });
-
-      // Set pilihan aktif tersimpan
-      const savedSelectedKey = localStorage.getItem('publicSelectedEventKey') || availableEvents[0].key;
-      selector.value = savedSelectedKey;
-      renderPublicExcelTable(savedSelectedKey);
-    }
-
-    function changeSelectedEvent(key) {
-      localStorage.setItem('publicSelectedEventKey', key);
-      renderPublicExcelTable(key);
-    }
-
-    function renderPublicExcelTable(storageKey = 'archeryConfig') {
-      const config = JSON.parse(localStorage.getItem(storageKey)) || JSON.parse(localStorage.getItem('archeryConfig'));
-
-      if (!config || !config.participants || config.participants.length === 0) {
-        document.getElementById('pub-event-title').innerText = "Belum Ada Sesi Pertandingan Aktif";
-        document.getElementById('pub-event-meta').innerText = "-";
-        document.getElementById('pub-event-location').innerText = "-";
-        document.getElementById('excel-table-head').innerHTML = `<tr><th>Informasi</th></tr>`;
-        document.getElementById('excel-table-body').innerHTML = `<tr><td style="text-align:center; color:#64748b; padding:24px;">Belum ada data skor publik untuk sesi ini. Silakan buat sesi di panel admin.</td></tr>`;
+      // Jika sama sekali belum ada data pertandingan
+      if (configsToRender.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; color: #64748b; padding: 40px; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0;">
+            <i class="fa-solid fa-folder-open" style="font-size: 2.5rem; margin-bottom: 10px; color: #cbd5e1;"></i>
+            <p style="font-weight: 700;">Belum ada sesi pertandingan aktif yang tersimpan.</p>
+            <p style="font-size: 0.8rem; margin-top: 4px;">Silakan buat setup latihan/event terlebih dahulu melalui panel admin.</p>
+          </div>
+        `;
         return;
       }
 
-      document.getElementById('pub-event-title').innerText = config.eventName || 'Turnamen Archery Pro';
-      document.getElementById('pub-event-meta').innerText = `${config.busur || 'Standard'} • ${config.jarak || '-'} • ${config.totalEnd || 5} Rambahan (${config.arrowCount || 3} Arrow per End)`;
-      document.getElementById('pub-event-location').innerText = config.location || 'Lapangan Utama';
+      let masterHTML = '';
 
-      const totalEnd = parseInt(config.totalEnd) || 5;
+      // Loop untuk setiap sesi/permainan yang ditemukan
+      configsToRender.forEach((item, index) => {
+        let config = item.data;
+        let eventName = config.eventName || `Turnamen Sesi ${index + 1}`;
+        let eventMeta = `${config.busur || 'Standard'} • ${config.jarak || '-'} • ${config.totalEnd || 5} Rambahan (${config.arrowCount || 3} Arrow per End)`;
+        let eventLocation = config.location || 'Lapangan Utama';
+        let totalEnd = parseInt(config.totalEnd) || 5;
 
-      // 1. BUAT HEADER TABEL GAYA EXCEL DINAMIS
-      let headHTML = `
-        <tr>
-          <th style="width: 40px; text-align:center;">No</th>
-          <th>Nama Pemanah</th>
-          <th>Klub / Instansi</th>
-      `;
-      for (let i = 1; i <= totalEnd; i++) {
-        headHTML += `<th style="text-align:center;">End ${i}</th>`;
-      }
-      headHTML += `
-          <th style="text-align:center; background:#e0e7ff; color:#3730a3;">10/X</th>
-          <th style="text-align:center; background:#dcfce7; color:#166534;">Total Skor</th>
-        </tr>
-      `;
-      document.getElementById('excel-table-head').innerHTML = headHTML;
-
-      // 2. PROSES & HITUNG SKOR PESERTA
-      let list = config.participants.map((p) => {
-        let totalScore = 0;
-        let totalX = 0;
-        let endScoresSummary = [];
-
-        for (let i = 0; i < totalEnd; i++) {
-          let endArr = (p.scores && p.scores[i]) ? p.scores[i] : [];
-          let endSum = 0;
-          let formattedArrows = endArr.map(score => {
-            if (score === 'X') { totalScore += 10; totalX += 1; endSum += 10; return 'X'; }
-            else if (score === 'M') { endSum += 0; return 'M'; }
-            else { let val = parseInt(score) || 0; totalScore += val; endSum += val; return val; }
-          });
-          endScoresSummary.push({ arr: formattedArrows, sum: endSum });
+        // Jika tidak ada peserta di sesi ini
+        if (!config.participants || config.participants.length === 0) {
+          masterHTML += `
+            <div class="event-section-wrapper">
+              <div class="event-info-card">
+                <div>
+                  <span style="font-size: 0.7rem; font-weight: 800; color: #22c55e;"><span class="live-dot"></span> LIVE REKAP</span>
+                  <h2 style="font-size: 1.1rem; font-weight: 800; margin-top: 2px;">${eventName}</h2>
+                  <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 2px;">${eventMeta}</p>
+                </div>
+                <div style="text-align: right;">
+                  <span style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Lokasi</span>
+                  <div style="font-weight: 700; font-size: 0.8rem;">${eventLocation}</div>
+                </div>
+              </div>
+              <p style="text-align:center; color:#64748b; padding:16px; font-size:0.85rem;">Belum ada peserta terdaftar pada sesi ini.</p>
+            </div>
+          `;
+          return;
         }
 
-        return { ...p, totalScore, totalX, endScoresSummary };
-      });
-
-      // Urutkan peringkat dari skor tertinggi
-      list.sort((a, b) => b.totalScore - a.totalScore || b.totalX - a.totalX);
-
-      // 3. RENDER ISI TABEL
-      let bodyHTML = '';
-      list.forEach((p, idx) => {
-        bodyHTML += `
+        // Buat Header Tabel Excel
+        let headHTML = `
           <tr>
-            <td style="text-align:center; font-weight:700; background:#f8fafc;">${idx + 1}</td>
-            <td><strong style="color:#0f172a;">${p.name}</strong></td>
-            <td><span style="color:#64748b;">${p.club}</span></td>
+            <th style="width: 40px; text-align:center;">No</th>
+            <th>Nama Pemanah</th>
+            <th>Klub / Instansi</th>
         `;
-
-        p.endScoresSummary.forEach(end => {
-          let strArrows = end.arr.length > 0 ? end.arr.join(' | ') : '-';
-          bodyHTML += `<td style="text-align:center;">${strArrows} <span style="font-weight:700; color:#4f46e5; margin-left:4px;">(${end.sum})</span></td>`;
-        });
-
-        bodyHTML += `
-            <td style="text-align:center; font-weight:800;"><span class="badge-x">${p.totalX}X</span></td>
-            <td style="text-align:center; font-weight:800; color:#166534; background:#f0fdf4; font-size:0.9rem;">${p.totalScore}</td>
+        for (let i = 1; i <= totalEnd; i++) {
+          headHTML += `<th style="text-align:center;">End ${i}</th>`;
+        }
+        headHTML += `
+            <th style="text-align:center; background:#e0e7ff; color:#3730a3;">10/X</th>
+            <th style="text-align:center; background:#dcfce7; color:#166534;">Total Skor</th>
           </tr>
         `;
+
+        // Proses & Hitung Skor Peserta
+        let list = config.participants.map((p) => {
+          let totalScore = 0;
+          let totalX = 0;
+          let endScoresSummary = [];
+
+          for (let i = 0; i < totalEnd; i++) {
+            let endArr = (p.scores && p.scores[i]) ? p.scores[i] : [];
+            let endSum = 0;
+            let formattedArrows = endArr.map(score => {
+              if (score === 'X') { totalScore += 10; totalX += 1; endSum += 10; return 'X'; }
+              else if (score === 'M') { endSum += 0; return 'M'; }
+              else { let val = parseInt(score) || 0; totalScore += val; endSum += val; return val; }
+            });
+            endScoresSummary.push({ arr: formattedArrows, sum: endSum });
+          }
+
+          return { ...p, totalScore, totalX, endScoresSummary };
+        });
+
+        // Urutkan peringkat berdasarkan total skor tertinggi
+        list.sort((a, b) => b.totalScore - a.totalScore || b.totalX - a.totalX);
+
+        // Buat Baris Isi Tabel
+        let bodyHTML = '';
+        list.forEach((p, idx) => {
+          bodyHTML += `
+            <tr>
+              <td style="text-align:center; font-weight:700; background:#f8fafc;">${idx + 1}</td>
+              <td><strong style="color:#0f172a;">${p.name}</strong></td>
+              <td><span style="color:#64748b;">${p.club}</span></td>
+          `;
+
+          p.endScoresSummary.forEach(end => {
+            let strArrows = end.arr.length > 0 ? end.arr.join(' | ') : '-';
+            bodyHTML += `<td style="text-align:center;">${strArrows} <span style="font-weight:700; color:#4f46e5; margin-left:4px;">(${end.sum})</span></td>`;
+          });
+
+          bodyHTML += `
+              <td style="text-align:center; font-weight:800;"><span class="badge-x">${p.totalX}X</span></td>
+              <td style="text-align:center; font-weight:800; color:#166534; background:#f0fdf4; font-size:0.9rem;">${p.totalScore}</td>
+            </tr>
+          `;
+        });
+
+        // Gabungkan ke dalam wrapper section lengkap
+        masterHTML += `
+          <div class="event-section-wrapper">
+            <div class="event-info-card">
+              <div>
+                <span style="font-size: 0.7rem; font-weight: 800; color: #22c55e;"><span class="live-dot"></span> LIVE REKAP</span>
+                <h2 style="font-size: 1.1rem; font-weight: 800; margin-top: 2px;">${eventName}</h2>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 2px;">${eventMeta}</p>
+              </div>
+              <div style="text-align: right;">
+                <span style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Lokasi</span>
+                <div style="font-weight: 700; font-size: 0.8rem;">${eventLocation}</div>
+              </div>
+            </div>
+
+            <div class="excel-container">
+              <table class="excel-table">
+                <thead>${headHTML}</thead>
+                <tbody>${bodyHTML}</tbody>
+              </table>
+            </div>
+          </div>
+        `;
       });
 
-      document.getElementById('excel-table-body').innerHTML = bodyHTML;
+      container.innerHTML = masterHTML;
     }
 
     // Jalankan saat pertama kali dibuka & refresh otomatis tiap 2 detik
     document.addEventListener("DOMContentLoaded", function() {
-      loadEventDropdown();
+      renderAllPublicExcelTables();
     });
 
     setInterval(() => {
-      const selectedKey = document.getElementById('event-selector').value || 'archeryConfig';
-      renderPublicExcelTable(selectedKey);
+      renderAllPublicExcelTables();
     }, 2000);
   </script>
 </body>
