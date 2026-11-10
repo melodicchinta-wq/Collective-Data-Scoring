@@ -10,236 +10,39 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   
   <style>
-    .role-selector-wrapper {
-      position: relative;
-      display: inline-block;
-    }
-    .role-select {
-      background-color: #18191c;
-      color: #ffffff;
-      border: 1px solid #e2e8f0;
-      padding: 8px 14px;
-      border-radius: 12px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-      outline: none;
-      transition: all 0.2s ease;
-    }
-    .role-select:hover {
-      background-color: #0f172a;
-    }
+    .role-selector-wrapper { position: relative; display: inline-block; }
+    .role-select { background-color: #18191c; color: #ffffff; border: 1px solid #e2e8f0; padding: 8px 14px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; cursor: pointer; outline: none; transition: all 0.2s ease; }
+    .role-select:hover { background-color: #0f172a; }
 
-    /* RESET & BASE STYLES */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+    body { background-color: #f3f5f9; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
 
-    body {
-      background-color: #f3f5f9;
-      color: #1e293b;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    .desktop-navbar { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 14px 8%; position: sticky; top: 0; z-index: 90; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02); }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; color: #0f172a; }
+    .brand-icon { background-color: #18191c; color: #ffffff; padding: 6px 10px; border-radius: 12px; font-size: 1rem; }
 
-    /* ========================================================= */
-    /* 1. NAVBAR UNTUK DESKTOP / LAPTOP                          */
-    /* ========================================================= */
-    .desktop-navbar {
-      background-color: #ffffff;
-      border-bottom: 1px solid #e2e8f0;
-      padding: 14px 8%;
-      position: sticky;
-      top: 0;
-      z-index: 90;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-    }
+    .nav-links-desktop { display: flex; gap: 12px; align-items: center; }
+    .nav-links-desktop a { color: #64748b; text-decoration: none; font-size: 0.9rem; font-weight: 600; padding: 8px 16px; border-radius: 12px; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px; }
+    .nav-links-desktop a:hover, .nav-links-desktop a.active { background-color: #18191c; color: #ffffff; }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      font-size: 1.2rem;
-      color: #0f172a;
-    }
+    .user-profile-header { display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 6px 14px; border-radius: 30px; border: 1px solid #e2e8f0; }
+    .user-avatar { width: 30px; height: 30px; background: #e0e7ff; color: #4f46e5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
 
-    .brand-icon {
-      background-color: #18191c;
-      color: #ffffff;
-      padding: 6px 10px;
-      border-radius: 12px;
-      font-size: 1rem;
-    }
+    .btn-hamburger-mobile { display: none; background: none; border: none; font-size: 1.4rem; color: #0f172a; cursor: pointer; }
+    .mobile-sidebar-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); z-index: 200; display: none; }
+    .mobile-sidebar-overlay.active { display: block; }
+    .mobile-sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background-color: #18191c; color: #ffffff; z-index: 210; transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; justify-content: space-between; padding: 24px 20px; box-shadow: 10px 0 30px rgba(0,0,0,0.2); }
+    .mobile-sidebar.active { left: 0; }
+    .mobile-nav-menu { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+    .mobile-nav-menu a { color: #94a3b8; text-decoration: none; padding: 12px 16px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+    .mobile-nav-menu a.active, .mobile-nav-menu a:hover { background-color: rgba(255, 255, 255, 0.15); color: #ffffff; }
 
-    .nav-links-desktop {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
+    main { max-width: 950px; width: 100%; margin: 0 auto; padding: 24px 20px 60px 20px; flex: 1; }
+    .page-title p { font-size: 0.75rem; font-weight: 800; color: #6366f1; text-transform: uppercase; letter-spacing: 1px; }
+    .page-title h1 { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 16px; }
 
-    .nav-links-desktop a {
-      color: #64748b;
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 600;
-      padding: 8px 16px;
-      border-radius: 12px;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .nav-links-desktop a:hover, .nav-links-desktop a.active {
-      background-color: #18191c;
-      color: #ffffff;
-    }
-
-    .user-profile-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #f8fafc;
-      padding: 6px 14px;
-      border-radius: 30px;
-      border: 1px solid #e2e8f0;
-    }
-
-    .user-avatar {
-      width: 30px;
-      height: 30px;
-      background: #e0e7ff;
-      color: #4f46e5;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.8rem;
-    }
-
-    /* ========================================================= */
-    /* 2. SIDEBAR & OVERLAY UNTUK HP / MOBILE                   */
-    /* ========================================================= */
-    .btn-hamburger-mobile {
-      display: none;
-      background: none;
-      border: none;
-      font-size: 1.4rem;
-      color: #0f172a;
-      cursor: pointer;
-    }
-
-    .mobile-sidebar-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.5);
-      backdrop-filter: blur(4px);
-      z-index: 200;
-      display: none;
-    }
-
-    .mobile-sidebar-overlay.active {
-      display: block;
-    }
-
-    .mobile-sidebar {
-      position: fixed;
-      top: 0;
-      left: -280px;
-      width: 280px;
-      height: 100%;
-      background-color: #18191c;
-      color: #ffffff;
-      z-index: 210;
-      transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 24px 20px;
-      box-shadow: 10px 0 30px rgba(0,0,0,0.2);
-    }
-
-    .mobile-sidebar.active {
-      left: 0;
-    }
-
-    .mobile-nav-menu {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 24px;
-    }
-
-    .mobile-nav-menu a {
-      color: #94a3b8;
-      text-decoration: none;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .mobile-nav-menu a.active, .mobile-nav-menu a:hover {
-      background-color: rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-    }
-
-    /* ========================================================= */
-    /* 3. MAIN CONTAINER & DASHBOARD CARDS                       */
-    /* ========================================================= */
-    main {
-      max-width: 950px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 24px 20px 60px 20px;
-      flex: 1;
-    }
-
-    .page-title p { 
-      font-size: 0.75rem; 
-      font-weight: 800; 
-      color: #6366f1; 
-      text-transform: uppercase; 
-      letter-spacing: 1px; 
-    }
-    .page-title h1 { 
-      font-size: 1.5rem; 
-      font-weight: 800; 
-      color: #0f172a; 
-      margin-bottom: 16px; 
-    }
-
-    .dashboard-card {
-      background-color: #ffffff; 
-      border: 1px solid #e2e8f0; 
-      border-radius: 20px; 
-      padding: 24px; 
-      margin-bottom: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-    }
-
-    .card-title { 
-      font-size: 1.05rem; 
-      font-weight: 800; 
-      color: #0f172a; 
-      margin-bottom: 16px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      flex-wrap: wrap; 
-      gap: 8px; 
-    }
+    .dashboard-card { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+    .card-title { font-size: 1.05rem; font-weight: 800; color: #0f172a; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
 
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
@@ -247,63 +50,17 @@
 
     .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
     .form-group label { font-size: 0.8rem; font-weight: 700; color: #64748b; }
-    
-    .form-control { 
-      background-color: #f8fafc; 
-      border: 1px solid #e2e8f0; 
-      color: #0f172a; 
-      padding: 12px 16px; 
-      border-radius: 12px; 
-      font-size: 0.9rem; 
-      outline: none; 
-      font-weight: 600;
-      transition: border 0.2s;
-    }
+    .form-control { background-color: #f8fafc; border: 1px solid #e2e8f0; color: #0f172a; padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; outline: none; font-weight: 600; transition: border 0.2s; }
     .form-control:focus { border-color: #6366f1; background-color: #ffffff; }
 
-    /* BUTTONS */
-    .btn-submit { 
-      width: 100%; 
-      background-color: #18191c; 
-      color: #ffffff; 
-      font-weight: 800; 
-      font-size: 0.95rem; 
-      padding: 14px; 
-      border-radius: 12px; 
-      border: none; 
-      cursor: pointer; 
-      box-shadow: 0 4px 12px rgba(24, 25, 28, 0.15);
-      transition: all 0.2s;
-    }
+    .btn-submit { width: 100%; background-color: #18191c; color: #ffffff; font-weight: 800; font-size: 0.95rem; padding: 14px; border-radius: 12px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(24, 25, 28, 0.15); transition: all 0.2s; }
     .btn-submit:hover { background-color: #0f172a; }
 
-    .btn-import { 
-      background-color: #10b981; 
-      color: #ffffff; 
-      font-weight: 700; 
-      font-size: 0.85rem; 
-      padding: 8px 14px; 
-      border-radius: 10px; 
-      border: none; 
-      cursor: pointer; 
-      display: flex; 
-      align-items: center; 
-      gap: 6px; 
-    }
+    .btn-import { background-color: #10b981; color: #ffffff; font-weight: 700; font-size: 0.85rem; padding: 8px 14px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; }
     .btn-import:hover { background-color: #059669; }
 
-    .btn-cancel { 
-      background-color: #f1f5f9; 
-      color: #475569; 
-      font-weight: 700; 
-      padding: 14px; 
-      border-radius: 12px; 
-      border: 1px solid #cbd5e1; 
-      cursor: pointer; 
-      width: 100%; 
-    }
+    .btn-cancel { background-color: #f1f5f9; color: #475569; font-weight: 700; padding: 14px; border-radius: 12px; border: 1px solid #cbd5e1; cursor: pointer; width: 100%; }
 
-    /* TABEL DATABASE */
     .table-responsive { overflow-x: auto; margin-top: 12px; }
     .db-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left; }
     .db-table th { background-color: #f8fafc; color: #64748b; padding: 10px 12px; border-bottom: 2px solid #e2e8f0; font-size: 0.75rem; text-transform: uppercase; white-space: nowrap; font-weight: 800; }
@@ -313,8 +70,8 @@
     .btn-edit-sm { background: #e0e7ff; border: 1px solid #c7d2fe; color: #3730a3; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 700; }
     .btn-danger-sm { background: #fee2e2; border: 1px solid #fecaca; color: #ef4444; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 700; }
     .badge-kategori { background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+    .badge-active-rental { background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; }
 
-    /* BREAKPOINT: RESPONSIVE HP VS LAPTOP */
     @media (max-width: 900px) {
       .nav-links-desktop { display: none; }
       .btn-hamburger-mobile { display: block; }
@@ -328,13 +85,8 @@
   <!-- DESKTOP NAVBAR -->
   <header class="desktop-navbar">
     <div style="display: flex; align-items: center; gap: 12px;">
-      <button class="btn-hamburger-mobile" onclick="toggleMobileSidebar()">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-      <div class="brand">
-        <div class="brand-icon">🎯</div>
-        <span>ARCHERY<span style="color:#6366f1;">PRO</span></span>
-      </div>
+      <button class="btn-hamburger-mobile" onclick="toggleMobileSidebar()"><i class="fa-solid fa-bars"></i></button>
+      <div class="brand"><div class="brand-icon">🎯</div><span>ARCHERY<span style="color:#6366f1;">PRO</span></span></div>
     </div>
 
     <nav class="nav-links-desktop">
@@ -343,7 +95,6 @@
       <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
       <a href="pendaftaran.html" class="active"><i class="fa-solid fa-users"></i> Registrasi</a>
 
-      <!-- DROPDOWN PERAN DESKTOP -->
       <div class="role-selector-wrapper">
         <select id="app-role-picker-desktop" class="role-select" onchange="switchRole(this.value)">
           <option value="scorer">📱 Scorer (HP)</option>
@@ -364,13 +115,8 @@
   <aside class="mobile-sidebar" id="mobile-sidebar">
     <div>
       <div style="display: flex; align-items: center; justify-content: space-between;">
-        <div class="brand" style="color:#fff;">
-          <div class="brand-icon" style="background:#fff; color:#18191c;">🎯</div>
-          <span>ARCHERY<span style="color:#818cf8;">PRO</span></span>
-        </div>
-        <button onclick="toggleMobileSidebar()" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+        <div class="brand" style="color:#fff;"><div class="brand-icon" style="background:#fff; color:#18191c;">🎯</div><span>ARCHERY<span style="color:#818cf8;">PRO</span></span></div>
+        <button onclick="toggleMobileSidebar()" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
       <nav class="mobile-nav-menu">
@@ -379,7 +125,6 @@
         <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
         <a href="pendaftaran.html" class="active"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
 
-        <!-- DROPDOWN PERAN MOBILE -->
         <div class="role-selector-wrapper" style="margin-top: 10px;">
           <select id="app-role-picker-mobile" class="role-select" style="width: 100%;" onchange="switchRole(this.value)">
             <option value="scorer">📱 Scorer (HP)</option>
@@ -390,15 +135,51 @@
       </nav>
     </div>
 
-    <div style="font-size: 0.75rem; color: #64748b; text-align: center;">
-      <p>&copy; 2026 Archery Tool</p>
-    </div>
+    <div style="font-size: 0.75rem; color: #64748b; text-align: center;"><p>&copy; 2026 Archery Tool</p></div>
   </aside>
 
   <main>
     <div class="page-title">
       <p>Database Event & Pemanah</p>
       <h1>Registrasi & Kelola Peserta (CRUD)</h1>
+    </div>
+
+    <!-- PANEL KONTROL MASA SEWA KLIEN (Hanya Muncul untuk Admin Utama) -->
+    <div class="dashboard-card" id="rental-panel-card" style="border-color: #fde047; background: #fffbeb; display: none;">
+      <div class="card-title" style="color: #92400e;">
+        <span><i class="fa-solid fa-clock"></i> Panel Kontrol Masa Sewa Klien (Admin)</span>
+        <span class="badge-active-rental" id="total-clients-badge">Total Akun Klien: 0</span>
+      </div>
+      
+      <div class="form-group">
+        <label style="color: #92400e;">Pilih Akun Klien dari Dropdown atau Ketik Manual:</label>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <select id="client-dropdown" class="form-control" style="flex: 1; min-width: 200px;" onchange="document.getElementById('target-client-email').value = this.value; checkSelectedClientStatus();">
+            <option value="">-- Pilih dari daftar akun klien --</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 8px;">
+        <label style="color: #92400e;">Email Klien / Penyewa:</label>
+        <input type="email" id="target-client-email" class="form-control" placeholder="Contoh: bima@gmail.com" oninput="checkSelectedClientStatus()">
+      </div>
+
+      <div class="grid-2" style="align-items: end; margin-top: 10px;">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label style="color: #92400e;">Set / Perpanjang Durasi (Jumlah Hari):</label>
+          <input type="number" id="rental-days-input" class="form-control" min="1" value="2">
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn-submit" style="background-color: #d97706;" onclick="adminSetClientDuration()">
+            <i class="fa-solid fa-check-circle"></i> Update Sewa Klien
+          </button>
+          <button type="button" class="btn-danger-sm" style="padding: 14px;" onclick="adminLockClient()" title="Kunci Akses Klien">
+            <i class="fa-solid fa-lock"></i> Kunci Klien
+          </button>
+        </div>
+      </div>
+      <p id="target-client-info" style="font-size: 0.75rem; color: #b45309; margin-top: 10px; font-weight: 600;"></p>
     </div>
 
     <!-- KARTU IMPORT EXCEL / CSV -->
@@ -410,7 +191,7 @@
       <input type="file" id="excel-file-input" accept="*/*" style="display: none;" onchange="handleExcelUpload(event)">
 
       <p style="font-size: 0.8rem; color: #047857; line-height: 1.5; font-weight: 500;">
-        * Upload file Excel/CSV dengan urutan kolom: <strong>No. Registrasi | Nama Lengkap | No. HP/WA | Tgl Lahir | Jenis Kelamin | Alamat Domisili | Kab/Kota | Provinsi | Klub Panahan | Kategori Busur</strong>. Data yang diimpor akan otomatis mencatat nama akun Anda sebagai pembuatnya.
+        * Upload file Excel/CSV dengan urutan kolom: <strong>No. Registrasi | Nama Lengkap | No. HP/WA | Tgl Lahir | Jenis Kelamin | Alamat Domisili | Kab/Kota | Provinsi | Klub Panahan | Kategori Busur</strong>.
       </p>
     </div>
 
@@ -536,10 +317,6 @@
 
   <script src="auth.js"></script>
   
-  <script src="auth.js"></script>
-  
-    <script src="auth.js"></script>
-  
   <script>
     function getActiveUser() {
       return JSON.parse(localStorage.getItem('activeArcheryUser')) || { name: 'Admin Tamu', email: 'guest@archery.com', club: 'Independen' };
@@ -549,6 +326,164 @@
       const activeUser = getActiveUser();
       return `archeryDatabase_${activeUser.email}`;
     }
+
+    // =========================================================================
+    // 1. CEK HAK AKSES ADMIN UTAMA & MUAT DROPDOWN AKUN KLIEN (ADMIN DISARING)
+    // =========================================================================
+    function checkIfAdmin() {
+      const activeUser = getActiveUser();
+      const adminEmail = "mimin@gmail.com"; // Email akun admin utama
+      
+      const rentalPanel = document.getElementById('rental-panel-card');
+      if (rentalPanel) {
+        if (activeUser.email === adminEmail) {
+          rentalPanel.style.display = 'block'; // Tampilkan panel khusus admin
+          loadClientDropdownList();            // Muat daftar akun klien (admin bersih dari list)
+        } else {
+          rentalPanel.style.display = 'none';  // Sembunyikan untuk klien biasa
+        }
+      }
+    }
+
+    function loadClientDropdownList() {
+      const dropdown = document.getElementById('client-dropdown');
+      if (!dropdown) return;
+
+      dropdown.innerHTML = `<option value="">-- Pilih dari daftar akun klien --</option>`;
+      
+      let clientEmails = [];
+      const adminEmail = "mimin@gmail.com";
+
+      // Scan seluruh key localStorage untuk mencari data masa sewa
+      for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        if (key.startsWith('archeryRentalExpiry_')) {
+          let email = key.replace('archeryRentalExpiry_', '');
+          
+          // PENTING: Kecualikan akun admin agar tidak masuk ke dropdown klien
+          if (email !== adminEmail) {
+            clientEmails.push(email);
+          }
+        }
+      }
+
+      // Update badge jumlah total akun klien
+      const badge = document.getElementById('total-clients-badge');
+      if (badge) badge.innerText = `Total Akun Klien: ${clientEmails.length}`;
+
+      clientEmails.forEach(email => {
+        let opt = document.createElement('option');
+        opt.value = email;
+        
+        let expiryTime = parseInt(localStorage.getItem(`archeryRentalExpiry_${email}`)) || 0;
+        let isExpired = new Date().getTime() > expiryTime;
+        let statusText = isExpired ? "❌ [Kedaluwarsa]" : "✅ [Aktif]";
+        
+        opt.innerText = `${email} ${statusText}`;
+        dropdown.appendChild(opt);
+      });
+    }
+
+    function checkSelectedClientStatus() {
+      const email = document.getElementById('target-client-email').value.trim().toLowerCase();
+      const infoBox = document.getElementById('target-client-info');
+      
+      if (!email) {
+        if (infoBox) infoBox.innerText = "";
+        return;
+      }
+
+      const rentalKey = `archeryRentalExpiry_${email}`;
+      let expiryTime = localStorage.getItem(rentalKey);
+
+      if (!expiryTime) {
+        if (infoBox) infoBox.innerText = `⚠️ Akun (${email}) belum memiliki catatan durasi sewa di sistem.`;
+      } else {
+        let expiryDate = new Date(parseInt(expiryTime));
+        let isExpired = new Date().getTime() > parseInt(expiryTime);
+        let statusStr = isExpired ? "🔴 KEDALUWARSA (Terkunci)" : "🟢 AKTIF";
+        if (infoBox) infoBox.innerText = `Status Akun: ${statusStr} • Berakhir pada: ${expiryDate.toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short' })}`;
+      }
+    }
+
+    // =========================================================================
+    // 2. PANEL KONTROL ADMIN UNTUK MENGATUR MASA SEWA KLIEN
+    // =========================================================================
+    function adminSetClientDuration() {
+      const clientEmail = document.getElementById('target-client-email').value.trim().toLowerCase();
+      const days = parseInt(document.getElementById('rental-days-input').value);
+
+      if (!clientEmail) {
+        alert("⚠️ Harap pilih atau masukkan email klien yang ingin diatur masa sewanya!");
+        return;
+      }
+      if (!days || days < 1) {
+        alert("⚠️ Masukkan jumlah hari minimal 1!");
+        return;
+      }
+
+      const rentalKey = `archeryRentalExpiry_${clientEmail}`;
+      const newExpiry = new Date().getTime() + (days * 24 * 60 * 60 * 1000);
+      
+      localStorage.setItem(rentalKey, newExpiry);
+      alert(`✅ Sukses! Masa sewa untuk klien (${clientEmail}) berhasil diatur selama ${days} hari ke depan.`);
+      
+      loadClientDropdownList();
+      checkSelectedClientStatus();
+    }
+
+    function adminLockClient() {
+      const clientEmail = document.getElementById('target-client-email').value.trim().toLowerCase();
+      if (!clientEmail) {
+        alert("⚠️ Masukkan atau pilih email klien yang ingin dikunci!");
+        return;
+      }
+
+      if (confirm(`Yakin ingin mengunci akses web untuk klien ${clientEmail} sekarang?`)) {
+        const rentalKey = `archeryRentalExpiry_${clientEmail}`;
+        localStorage.setItem(rentalKey, new Date().getTime() - 10000);
+        alert(`🔒 Akses untuk klien ${clientEmail} berhasil dikunci.`);
+        loadClientDropdownList();
+        checkSelectedClientStatus();
+      }
+    }
+
+    // =========================================================================
+    // 3. PENGECEKAN MASA SEWA (KLIEN TERKUNCI JIKA HABIS, ADMIN AMAN)
+    // =========================================================================
+    function checkRentalExpiration() {
+      const activeUser = getActiveUser();
+      const adminEmail = "mimin@gmail.com";
+
+      if (activeUser.email === adminEmail) {
+        return; // Admin utama bebas dari batasan sewa
+      }
+
+      const rentalKey = `archeryRentalExpiry_${activeUser.email}`;
+      let expiryTime = localStorage.getItem(rentalKey);
+
+      if (!expiryTime) {
+        expiryTime = new Date().getTime() + (2 * 24 * 60 * 60 * 1000);
+        localStorage.setItem(rentalKey, expiryTime);
+      }
+
+      const currentTime = new Date().getTime();
+      if (currentTime > parseInt(expiryTime)) {
+        const expiryDateObj = new Date(parseInt(expiryTime));
+        document.body.innerHTML = `
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f3f5f9; font-family: 'Plus Jakarta Sans', sans-serif; text-align: center; padding: 20px;">
+            <div style="background: #ffffff; padding: 32px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.06); max-width: 420px; width: 100%; border: 1px solid #e2e8f0;">
+              <div style="font-size: 3.5rem; margin-bottom: 12px;">⏳</div>
+              <h2 style="color: #0f172a; font-weight: 800; font-size: 1.4rem; margin-bottom: 10px;">Masa Sewa Telah Habis</h2>
+              <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 24px; line-height: 1.6;">
+                Maaf, durasi sewa penggunaan aplikasi untuk akun <strong>${activeUser.name}</strong> telah berakhir pada <em>${expiryDateObj.toLocaleDateString('id-ID')}</em>.<br><br>Silakan hubungi Admin Utama untuk memperpanjang durasi sewa Anda.
+              </p>
+            </div>
+          </div>
+        `;
+        throw new Error("Akses ditolak: Masa sewa habis.");
+      }
+    }
     
     function toggleMobileSidebar() {
       document.getElementById('mobile-sidebar').classList.toggle('active');
@@ -556,40 +491,32 @@
     }
 
     function switchRole(role) {
-      if (role === 'admin') {
-        window.location.href = 'pendaftaran.html';
-      } else if (role === 'display') {
-        window.location.href = 'display.html';
-      } else if (role === 'scorer') {
-        window.location.href = 'scoring.html';
-      }
+      if (role === 'admin') window.location.href = 'pendaftaran.html';
+      else if (role === 'display') window.location.href = 'display.html';
+      else if (role === 'scorer') window.location.href = 'scoring.html';
     }
 
     document.addEventListener("DOMContentLoaded", function() {
+      checkRentalExpiration();
+      checkIfAdmin();
+
       const path = window.location.pathname;
       let currentRole = 'admin';
-      
       if (path.includes('display.html')) currentRole = 'display';
       else if (path.includes('scoring.html')) currentRole = 'scorer';
       else if (path.includes('pendaftaran.html') || path.includes('home.html')) currentRole = 'admin';
 
       const deskPicker = document.getElementById('app-role-picker-desktop');
       const mobPicker = document.getElementById('app-role-picker-mobile');
-      
       if (deskPicker) deskPicker.value = currentRole;
       if (mobPicker) mobPicker.value = currentRole;
 
       const activeUser = getActiveUser();
       const headerUsername = document.getElementById('header-username');
       const headerAvatar = document.getElementById('header-avatar');
-      if (headerUsername && activeUser.name) {
-        headerUsername.innerText = activeUser.name;
-      }
-      if (headerAvatar && activeUser.name) {
-        headerAvatar.innerText = activeUser.name.charAt(0).toUpperCase();
-      }
+      if (headerUsername && activeUser.name) headerUsername.innerText = activeUser.name;
+      if (headerAvatar && activeUser.name) headerAvatar.innerText = activeUser.name.charAt(0).toUpperCase();
 
-      // FITUR UTAMA: Jika database akun ini masih kosong, otomatis buatkan 1 data awal berdasarkan profil user yang sedang login (misal Bima)
       const currentDBKey = getAccountDBKey();
       let currentDB = JSON.parse(localStorage.getItem(currentDBKey)) || [];
       
@@ -723,11 +650,11 @@
       document.getElementById('reg-no').value = peserta.noReg || '';
       document.getElementById('reg-nama').value = peserta.nama || '';
       document.getElementById('reg-hp').value = peserta.noHp || '';
-      document.getElementById('reg-tgl').value = peserta.tglLahir || '';
+      document.getElementById('reg-tgl').value = peserta.tglLahir !== '-' ? peserta.tglLahir : '';
       document.getElementById('reg-jk').value = peserta.jk || 'Laki-laki';
-      document.getElementById('reg-alamat').value = peserta.alamat || '';
-      document.getElementById('reg-kab').value = peserta.kab || '';
-      document.getElementById('reg-prov').value = peserta.prov || '';
+      document.getElementById('reg-alamat').value = peserta.alamat !== '-' ? peserta.alamat : '';
+      document.getElementById('reg-kab').value = peserta.kab !== '-' ? peserta.kab : '';
+      document.getElementById('reg-prov').value = peserta.prov !== '-' ? peserta.prov : '';
       document.getElementById('reg-klub').value = peserta.klub || '';
       document.getElementById('reg-kategori').value = peserta.kategori || 'Traditional Bow';
 
@@ -769,7 +696,6 @@
       if (!file) return;
 
       const fileName = file.name.toLowerCase();
-
       if (fileName.endsWith('.pdf')) {
         alert('⚠️ File PDF tidak dapat di-import langsung!\n\nSilakan gunakan file berformat Excel (.xlsx / .xls) atau CSV (.csv).');
         event.target.value = '';
@@ -787,10 +713,7 @@
           if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
 
           const lines = text.split(/\r\n|\n/);
-          if (lines.length < 2) {
-            alert('File CSV kosong!');
-            return;
-          }
+          if (lines.length < 2) { alert('File CSV kosong!'); return; }
 
           let db = JSON.parse(localStorage.getItem(dbKey)) || [];
           let countImported = 0;
@@ -800,9 +723,7 @@
           for (let i = 1; i < lines.length; i++) {
             const line = lines[i].trim();
             if (!line) continue;
-            
             const row = parseCSVLine(line);
-            
             if (row.length > 1 && row[1]) {
               const newPeserta = {
                 id: Date.now() + Math.random(),
@@ -835,15 +756,11 @@
           try {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: 'array' });
-            
             const firstSheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[firstSheetName];
             const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-            if (jsonData.length < 2) {
-              alert('File Excel kosong!');
-              return;
-            }
+            if (jsonData.length < 2) { alert('File Excel kosong!'); return; }
 
             let db = JSON.parse(localStorage.getItem(dbKey)) || [];
             let countImported = 0;
@@ -892,21 +809,13 @@
       let inQuotes = false;
       for (let i = 0; i < text.length; i++) {
         let char = text[i];
-        if (char === '"') {
-          inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-          result.push(current.trim());
-          current = '';
-        } else {
-          current += char;
-        }
+        if (char === '"') inQuotes = !inQuotes;
+        else if (char === ',' && !inQuotes) { result.push(current.trim()); current = ''; }
+        else current += char;
       }
       result.push(current.trim());
       return result.map(val => val.replace(/^["']|["']$/g, ''));
     }
   </script>
-
-
 </body>
 </html>
-
