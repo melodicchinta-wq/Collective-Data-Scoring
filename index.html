@@ -497,7 +497,6 @@
         let eventLocation = config.location || 'Lapangan Utama';
         let totalEnd = parseInt(config.totalEnd) || 5;
 
-        // PERBAIKAN HEADER: Fokus ke Skor Total
         let headHTML = `
           <tr>
             <th class="sticky-col-no" style="width: 40px; text-align:center;">Rank</th>
@@ -519,7 +518,7 @@
           bodyHTML = `<tr><td colspan="${totalEnd + 5}" style="text-align:center; padding: 24px; color:#64748b;">${searchKeyword ? `Tidak ada pemanah atau klub yang cocok dengan pencarian "<strong>${searchKeyword}</strong>".` : `Belum ada peserta yang terdaftar pada sesi ini.`}</td></tr>`;
         } else {
           rankedList.forEach((p) => {
-            // Tampilan Juara (Medali Emas untuk Rank 1)
+            // Tampilan Juara (Medali)
             let rankDisplay = p.rank;
             if (p.rank === 1) rankDisplay = '<i class="fa-solid fa-medal" style="color:#fbbf24; font-size:1.1rem;"></i>';
             else if (p.rank === 2) rankDisplay = '<i class="fa-solid fa-medal" style="color:#94a3b8; font-size:1.1rem;"></i>';
@@ -531,10 +530,14 @@
                 <td class="sticky-col-name"><strong style="color:#0f172a;">${p.name}</strong></td>
                 <td><span style="color:#64748b;">${p.club || '-'}</span></td>
             `;
+            
+            // Render tiap End
             p.endScoresSummary.forEach(end => {
               let strArrows = end.arr.length > 0 ? `<span class="arrow-detail">${end.arr.join(' | ')}</span>` : '<span class="arrow-detail">-</span>';
               bodyHTML += `<td style="text-align:center;">${strArrows} <span class="end-sum">(${end.sum})</span></td>`;
             });
+
+            // Render Total X dan Total Skor
             bodyHTML += `
                 <td style="text-align:center; font-weight:800;"><span class="badge-x">${p.totalX}X</span></td>
                 <td style="text-align:center; font-weight:900; font-size: 1.05rem; color:#166534; background:#f0fdf4;">${p.totalScore}</td>
@@ -630,7 +633,6 @@
       keys.forEach((key) => {
         if (key === 'publicSelectedSessionKey' || key === 'archeryDatabase' || key === 'archerySavedProfiles' || key === 'activeArcheryUser' || key.startsWith('savedParticipants_') || key.startsWith('archeryRentalExpiry_')) return;
         
-        // Membaca data archeryConfig dan archeryHistory
         if (key === 'archeryConfig' || key.startsWith('archeryConfig_') || key.startsWith('archeryHistory_')) {
           try {
             let raw = localStorage.getItem(key);
@@ -659,7 +661,7 @@
           }
         }
       });
-      return configs;
+      return list;
     }
 
     function updateDropdownOptions(sessions) {
@@ -705,7 +707,7 @@
       renderSelectedSession(true);
     }
 
-    // LOGIKA PERINGKAT & SKOR TOTAL
+    // LOGIKA PERINGKAT & SKOR TOTAL (YANG DIPERBAIKI)
     function calculateSessionRanking(config) {
       let totalEnd = parseInt(config.totalEnd) || 5;
       let participants = Array.isArray(config.participants) ? config.participants : [];
@@ -718,11 +720,18 @@
         for (let i = 0; i < totalEnd; i++) {
           let endArr = (p.scores && p.scores[i]) ? p.scores[i] : [];
           let endSum = 0;
+          
           let formattedArrows = endArr.map(score => {
             if (score === 'X') { totalScore += 10; totalX += 1; endSum += 10; return 'X'; }
             else if (score === 'M') { endSum += 0; return 'M'; }
-            else { let val = parseInt(score) || 0; endSum += val; return val; }
+            else { 
+              let val = parseInt(score) || 0; 
+              totalScore += val; // <-- Memastikan Total Score menjumlahkan nilai panah
+              endSum += val; 
+              return val; 
+            }
           });
+          
           endScoresSummary.push({ arr: formattedArrows, sum: endSum });
         }
         return { ...p, totalScore, totalX, endScoresSummary };
