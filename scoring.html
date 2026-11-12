@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -56,19 +57,7 @@
     
     .virtual-target-card { background: #18191c; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; position: relative; }
     
-    .target-wrapper {
-      position: relative;
-      width: 100%;
-      max-width: 300px;
-      height: 300px;
-      border: 2px solid #334155;
-      border-radius: 12px;
-      overflow: hidden;
-      background-color: #000;
-      touch-action: none;
-      cursor: grab;
-      margin-top: 10px;
-    }
+    .target-wrapper { position: relative; width: 100%; max-width: 300px; height: 300px; border: 2px solid #334155; border-radius: 12px; overflow: hidden; background-color: #000; touch-action: none; cursor: grab; margin-top: 10px; }
     .target-wrapper:active { cursor: grabbing; }
     .canvas-container { position: absolute; transform-origin: 0 0; }
     canvas { display: block; }
@@ -99,7 +88,7 @@
     .num-2, .num-1 { background-color: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
     .num-m { background-color: #18191c; color: #ffffff; }
     
-    .btn-save-rambahan { background-color: #18191c; color: #ffffff; font-weight: 800; padding: 14px; border-radius: 12px; border: none; cursor: pointer; font-size: 0.95rem; width: 100%; box-shadow: 0 4px 12px rgba(24, 25, 28, 0.15); }
+    .btn-save-rambahan { background-color: #18191c; color: #ffffff; font-weight: 800; padding: 14px; border-radius: 12px; border: none; cursor: pointer; font-size: 0.95rem; width: 100%; box-shadow: 0 4px 12px rgba(24, 25, 28, 0.15); text-align: center; text-decoration: none; display: block; }
     
     .participants-summary-grid { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
     .participant-summary-card { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
@@ -111,141 +100,31 @@
     
     .end-history-list { display: flex; flex-direction: column; gap: 8px; }
     .end-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 0.85rem; gap: 8px; }
-    .end-label { font-weight: 700; color: #4f46e5; width: 60px; flex-shrink: 0; }
+    .end-label { font-weight: 700; color: #4f46e5; width: 80px; flex-shrink: 0; }
     .end-dots { color: #334155; letter-spacing: 2px; font-weight: 700; font-size: 0.9rem; flex: 1; text-align: center; overflow-x: auto; }
     .end-total { font-weight: 800; color: #0f172a; font-size: 0.95rem; flex-shrink: 0; }
 
-    /* PODIUM & LEADERBOARD RESPONSIF */
-    .podium-container { 
-      display: grid; 
-      grid-template-columns: 1fr 1.2fr 1fr; 
-      gap: 12px; 
-      margin-bottom: 24px; 
-      align-items: flex-end; 
-    }
-    .podium-box { 
-      background-color: #ffffff; 
-      border: 1px solid #e2e8f0; 
-      border-radius: 20px; 
-      padding: 18px 12px; 
-      text-align: center; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.02); 
-    }
-    .podium-box.rank-1-box { 
-      border-color: #fbbf24; 
-      background: linear-gradient(to bottom, #ffffff, #fffbeb); 
-      transform: translateY(-8px); 
-      box-shadow: 0 10px 25px rgba(251, 191, 36, 0.15); 
-    }
-    .podium-avatar { 
-      width: 48px; 
-      height: 48px; 
-      border-radius: 50%; 
-      background: #fef3c7; 
-      color: #d97706; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      font-weight: 800; 
-      font-size: 1rem; 
-      margin-bottom: 10px; 
-      border: 2px solid #fde047; 
-    }
-    .podium-name { 
-      font-weight: 800; 
-      font-size: 0.9rem; 
-      color: #0f172a; 
-      margin-bottom: 2px; 
-      white-space: nowrap; 
-      overflow: hidden; 
-      text-overflow: ellipsis; 
-      width: 100%; 
-    }
-    .podium-club { 
-      font-size: 0.7rem; 
-      color: #64748b; 
-      margin-bottom: 10px; 
-      white-space: nowrap; 
-      overflow: hidden; 
-      text-overflow: ellipsis; 
-      width: 100%; 
-    }
-    .podium-score-badge { 
-      background: #f8fafc; 
-      border: 1px solid #e2e8f0; 
-      padding: 4px 10px; 
-      border-radius: 8px; 
-      font-size: 0.8rem; 
-      font-weight: 800; 
-      color: #4f46e5; 
-    }
+    .podium-container { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 12px; margin-bottom: 24px; align-items: flex-end; }
+    .podium-box { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 18px 12px; text-align: center; display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+    .podium-box.rank-1-box { border-color: #fbbf24; background: linear-gradient(to bottom, #ffffff, #fffbeb); transform: translateY(-8px); box-shadow: 0 10px 25px rgba(251, 191, 36, 0.15); }
+    .podium-avatar { width: 48px; height: 48px; border-radius: 50%; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; margin-bottom: 10px; border: 2px solid #fde047; }
+    .podium-name { font-weight: 800; font-size: 0.9rem; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+    .podium-club { font-size: 0.7rem; color: #64748b; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+    .podium-score-badge { background: #f8fafc; border: 1px solid #e2e8f0; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; color: #4f46e5; }
     
-    /* TABEL LEADERBOARD TERKUNCI AGAR PAS DALAM KOTAK PUTIH */
-    .leaderboard-table { 
-      width: 100%; 
-      table-layout: fixed; 
-      border-collapse: collapse; 
-      margin-top: 8px; 
-    }
-    .leaderboard-table th { 
-      text-align: left; 
-      font-size: 0.7rem; 
-      color: #64748b; 
-      padding: 8px 4px; 
-      border-bottom: 2px solid #f1f5f9; 
-      text-transform: uppercase; 
-      white-space: nowrap; 
-    }
-    .leaderboard-table td { 
-      padding: 12px 4px; 
-      border-bottom: 1px solid #f1f5f9; 
-      font-size: 0.85rem; 
-      overflow: hidden; 
-      text-overflow: ellipsis; 
-    }
-    .btn-detail-icon { 
-      background: #f1f5f9; 
-      border: 1px solid #e2e8f0; 
-      color: #4f46e5; 
-      padding: 5px 8px; 
-      border-radius: 8px; 
-      cursor: pointer; 
-      font-size: 0.7rem; 
-      font-weight: 700; 
-      white-space: nowrap; 
-    }
+    .leaderboard-table { width: 100%; table-layout: fixed; border-collapse: collapse; margin-top: 8px; }
+    .leaderboard-table th { text-align: left; font-size: 0.7rem; color: #64748b; padding: 8px 4px; border-bottom: 2px solid #f1f5f9; text-transform: uppercase; white-space: nowrap; }
+    .leaderboard-table td { padding: 12px 4px; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; }
+    .btn-detail-icon { background: #f1f5f9; border: 1px solid #e2e8f0; color: #4f46e5; padding: 5px 8px; border-radius: 8px; cursor: pointer; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
     .btn-detail-icon:hover { background: #e0e7ff; }
 
     .modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 1000; }
     .modal.active { display: flex; }
     .modal-content { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 24px; width: 100%; max-width: 420px; padding: 24px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
 
-    /* PENYESUAIAN RESPONSIF LAYAR HP: Diatur agar kotak podium di tengah dan ukurannya sama rata penuh */
     @media (max-width: 900px) { 
-      .nav-links-desktop { display: none; } 
-      .btn-hamburger-mobile { display: block; } 
-      .desktop-navbar { padding: 12px 16px; } 
-      main { padding: 16px 12px; } 
-      .dashboard-card { padding: 16px 12px; border-radius: 16px; }
-      
-      .podium-container { 
-        display: flex;
-        flex-direction: column; 
-        align-items: center; /* Membuat semua kotak persis di tengah layar HP */
-        gap: 12px; 
-      }
-      
-      .podium-box { 
-        width: 100%; /* Membuat lebar kotak sama rata penuh mengikuti container */
-        max-width: 100%; 
-      }
-
-      .podium-box.rank-1-box { 
-        transform: none; 
-      }
+      .nav-links-desktop { display: none; } .btn-hamburger-mobile { display: block; } .desktop-navbar { padding: 12px 16px; } main { padding: 16px 12px; } .dashboard-card { padding: 16px 12px; border-radius: 16px; }
+      .podium-container { display: flex; flex-direction: column; align-items: center; gap: 12px; } .podium-box { width: 100%; max-width: 100%; } .podium-box.rank-1-box { transform: none; }
     }
   </style>
 </head>
@@ -256,13 +135,11 @@
       <button class="btn-hamburger-mobile" onclick="toggleMobileSidebar()"><i class="fa-solid fa-bars"></i></button>
       <div class="brand"><div class="brand-icon">🎯</div><span>ARCHERY<span style="color:#6366f1;">PRO</span></span></div>
     </div>
-
     <nav class="nav-links-desktop">
       <a href="home.html"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
       <a href="scoring.html" class="active"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
       <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
       <a href="pendaftaran.html"><i class="fa-solid fa-users"></i> Registrasi</a>
-
       <div class="role-selector-wrapper">
         <select id="app-role-picker-desktop" class="role-select" onchange="switchRole(this.value)">
           <option value="scorer" selected>📱 Scorer (HP)</option>
@@ -271,7 +148,6 @@
         </select>
       </div>
     </nav>
-
     <div class="user-profile-header">
       <div class="user-avatar" id="user-avatar-box">A</div>
       <div style="display: flex; flex-direction: column; line-height: 1.2;">
@@ -316,7 +192,7 @@
       </div>
 
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-        <p style="font-size:0.75rem; color:#64748b; font-weight:700; text-transform: uppercase;">Giliran Pemanah:</p>
+        <p style="font-size:0.75rem; color:#64748b; font-weight:700; text-transform: uppercase;" id="sc-giliran-label">Giliran Pemanah:</p>
         <span id="sc-arrow-info" style="font-size: 0.8rem; font-weight: 700; color: #4f46e5;">3 Arrow</span>
       </div>
       <div class="archer-selector" id="sc-archer-tabs"></div>
@@ -348,7 +224,6 @@
 
         <div id="container-target" class="virtual-target-card" style="display: none;" onclick="handleVirtualTargetClick(event)">
           <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:30px; font-weight:700; text-align:center;"><i class="fa-solid fa-hand-pointer"></i> Klik lingkaran angka (1-10, X) atau luar target untuk Miss (M)</div>
-          
           <div class="target-face" onclick="handleVirtualTargetClick(event)">
             <div class="t-ring ring-1" onclick="event.stopPropagation(); inputScore('1')"><span style="position:absolute; top:1px;">1</span></div>
             <div class="t-ring ring-2" onclick="event.stopPropagation(); inputScore('2')"><span style="position:absolute; top:1px;">2</span></div>
@@ -366,13 +241,9 @@
 
         <div id="container-walet" class="virtual-target-card" style="display: none;">
           <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:5px; font-weight:700; text-align:center;"><i class="fa-solid fa-hand-pointer"></i> Klik foto target segitiga untuk input skor otomatis</div>
-          
           <div class="target-wrapper" id="targetWrapper">
-            <div class="canvas-container" id="canvasContainer">
-              <canvas id="targetCanvas"></canvas>
-            </div>
+            <div class="canvas-container" id="canvasContainer"><canvas id="targetCanvas"></canvas></div>
           </div>
-
           <div class="zoom-controls">
             <button class="btn btn-warning" style="padding: 6px 12px; font-size: 13px;" onclick="zoomTarget(1.2)">🔍 +</button>
             <button class="btn btn-warning" style="padding: 6px 12px; font-size: 13px;" onclick="zoomTarget(0.8)">🔍 -</button>
@@ -405,7 +276,7 @@
           <tbody id="lb-table-body"></tbody>
         </table>
       </div>
-      <button class="btn-save-rambahan" style="text-align:center;" onclick="restartToSetup()"><i class="fa-solid fa-rotate-right"></i> Ulangi / Setup Baru</button>
+      <button class="btn-save-rambahan" style="text-align:center;" onclick="proceedToNextSession()"><i class="fa-solid fa-arrow-right"></i> Lanjut ke Sesi Berikutnya</button>
     </div>
   </main>
 
@@ -421,28 +292,45 @@
   </div>
 
   <script>
-    let appConfig = JSON.parse(localStorage.getItem('archeryConfig')) || {
-      eventName: 'Internal Match Oktober',
-      location: 'Lapangan Panahan Sumedang',
-      busur: 'Traditional Bow',
-      jarak: '18 m',
-      arrowCount: 3,
-      totalEnd: 5,
-      participants: [
-        { name: 'Ahmad Archer', club: 'Sumedang Club', scores: [] },
-        { name: 'Budi Santoso', club: 'Klub Panahan B', scores: [] }
-      ]
-    };
+    // Kunci unik berdasarkan akun yang sedang login
+    function getCurrentAccountKey() {
+      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
+      if (!activeUser) return 'guest';
+      const rawId = activeUser.email || activeUser.username || activeUser.id || activeUser.name || 'guest';
+      return String(rawId).trim().toLowerCase().replace(/[^a-z0-9@._-]/g, '_');
+    }
 
-    let currentEnd = 1;
-    let activeArcherIndex = 0;
+    const currentAccountKey = getCurrentAccountKey();
+
+    let appConfig = JSON.parse(localStorage.getItem(`archeryConfig_${currentAccountKey}`))
+      || JSON.parse(localStorage.getItem('archeryConfig'))
+      || {
+        eventName: 'Internal Match',
+        location: 'Lapangan Panahan',
+        busur: 'Traditional Bow',
+        jarak: '18 m',
+        arrowCount: 3,
+        totalEnd: 5,
+        participants: [
+          { name: 'Pemanah Utama', club: 'Independen', bantalan: 'Bantalan 1', sesi: 'Sesi 1', scores: [] }
+        ]
+      };
+
+    function saveConfigPerAccount() {
+      appConfig.ownerAccount = currentAccountKey;
+      localStorage.setItem(`archeryConfig_${currentAccountKey}`, JSON.stringify(appConfig));
+      localStorage.setItem('archeryConfig', JSON.stringify(appConfig));
+    }
+
+    let currentEnd = 1;         
+    let activeSessionIndex = 0; 
+    let activeArcherIndex = 0;  
     let currentArrowsInput = [];
 
     const canvas = document.getElementById('targetCanvas');
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     const container = document.getElementById('canvasContainer');
     const wrapper = document.getElementById('targetWrapper');
-    
     const waletImg = new Image();
     waletImg.src = "target.jpg";
 
@@ -458,8 +346,7 @@
     function drawTargetCanvas() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(waletImg, 0, 0);
-
-      currentArrowsInput.forEach((shot, index) => {
+      currentArrowsInput.forEach((shot) => {
         if (shot.x && shot.y) {
           ctx.beginPath();
           ctx.arc(shot.x, shot.y, 12, 0, 2 * Math.PI);
@@ -468,7 +355,6 @@
           ctx.lineWidth = 2;
           ctx.strokeStyle = '#fff';
           ctx.stroke();
-
           ctx.fillStyle = '#fff';
           ctx.font = 'bold 10px Arial';
           ctx.textAlign = 'center';
@@ -478,47 +364,19 @@
       });
     }
 
-    function zoomTarget(factor) {
-      scale = Math.min(Math.max(0.5, scale * factor), 4);
-      updateTargetTransform();
-    }
+    function zoomTarget(factor) { scale = Math.min(Math.max(0.5, scale * factor), 4); updateTargetTransform(); }
+    function resetTargetView() { scale = wrapper.clientWidth / waletImg.width; posX = 0; posY = 0; updateTargetTransform(); }
+    function updateTargetTransform() { container.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
 
-    function resetTargetView() {
-      scale = wrapper.clientWidth / waletImg.width;
-      posX = 0;
-      posY = 0;
-      updateTargetTransform();
-    }
-
-    function updateTargetTransform() {
-      container.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
-    }
-
-    wrapper.addEventListener('pointerdown', (e) => {
-      isDragging = true;
-      startX = e.clientX - posX;
-      startY = e.clientY - posY;
-    });
-
-    window.addEventListener('pointermove', (e) => {
-      if (!isDragging) return;
-      posX = e.clientX - startX;
-      posY = e.clientY - startY;
-      updateTargetTransform();
-    });
-
+    wrapper.addEventListener('pointerdown', (e) => { isDragging = true; startX = e.clientX - posX; startY = e.clientY - posY; });
+    window.addEventListener('pointermove', (e) => { if (!isDragging) return; posX = e.clientX - startX; posY = e.clientY - startY; updateTargetTransform(); });
     window.addEventListener('pointerup', () => { isDragging = false; });
 
     canvas.addEventListener('click', (e) => {
-      if(currentArrowsInput.length >= appConfig.arrowCount) {
-        alert("Arrow sudah penuh untuk rambahan ini!");
-        return;
-      }
-
+      if(currentArrowsInput.length >= appConfig.arrowCount) { alert("Arrow sudah penuh untuk rambahan ini!"); return; }
       const rect = canvas.getBoundingClientRect();
       const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
       const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
-
       const pixel = ctx.getImageData(clickX, clickY, 1, 1).data;
       const scoreVal = calculateWaletScore(pixel[0], pixel[1], pixel[2], clickX, clickY);
 
@@ -532,32 +390,15 @@
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
       const distance = Math.hypot(x - centerX, y - centerY);
-
-      if (distance > canvas.width * 0.38) {
-        return 'M';
-      }
-
+      if (distance > canvas.width * 0.38) return 'M';
       if (r > 160 && g > 140 && b < 120) {
         const centerDist = Math.hypot(x - centerX, y - (canvas.height * 0.52));
-        if (centerDist < canvas.width * 0.12) {
-          return '6';
-        } else {
-          return '1';
-        }
+        return centerDist < canvas.width * 0.12 ? '6' : '1';
       }
-
       if (r > 140 && g < 110 && b < 110) return '5';
       if (r < 120 && g > 90 && b > 140) return '4';
       if (r < 90 && g < 90 && b < 90) return '2';
-
-      if (r > 180 && g > 180 && b > 180) {
-        if (distance > canvas.width * 0.32) {
-          return 'M';
-        } else {
-          return '3';
-        }
-      }
-
+      if (r > 180 && g > 180 && b > 180) return distance > canvas.width * 0.32 ? 'M' : '3';
       return 'M';
     }
 
@@ -574,17 +415,9 @@
       document.getElementById('container-target').style.display = 'none';
       document.getElementById('container-walet').style.display = 'none';
 
-      if (mode === 'keypad') {
-        document.getElementById('btn-mode-keypad').classList.add('active');
-        document.getElementById('container-keypad').style.display = 'grid';
-      } else if (mode === 'target') {
-        document.getElementById('btn-mode-target').classList.add('active');
-        document.getElementById('container-target').style.display = 'flex';
-      } else if (mode === 'walet') {
-        document.getElementById('btn-mode-walet').classList.add('active');
-        document.getElementById('container-walet').style.display = 'flex';
-        resetTargetView();
-      }
+      if (mode === 'keypad') { document.getElementById('btn-mode-keypad').classList.add('active'); document.getElementById('container-keypad').style.display = 'grid'; }
+      else if (mode === 'target') { document.getElementById('btn-mode-target').classList.add('active'); document.getElementById('container-target').style.display = 'flex'; }
+      else if (mode === 'walet') { document.getElementById('btn-mode-walet').classList.add('active'); document.getElementById('container-walet').style.display = 'flex'; resetTargetView(); }
     }
 
     function handleVirtualTargetClick(event) { inputScore('M'); }
@@ -592,45 +425,63 @@
     function loadActiveUserProfile() {
       const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
       if (activeUser) {
-        const nameText = document.getElementById('user-name-text');
-        const clubText = document.getElementById('user-club-text');
-        const avatarBox = document.getElementById('user-avatar-box');
-        
-        if (nameText && activeUser.name) nameText.innerText = activeUser.name;
-        if (clubText && activeUser.club) clubText.innerText = activeUser.club;
-        if (avatarBox && activeUser.name) {
-          const initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-          avatarBox.innerText = initials || 'A';
+        document.getElementById('user-name-text').innerText = activeUser.name || 'Archer Pro';
+        document.getElementById('user-club-text').innerText = activeUser.club || 'Klub Panahan';
+        if (activeUser.name) {
+          const nameParts = activeUser.name.trim().split(' ').filter(n => n.length > 0);
+          document.getElementById('user-avatar-box').innerText = nameParts.length >= 2 ? (nameParts[0][0] + nameParts[1][0]).toUpperCase() : nameParts[0][0].toUpperCase();
         }
       }
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      loadActiveUserProfile();
-    });
+    document.addEventListener('DOMContentLoaded', loadActiveUserProfile);
+
+    function getUniqueSessions() {
+      let sessions = [];
+      appConfig.participants.forEach(p => {
+        let s = p.sesi || 'Sesi 1';
+        if (!sessions.includes(s)) sessions.push(s);
+      });
+      return sessions.sort();
+    }
 
     function initScoring() {
+      const uniqueSessions = getUniqueSessions();
+      if (activeSessionIndex >= uniqueSessions.length) activeSessionIndex = 0;
+      const currentSessionName = uniqueSessions[activeSessionIndex] || 'Sesi 1';
+
       document.getElementById('sc-info').innerText = `${appConfig.busur} • ${appConfig.jarak}`;
-      document.getElementById('sc-rambahan-title').innerText = `Rambahan ${currentEnd} dari ${appConfig.totalEnd}`;
+      document.getElementById('sc-rambahan-title').innerText = `${currentSessionName} • Rambahan ${currentEnd} dari ${appConfig.totalEnd}`;
       document.getElementById('sc-arrow-info').innerText = `${appConfig.arrowCount} Arrow`;
+
+      const currentSessionParticipants = appConfig.participants.filter(p => (p.sesi || 'Sesi 1') === currentSessionName);
+      document.getElementById('sc-giliran-label').innerText = `Giliran Pemanah (${currentSessionName}):`;
 
       const tabsContainer = document.getElementById('sc-archer-tabs');
       tabsContainer.innerHTML = '';
-      appConfig.participants.forEach((p, idx) => {
+      
+      currentSessionParticipants.forEach((p) => {
+        const globalIdx = appConfig.participants.indexOf(p);
         const btn = document.createElement('button');
-        btn.className = `btn-archer-tab ${idx === activeArcherIndex ? 'active' : ''}`;
-        btn.innerText = `${p.name} (${p.club})`;
-        btn.onclick = () => {
-          activeArcherIndex = idx;
-          currentArrowsInput = [];
-          syncLiveState();
-          initScoring();
+        btn.className = `btn-archer-tab ${globalIdx === activeArcherIndex ? 'active' : ''}`;
+        btn.innerText = `${p.name} [${p.bantalan || 'Bantalan 1'}]`;
+        btn.onclick = () => { 
+          activeArcherIndex = globalIdx; 
+          currentArrowsInput = []; 
+          syncLiveState(); 
+          initScoring(); 
         };
         tabsContainer.appendChild(btn);
       });
 
       const activeP = appConfig.participants[activeArcherIndex];
-      document.getElementById('sc-current-archer-label').innerText = `Poin Arrow ${activeP.name} (Rambahan ${currentEnd}):`;
+      if (!activeP || (activeP.sesi || 'Sesi 1') !== currentSessionName) {
+        const firstInSession = appConfig.participants.findIndex(p => (p.sesi || 'Sesi 1') === currentSessionName);
+        if (firstInSession !== -1) activeArcherIndex = firstInSession;
+      }
+
+      const currentActiveP = appConfig.participants[activeArcherIndex];
+      document.getElementById('sc-current-archer-label').innerText = `Poin Arrow ${currentActiveP.name} (${currentActiveP.bantalan || 'Bantalan 1'}) (Rambahan ${currentEnd}):`;
 
       renderArrowBoxes();
       renderAllParticipantsSummary();
@@ -641,7 +492,6 @@
       const container = document.getElementById('sc-arrow-boxes');
       container.style.gridTemplateColumns = `repeat(${appConfig.arrowCount}, 1fr)`;
       container.innerHTML = '';
-
       for(let i = 0; i < appConfig.arrowCount; i++) {
         const box = document.createElement('div');
         box.className = 'arrow-box';
@@ -652,11 +502,8 @@
     }
 
     function syncLiveState() {
-      appConfig.activeLiveInput = {
-        archerIndex: activeArcherIndex,
-        arrows: currentArrowsInput.map(i => typeof i === 'object' ? i.val : i)
-      };
-      localStorage.setItem('archeryConfig', JSON.stringify(appConfig));
+      appConfig.activeLiveInput = { archerIndex: activeArcherIndex, arrows: currentArrowsInput.map(i => typeof i === 'object' ? i.val : i) };
+      saveConfigPerAccount();
     }
 
     function inputScore(val) {
@@ -670,39 +517,199 @@
       }
     }
 
-    function undoScore() {
-      currentArrowsInput.pop();
-      renderArrowBoxes();
-      drawTargetCanvas();
-      syncLiveState();
-    }
+    function undoScore() { currentArrowsInput.pop(); renderArrowBoxes(); drawTargetCanvas(); syncLiveState(); }
 
     function nextTurnOrRambahan() {
-      if(currentArrowsInput.length < appConfig.arrowCount) {
-        alert(`Harap isi lengkap ${appConfig.arrowCount} arrow terlebih dahulu!`);
-        return;
+      if(currentArrowsInput.length < appConfig.arrowCount) { 
+        alert(`Harap isi lengkap ${appConfig.arrowCount} arrow terlebih dahulu!`); 
+        return; 
       }
-
+      
       const plainValues = currentArrowsInput.map(i => typeof i === 'object' ? i.val : i);
       appConfig.participants[activeArcherIndex].scores.push(plainValues);
-      
       appConfig.activeLiveInput = null;
-      localStorage.setItem('archeryConfig', JSON.stringify(appConfig));
+      saveConfigPerAccount();
 
       currentArrowsInput = [];
-      activeArcherIndex++;
+      
+      const uniqueSessions = getUniqueSessions();
+      const currentSessionName = uniqueSessions[activeSessionIndex];
+      const currentSessionParticipants = appConfig.participants.filter(p => (p.sesi || 'Sesi 1') === currentSessionName);
+      
+      let localIdx = currentSessionParticipants.findIndex(p => appConfig.participants.indexOf(p) === activeArcherIndex);
+      localIdx++;
 
-      if(activeArcherIndex < appConfig.participants.length) {
+      if (localIdx < currentSessionParticipants.length) {
+        activeArcherIndex = appConfig.participants.indexOf(currentSessionParticipants[localIdx]);
         initScoring();
       } else {
-        activeArcherIndex = 0;
         currentEnd++;
-
-        if(currentEnd > appConfig.totalEnd) {
-          showLeaderboard();
-        } else {
+        if (currentEnd <= appConfig.totalEnd) {
+          const firstInSession = appConfig.participants.findIndex(p => (p.sesi || 'Sesi 1') === currentSessionName);
+          if (firstInSession !== -1) activeArcherIndex = firstInSession;
           initScoring();
+        } else {
+          showSessionLeaderboard(currentSessionName);
         }
+      }
+    }
+
+    function showSessionLeaderboard(sessionName) {
+      document.getElementById('page-scoring').style.display = 'none';
+      document.getElementById('page-leaderboard').style.display = 'block';
+
+      const headerTitle = document.querySelector('#page-leaderboard .session-info');
+      if (headerTitle) headerTitle.innerText = `HASIL AKHIR — ${sessionName.toUpperCase()}`;
+
+      const sessionParticipants = appConfig.participants.filter(p => (p.sesi || 'Sesi 1') === sessionName);
+
+      sessionParticipants.forEach(p => {
+        let totalScore = 0, totalX = 0;
+        p.scores.forEach(endArr => {
+          endArr.forEach(score => {
+            if(score === 'X') { totalScore += 10; totalX += 1; }
+            else if(score !== 'M') totalScore += parseInt(score);
+          });
+        });
+        p.totalScore = totalScore;
+        p.totalX = totalX;
+      });
+
+      sessionParticipants.sort((a, b) => b.totalScore !== a.totalScore ? b.totalScore - a.totalScore : b.totalX - a.totalX);
+
+      renderSessionPodium(sessionParticipants);
+      renderSessionLeaderboardTable(sessionParticipants);
+    }
+
+    function proceedToNextSession() {
+      const uniqueSessions = getUniqueSessions();
+      activeSessionIndex++;
+      currentEnd = 1; 
+
+      if (activeSessionIndex < uniqueSessions.length) {
+        const nextSessionName = uniqueSessions[activeSessionIndex];
+        const firstNextSession = appConfig.participants.findIndex(p => (p.sesi || 'Sesi 1') === nextSessionName);
+        if (firstNextSession !== -1) activeArcherIndex = firstNextSession;
+
+        document.getElementById('page-leaderboard').style.display = 'none';
+        document.getElementById('page-scoring').style.display = 'block';
+        initScoring();
+      } else {
+        showFinalLeaderboard();
+      }
+    }
+
+    function renderSessionPodium(participantsList) {
+      const container = document.getElementById('podium-container');
+      container.innerHTML = '';
+      const isMobile = window.innerWidth <= 900;
+      const podiumOrder = isMobile ? [0, 1, 2] : [1, 0, 2];
+      
+      podiumOrder.forEach(rankIdx => {
+        const p = participantsList[rankIdx];
+        if(!p) return;
+        const isRank1 = (rankIdx === 0);
+        const nameParts = (p.name || 'User').trim().split(' ').filter(n => n.length > 0);
+        let initials = nameParts.length >= 2 ? (nameParts[0][0] + nameParts[1][0]).toUpperCase() : nameParts[0][0].toUpperCase();
+
+        const box = document.createElement('div');
+        box.className = `podium-box ${isRank1 ? 'rank-1-box' : ''}`;
+        box.innerHTML = `
+          <div style="font-size: 0.75rem; font-weight:800; color: ${isRank1 ? '#d97706' : '#64748b'}; margin-bottom:4px;">#${rankIdx + 1}</div>
+          <div class="podium-avatar">${initials}</div>
+          <div class="podium-name">${p.name}</div>
+          <div class="podium-club">${p.club || 'Independen'}</div>
+          <div class="podium-score-badge">${p.totalScore} Poin</div>
+        `;
+        container.appendChild(box);
+      });
+    }
+
+    function renderSessionLeaderboardTable(participantsList) {
+      const tbody = document.getElementById('lb-table-body');
+      tbody.innerHTML = '';
+      participantsList.forEach((p, idx) => {
+        const tr = document.createElement('tr');
+        const globalIdx = appConfig.participants.indexOf(p);
+        tr.innerHTML = `
+          <td style="width: 12%;"><strong>#${idx + 1}</strong></td>
+          <td style="width: 38%;">
+            <strong style="color:#0f172a; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</strong>
+            <span style="font-size:0.7rem; color:#64748b; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.club || 'Independen'}</span>
+          </td>
+          <td style="text-align:center; width: 16%;"><span style="background:#fef3c7; color:#b45309; padding:2px 6px; border-radius:6px; font-weight:800; font-size:0.75rem; white-space:nowrap;">${p.totalX}X</span></td>
+          <td style="text-align:right; font-weight:800; color:#4f46e5; font-size: 0.9rem; width: 18%; white-space:nowrap;">${p.totalScore}</td>
+          <td style="text-align:center; width: 16%;"><button class="btn-detail-icon" onclick="openDetailModal(${globalIdx})"><i class="fa-solid fa-list"></i> Detail</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function showFinalLeaderboard() {
+      const headerTitle = document.querySelector('#page-leaderboard .session-info');
+      if (headerTitle) headerTitle.innerText = `HASIL AKHIR GABUNGAN (SEMUA SESI)`;
+
+      appConfig.participants.forEach(p => {
+        let totalScore = 0, totalX = 0;
+        p.scores.forEach(endArr => {
+          endArr.forEach(score => {
+            if(score === 'X') { totalScore += 10; totalX += 1; }
+            else if(score !== 'M') totalScore += parseInt(score);
+          });
+        });
+        p.totalScore = totalScore;
+        p.totalX = totalX;
+      });
+
+      appConfig.participants.sort((a, b) => b.totalScore !== a.totalScore ? b.totalScore - a.totalScore : b.totalX - a.totalX);
+
+      saveToHistory();
+      
+      const container = document.getElementById('podium-container');
+      container.innerHTML = '';
+      const isMobile = window.innerWidth <= 900;
+      const podiumOrder = isMobile ? [0, 1, 2] : [1, 0, 2];
+      
+      podiumOrder.forEach(rankIdx => {
+        const p = appConfig.participants[rankIdx];
+        if(!p) return;
+        const isRank1 = (rankIdx === 0);
+        const nameParts = (p.name || 'User').trim().split(' ').filter(n => n.length > 0);
+        let initials = nameParts.length >= 2 ? (nameParts[0][0] + nameParts[1][0]).toUpperCase() : nameParts[0][0].toUpperCase();
+
+        const box = document.createElement('div');
+        box.className = `podium-box ${isRank1 ? 'rank-1-box' : ''}`;
+        box.innerHTML = `
+          <div style="font-size: 0.75rem; font-weight:800; color: ${isRank1 ? '#d97706' : '#64748b'}; margin-bottom:4px;">#${rankIdx + 1}</div>
+          <div class="podium-avatar">${initials}</div>
+          <div class="podium-name">${p.name}</div>
+          <div class="podium-club">${p.club || 'Independen'} • ${p.sesi || 'Sesi 1'}</div>
+          <div class="podium-score-badge">${p.totalScore} Poin</div>
+        `;
+        container.appendChild(box);
+      });
+
+      const tbody = document.getElementById('lb-table-body');
+      tbody.innerHTML = '';
+      appConfig.participants.forEach((p, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="width: 12%;"><strong>#${idx + 1}</strong></td>
+          <td style="width: 38%;">
+            <strong style="color:#0f172a; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</strong>
+            <span style="font-size:0.7rem; color:#64748b; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.club || 'Independen'} (${p.sesi || 'Sesi 1'})</span>
+          </td>
+          <td style="text-align:center; width: 16%;"><span style="background:#fef3c7; color:#b45309; padding:2px 6px; border-radius:6px; font-weight:800; font-size:0.75rem; white-space:nowrap;">${p.totalX}X</span></td>
+          <td style="text-align:right; font-weight:800; color:#4f46e5; font-size: 0.9rem; width: 18%; white-space:nowrap;">${p.totalScore}</td>
+          <td style="text-align:center; width: 16%;"><button class="btn-detail-icon" onclick="openDetailModal(${idx})"><i class="fa-solid fa-list"></i> Detail</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const actionButton = document.querySelector('#page-leaderboard button.btn-save-rambahan');
+      if (actionButton) {
+        actionButton.innerHTML = `<i class="fa-solid fa-rotate-right"></i> Ulangi / Setup Baru`;
+        actionButton.onclick = () => restartToSetup();
       }
     }
 
@@ -716,11 +723,7 @@
 
         p.scores.forEach((endArr, eIdx) => {
           let endSum = 0;
-          endArr.forEach(score => {
-            if(score === 'X') endSum += 10;
-            else if(score === 'M') endSum += 0;
-            else endSum += parseInt(score);
-          });
+          endArr.forEach(score => { endSum += (score === 'X' ? 10 : (score === 'M' ? 0 : parseInt(score))); });
           totalPoin += endSum;
 
           endRowsHTML += `
@@ -738,62 +741,26 @@
           <div class="p-card-header">
             <div>
               <div class="p-card-name">${p.name} ${pIdx === activeArcherIndex ? '🎯 (Aktif)' : ''}</div>
-              <div class="p-card-club">${p.club}</div>
+              <div class="p-card-club">${p.club} • <span style="color:#4f46e5; font-weight:700;">${p.bantalan || 'Bantalan 1'}</span> (${p.sesi || 'Sesi 1'})</div>
             </div>
             <div class="p-card-total-badge">Total: ${totalPoin} Poin</div>
           </div>
-          <div class="end-history-list">
-            ${endRowsHTML || '<p style="font-size:0.75rem; color:#64748b; font-style:italic; text-align:center;">Belum ada rambahan tersimpan.</p>'}
-          </div>
+          <div class="end-history-list">${endRowsHTML || '<p style="font-size:0.75rem; color:#64748b; font-style:italic; text-align:center;">Belum ada rambahan tersimpan.</p>'}</div>
         `;
         gridContainer.appendChild(card);
       });
     }
 
-    function showLeaderboard() {
-      document.getElementById('page-scoring').style.display = 'none';
-      document.getElementById('page-leaderboard').style.display = 'block';
-
-      appConfig.participants.forEach(p => {
-        let totalScore = 0;
-        let totalX = 0;
-        p.scores.forEach(endArr => {
-          endArr.forEach(score => {
-            if(score === 'X') { totalScore += 10; totalX += 1; }
-            else if(score === 'M') { totalScore += 0; }
-            else { totalScore += parseInt(score); }
-          });
-        });
-        p.totalScore = totalScore;
-        p.totalX = totalX;
-      });
-
-      appConfig.participants.sort((a, b) => {
-        if(b.totalScore !== a.totalScore) return b.totalScore - a.totalScore;
-        return b.totalX - a.totalX;
-      });
-
-      saveToHistory();
-      renderPodium();
-      renderLeaderboardTable();
-    }
-
     function saveToHistory() {
-      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser')) || { email: 'default_user', name: 'Tamu' };
-      const historyKey = `archeryHistory_${activeUser.email}`;
-
+      const historyKey = `archeryHistory_${currentAccountKey}`;
       const now = new Date();
       const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
       
       const newHistoryItem = { 
         eventName: appConfig.eventName || 'Sesi Latihan Panahan', 
         location: appConfig.location || 'Lapangan Panahan', 
-        date: dateStr, 
-        busur: appConfig.busur, 
-        jarak: appConfig.jarak, 
-        arrowCount: appConfig.arrowCount, 
-        totalEnd: appConfig.totalEnd, 
-        participants: appConfig.participants 
+        date: dateStr, busur: appConfig.busur, jarak: appConfig.jarak, 
+        arrowCount: appConfig.arrowCount, totalEnd: appConfig.totalEnd, participants: appConfig.participants 
       };
 
       let historyList = JSON.parse(localStorage.getItem(historyKey)) || [];
@@ -801,41 +768,8 @@
         historyList.unshift(newHistoryItem);
         localStorage.setItem(historyKey, JSON.stringify(historyList));
         appConfig.isSavedToHistory = true;
-        localStorage.setItem('archeryConfig', JSON.stringify(appConfig));
+        saveConfigPerAccount();
       }
-    }
-
-    function renderPodium() {
-      const container = document.getElementById('podium-container');
-      container.innerHTML = '';
-      
-      const isMobile = window.innerWidth <= 900;
-      const podiumOrder = isMobile ? [0, 1, 2] : [1, 0, 2];
-      
-      podiumOrder.forEach(rankIdx => {
-        const p = appConfig.participants[rankIdx];
-        if(!p) return;
-        const isRank1 = (rankIdx === 0);
-        
-        const nameParts = (p.name || 'User').trim().split(' ').filter(n => n.length > 0);
-        let initials = 'A';
-        if (nameParts.length >= 2) {
-          initials = (nameParts[0][0] + nameParts[1][0]).toUpperCase();
-        } else if (nameParts.length === 1) {
-          initials = nameParts[0][0].toUpperCase();
-        }
-
-        const box = document.createElement('div');
-        box.className = `podium-box ${isRank1 ? 'rank-1-box' : ''}`;
-        box.innerHTML = `
-          <div style="font-size: 0.75rem; font-weight:800; color: ${isRank1 ? '#d97706' : '#64748b'}; margin-bottom:4px;">#${rankIdx + 1}</div>
-          <div class="podium-avatar">${initials}</div>
-          <div class="podium-name">${p.name}</div>
-          <div class="podium-club">${p.club || 'Independen'}</div>
-          <div class="podium-score-badge">${p.totalScore} Poin</div>
-        `;
-        container.appendChild(box);
-      });
     }
 
     function switchRole(role) {
@@ -856,44 +790,16 @@
       if (mobPicker) mobPicker.value = currentRole;
     });
 
-    function renderLeaderboardTable() {
-      const tbody = document.getElementById('lb-table-body');
-      tbody.innerHTML = '';
-      appConfig.participants.forEach((p, idx) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td style="width: 12%;"><strong>#${idx + 1}</strong></td>
-          <td style="width: 38%;">
-            <strong style="color:#0f172a; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</strong>
-            <span style="font-size:0.7rem; color:#64748b; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.club || 'Independen'}</span>
-          </td>
-          <td style="text-align:center; width: 16%;">
-            <span style="background:#fef3c7; color:#b45309; padding:2px 6px; border-radius:6px; font-weight:800; font-size:0.75rem; white-space:nowrap;">${p.totalX}X</span>
-          </td>
-          <td style="text-align:right; font-weight:800; color:#4f46e5; font-size: 0.9rem; width: 18%; white-space:nowrap;">${p.totalScore}</td>
-          <td style="text-align:center; width: 16%;">
-            <button class="btn-detail-icon" onclick="openDetailModal(${idx})"><i class="fa-solid fa-list"></i> Detail</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
     function openDetailModal(pIdx) {
       const p = appConfig.participants[pIdx];
       document.getElementById('modal-archer-title').innerText = `Rincian: ${p.name}`;
       const listContainer = document.getElementById('modal-end-list');
       listContainer.innerHTML = '';
-      if(p.scores.length === 0) {
-        listContainer.innerHTML = `<p style="font-size:0.85rem; color:#64748b; text-align:center;">Belum ada data rambahan.</p>`;
-      } else {
+      if(p.scores.length === 0) listContainer.innerHTML = `<p style="font-size:0.85rem; color:#64748b; text-align:center;">Belum ada data rambahan.</p>`;
+      else {
         p.scores.forEach((endArr, eIdx) => {
           let endSum = 0;
-          endArr.forEach(score => {
-            if(score === 'X') endSum += 10;
-            else if(score === 'M') endSum += 0;
-            else endSum += parseInt(score);
-          });
+          endArr.forEach(score => { endSum += (score === 'X' ? 10 : (score === 'M' ? 0 : parseInt(score))); });
           const row = document.createElement('div');
           row.className = 'end-row';
           row.innerHTML = `<div class="end-label">End ${eIdx + 1}</div><div class="end-dots">${endArr.join(' • ')}</div><div class="end-total">${endSum} Poin</div>`;
@@ -904,7 +810,32 @@
     }
 
     function closeDetailModal() { document.getElementById('modal-detail').classList.remove('active'); }
-    function restartToSetup() { localStorage.removeItem('archeryConfig'); window.location.replace('home.html'); }
+
+    function restartToSetup() {
+      const accountKey = getCurrentAccountKey();
+
+      if (appConfig && Array.isArray(appConfig.participants) && appConfig.participants.length > 0) {
+        const preservedParticipants = appConfig.participants.map(p => ({
+          name: p.name,
+          club: p.club || 'Independen',
+          bantalan: p.bantalan || 'Bantalan 1',
+          sesi: p.sesi || 'Sesi 1',
+          scores: []
+        }));
+
+        // Simpan daftar peserta HANYA ke kunci milik akun yang sedang login
+        localStorage.setItem(`savedParticipants_${accountKey}`, JSON.stringify(preservedParticipants));
+        
+        appConfig.participants = preservedParticipants;
+        delete appConfig.isSavedToHistory;
+        delete appConfig.activeLiveInput;
+        localStorage.setItem(`archeryConfig_${accountKey}`, JSON.stringify(appConfig));
+      }
+
+      // Hapus kunci umum sementara agar tidak terbaca saat berpindah ke akun lain
+      localStorage.removeItem('archeryConfig');
+      window.location.replace('home.html');
+    }
 
     initScoring();
   </script>
