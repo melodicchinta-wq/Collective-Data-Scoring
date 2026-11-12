@@ -621,47 +621,67 @@
     }
 
     function scanAllSessions() {
-      let configs = [];
-      let seenFingerprints = new Set();
-      let sessionCounter = 0;
+  let configs = [];
+  let seenFingerprints = new Set();
+  let sessionCounter = 0;
 
-      let keys = [];
-      for (let i = 0; i < localStorage.length; i++) { keys.push(localStorage.key(i)); }
-      keys.sort((a, b) => { if (a === 'archeryConfig') return 1; if (b === 'archeryConfig') return -1; return a.localeCompare(b); });
+  let keys = [];
+  for (let i = 0; i < localStorage.length; i++) { keys.push(localStorage.key(i)); }
+  keys.sort((a, b) => { if (a === 'archeryConfig') return 1; if (b === 'archeryConfig') return -1; return a.localeCompare(b); });
 
-      const addUniqueSession = (uniqueKey, item) => {
-        if (!isValidSessionObject(item)) return;
-        const fingerprint = getSessionFingerprint(item);
-        if (seenFingerprints.has(fingerprint)) return;
-        seenFingerprints.add(fingerprint);
-        sessionCounter++;
-        let count = Array.isArray(item.participants) ? item.participants.length : 0;
-        let title = item.eventName || `Turnamen Sesi ${sessionCounter}`;
-        configs.push({
-          uniqueKey: uniqueKey,
-          label: `${title} • ${item.busur || 'Standard'} (${item.jarak || '-'}) [${count} Peserta]`,
-          data: item
-        });
-      };
+  const addUniqueSession = (uniqueKey, item) => {
+    if (!isValidSessionObject(item)) return;
+    const fingerprint = getSessionFingerprint(item);
+    if (seenFingerprints.has(fingerprint)) return;
+    seenFingerprints.add(fingerprint);
+    sessionCounter++;
+    let count = Array.isArray(item.participants) ? item.participants.length : 0;
+    let title = item.eventName || `Turnamen Sesi ${sessionCounter}`;
+    configs.push({
+      uniqueKey: uniqueKey,
+      label: `${title} • ${item.busur || 'Standard'} (${item.jarak || '-'}) [${count} Peserta]`,
+      data: item
+    });
+  };
 
-      keys.forEach((key) => {
-        if (key === 'publicSelectedSessionKey' || key === 'archeryDatabase' || key === 'archerySavedProfiles' || key === 'activeArcheryUser' || key.startsWith('savedParticipants_') || key.startsWith('archeryRentalExpiry_')) return;
-        if (key === 'archeryConfig' || key.startsWith('archeryConfig_') || key.startsWith('archeryHistory_') || key.toLowerCase().includes('archery')) {
-          try {
-            let raw = localStorage.getItem(key);
-            if (!raw) return;
-            let data = JSON.parse(raw);
-            if (Array.isArray(data)) {
-              data.forEach((item, idx) => { addUniqueSession(`${key}__arr_${idx}`, item); });
-            } else if (isValidSessionObject(data)) {
-              addUniqueSession(key, data);
-            } else if (data && typeof data === 'object') {
-              Object.keys(data).forEach((subKey) => { addUniqueSession(`${key}__sub_${subKey}`, data[subKey]); });
+  keys.forEach((key) => {
+    if (key === 'publicSelectedSessionKey' || key === 'archeryDatabase' || key === 'archerySavedProfiles' || key === 'activeArcheryUser' || key.startsWith('savedParticipants_') || key.startsWith('archeryRentalExpiry_')) return;
+    
+    // --- PERBAIKAN DI SINI ---
+    // Tangkap semua key yang berawalan 'archeryConfig_' dan 'archeryHistory_'
+    if (key === 'archeryConfig' || key.startsWith('archeryConfig_') || key.startsWith('archeryHistory_')) {
+      try {
+        let raw = localStorage.getItem(key);
+        if (!raw) return;
+        let data = JSON.parse(raw);
+        
+        // Jika datanya berupa Array (seperti archeryHistory_email@...)
+        if (Array.isArray(data)) {
+          data.forEach((item, idx) => { 
+            // Hanya ambil data yang memiliki properti 'participants' (bukan data config)
+            if (item && item.participants) {
+              addUniqueSession(`${key}__arr_${idx}`, item); 
             }
-          } catch (e) {}
+          });
+        } 
+        // Jika datanya Object tunggal
+        else if (isValidSessionObject(data)) {
+          addUniqueSession(key, data);
+        } 
+        // Jika datanya Object berisi sub-object
+        else if (data && typeof data === 'object') {
+          Object.keys(data).forEach((subKey) => { 
+            if (data[subKey] && data[subKey].participants) {
+              addUniqueSession(`${key}__sub_${subKey}`, data[subKey]); 
+            }
+          });
         }
-      });
-      return configs;
+      } catch (e) {
+        console.error("Gagal membaca data dari key:", key, e);
+      }
+    }
+  });
+  return configs;
     }
 
     function updateDropdownOptions(sessions) {
