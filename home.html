@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -95,6 +94,12 @@
     .nav-links-desktop a:hover, .nav-links-desktop a.active {
       background-color: #18191c;
       color: #ffffff;
+    }
+
+    .header-right-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .user-profile-header {
@@ -477,11 +482,13 @@
       </div>
     </nav>
 
-    <div class="user-profile-header">
-      <div class="user-avatar" id="user-avatar-box">A</div>
-      <div style="display: flex; flex-direction: column; line-height: 1.2;">
-        <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;" id="user-name-text">Archer Pro</span>
-        <span style="font-size: 0.7rem; color: #64748b; font-weight: 600;" id="user-club-text">Klub Panahan</span>
+    <div class="header-right-actions">
+      <div class="user-profile-header">
+        <div class="user-avatar" id="user-avatar-box">A</div>
+        <div style="display: flex; flex-direction: column; line-height: 1.2;">
+          <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;" id="user-name-text">Archer Pro</span>
+          <span style="font-size: 0.7rem; color: #64748b; font-weight: 600;" id="user-club-text">Klub Panahan</span>
+        </div>
       </div>
     </div>
   </header>
@@ -515,8 +522,10 @@
       </nav>
     </div>
 
-    <div style="font-size: 0.75rem; color: #64748b; text-align: center;">
-      <p>&copy; 2026 Archery Tool</p>
+    <div>
+      <div style="font-size: 0.75rem; color: #64748b; text-align: center;">
+        <p>&copy; 2026 Archery Tool</p>
+      </div>
     </div>
   </aside>
 
@@ -629,6 +638,11 @@
             <button type="button" class="btn-link" onclick="addParticipantRow()" style="background: #18191c; color:#ffffff; padding:8px 14px; border-radius:10px; text-decoration:none; white-space: nowrap;">+ Manual</button>
           </div>
         </div>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+          <button type="button" class="btn-link" onclick="openModal('bantalan')" style="font-size: 0.8rem; background: #f8fafc; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 8px;"><i class="fa-solid fa-bullseye"></i> + Kelola Opsi Bantalan</button>
+          <button type="button" class="btn-link" onclick="openModal('sesi')" style="font-size: 0.8rem; background: #f8fafc; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 8px;"><i class="fa-solid fa-layer-group"></i> + Kelola Opsi Sesi</button>
+        </div>
         
         <div id="participant-list"></div>
       </div>
@@ -643,7 +657,7 @@
   <div class="modal" id="modal-crud">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h3 id="modal-title" style="font-size: 1.1rem; font-weight: 800; color: #0f172a;">Kelola Kategori</h3>
+        <h3 id="modal-title" style="font-size: 1.1rem; font-weight: 800; color: #0f172a;">Kelola Opsi</h3>
         <button onclick="closeModal()" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:#64748b;"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
@@ -659,12 +673,18 @@
     </div>
   </div>
 
-  <script src="auth.js"></script>
-
   <script>
     let activeType = '';
     let isSoloMode = false;
     
+    // Master opsi default untuk Bantalan dan Sesi
+    let masterBantalan = ["Bantalan 1", "Bantalan 2", "Bantalan 3", "Bantalan 4", "Bantalan 5"];
+    let masterSesi = ["Sesi 1", "Sesi 2", "Sesi 3"];
+
+    function getCurrentAccountKey() {
+      return 'default_user';
+    }
+
     function toggleMobileSidebar() {
       document.getElementById('mobile-sidebar').classList.toggle('active');
       document.getElementById('mobile-overlay').classList.toggle('active');
@@ -697,24 +717,21 @@
       element.classList.add('active');
     }
 
-    function addParticipantRow(nama = '', klub = '') {
+    function addParticipantRow(nama = '', klub = '', defaultBantalan = '', defaultSesi = '') {
       const list = document.getElementById('participant-list');
       if (!list) return;
       
       const row = document.createElement('div');
       row.className = 'participant-row';
+      
+      let bantalanOptions = masterBantalan.map(b => `<option value="${b}" ${b === defaultBantalan ? 'selected' : ''}>${b}</option>`).join('');
+      let sesiOptions = masterSesi.map(s => `<option value="${s}" ${s === defaultSesi ? 'selected' : ''}>${s}</option>`).join('');
+
       row.innerHTML = `
         <input type="text" class="form-control p-name" placeholder="Nama Pemanah" value="${nama}">
         <input type="text" class="form-control p-club" placeholder="Nama Klub" value="${klub}">
-        <select class="form-control" title="Nomor Bantalan">
-          <option>Bantalan 1</option>
-          <option>Bantalan 2</option>
-          <option>Bantalan 3</option>
-        </select>
-        <select class="form-control" title="Sesi">
-          <option>Sesi 1</option>
-          <option>Sesi 2</option>
-        </select>
+        <select class="form-control p-bantalan" title="Nomor Bantalan">${bantalanOptions}</select>
+        <select class="form-control p-sesi" title="Sesi">${sesiOptions}</select>
         <button type="button" class="btn-danger" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i> Hapus</button>
       `;
       list.appendChild(row);
@@ -758,10 +775,14 @@
       const modal = document.getElementById('modal-crud');
       const title = document.getElementById('modal-title');
       document.getElementById('modal-input').value = '';
+      
       if(type === 'busur') title.innerText = 'Kelola Jenis Busur';
       if(type === 'jarak') title.innerText = 'Kelola Jarak Tembak';
       if(type === 'arrow') title.innerText = 'Kelola Arrow per Rambahan';
       if(type === 'rambahan') title.innerText = 'Kelola Jumlah Rambahan';
+      if(type === 'bantalan') title.innerText = 'Kelola Opsi Bantalan';
+      if(type === 'sesi') title.innerText = 'Kelola Opsi Sesi';
+      
       renderModalItems();
       modal.classList.add('active');
     }
@@ -773,6 +794,7 @@
     function renderModalItems() {
       const itemList = document.getElementById('modal-item-list');
       itemList.innerHTML = '';
+      
       if(activeType === 'busur' || activeType === 'arrow' || activeType === 'rambahan') {
         const selectId = activeType === 'busur' ? 'select-busur' : (activeType === 'arrow' ? 'select-arrow' : 'select-rambahan');
         const selectElem = document.getElementById(selectId);
@@ -780,6 +802,20 @@
           const div = document.createElement('div');
           div.className = 'modal-item';
           div.innerHTML = `<span>${opt.value}</span> <button onclick="deleteOption('${selectId}', '${opt.value}')" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>`;
+          itemList.appendChild(div);
+        });
+      } else if(activeType === 'bantalan') {
+        masterBantalan.forEach(b => {
+          const div = document.createElement('div');
+          div.className = 'modal-item';
+          div.innerHTML = `<span>${b}</span> <button onclick="deleteCustomOption('bantalan', '${b}')" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>`;
+          itemList.appendChild(div);
+        });
+      } else if(activeType === 'sesi') {
+        masterSesi.forEach(s => {
+          const div = document.createElement('div');
+          div.className = 'modal-item';
+          div.innerHTML = `<span>${s}</span> <button onclick="deleteCustomOption('sesi', '${s}')" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>`;
           itemList.appendChild(div);
         });
       } else if(activeType === 'jarak') {
@@ -796,9 +832,14 @@
     function saveNewCategory() {
       const val = document.getElementById('modal-input').value.trim();
       if(!val) return alert('Isi teks dulu ya!');
+      
       if(activeType === 'busur' || activeType === 'arrow' || activeType === 'rambahan') {
         const selectId = activeType === 'busur' ? 'select-busur' : (activeType === 'arrow' ? 'select-arrow' : 'select-rambahan');
         document.getElementById(selectId).add(new Option(val, val, true, true));
+      } else if(activeType === 'bantalan') {
+        if(!masterBantalan.includes(val)) masterBantalan.push(val);
+      } else if(activeType === 'sesi') {
+        if(!masterSesi.includes(val)) masterSesi.push(val);
       } else if(activeType === 'jarak') {
         const gridJarak = document.getElementById('grid-jarak');
         const newBtn = document.createElement('button');
@@ -820,6 +861,12 @@
       renderModalItems();
     }
 
+    function deleteCustomOption(type, val) {
+      if(type === 'bantalan') masterBantalan = masterBantalan.filter(b => b !== val);
+      if(type === 'sesi') masterSesi = masterSesi.filter(s => s !== val);
+      renderModalItems();
+    }
+
     function deleteJarakButton(labelText) {
       document.querySelectorAll('#grid-jarak .btn-option').forEach(btn => {
         if(btn.innerText === labelText) btn.remove();
@@ -837,22 +884,6 @@
       }
     }
 
-    function loadActiveUserProfile() {
-      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
-      if (activeUser) {
-        const nameText = document.getElementById('user-name-text');
-        const clubText = document.getElementById('user-club-text');
-        const avatarBox = document.getElementById('user-avatar-box');
-        
-        if (nameText && activeUser.name) nameText.innerText = activeUser.name;
-        if (clubText && activeUser.club) clubText.innerText = activeUser.club;
-        if (avatarBox && activeUser.name) {
-          const initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-          avatarBox.innerText = initials || 'A';
-        }
-      }
-    }
-
     document.addEventListener("DOMContentLoaded", function() {
       const path = window.location.pathname;
       let currentRole = 'admin';
@@ -867,17 +898,57 @@
       if (deskPicker) deskPicker.value = currentRole;
       if (mobPicker) mobPicker.value = currentRole;
 
-      loadActiveUserProfile();
+      const accountKey = getCurrentAccountKey();
+      const savedConfig = JSON.parse(localStorage.getItem(`archeryConfig_${accountKey}`));
+      const savedParticipants = JSON.parse(localStorage.getItem(`savedParticipants_${accountKey}`));
 
-      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
       const list = document.getElementById('participant-list');
-      if (list && list.children.length === 0) {
-        addParticipantRow(activeUser ? activeUser.name : 'Pemanah Utama', activeUser ? activeUser.club : 'Independen');
+      if (list) {
+        list.innerHTML = '';
+        if (savedParticipants && savedParticipants.length > 0) {
+          savedParticipants.forEach(p => {
+            if (p.bantalan && !masterBantalan.includes(p.bantalan)) masterBantalan.push(p.bantalan);
+            if (p.sesi && !masterSesi.includes(p.sesi)) masterSesi.push(p.sesi);
+            addParticipantRow(p.name, p.club || 'Independen', p.bantalan || 'Bantalan 1', p.sesi || 'Sesi 1');
+          });
+        } else {
+          addParticipantRow('Pemanah Utama', 'Independen');
+        }
+      }
+
+      if (savedConfig) {
+        if (savedConfig.eventName && !savedConfig.eventName.startsWith('Latihan Solo')) {
+          document.getElementById('event-name').value = savedConfig.eventName;
+        }
+        if (savedConfig.location) document.getElementById('event-location').value = savedConfig.location;
+        if (savedConfig.busur) {
+          const selectBusur = document.getElementById('select-busur');
+          const exists = Array.from(selectBusur.options).some(o => o.value === savedConfig.busur);
+          if (!exists) selectBusur.add(new Option(savedConfig.busur, savedConfig.busur));
+          selectBusur.value = savedConfig.busur;
+        }
+        if (savedConfig.arrowCount) {
+          const selectArrow = document.getElementById('select-arrow');
+          const exists = Array.from(selectArrow.options).some(o => String(o.value) === String(savedConfig.arrowCount));
+          if (!exists) selectArrow.add(new Option(savedConfig.arrowCount, savedConfig.arrowCount));
+          selectArrow.value = savedConfig.arrowCount;
+        }
+        if (savedConfig.totalEnd) {
+          const selectRambahan = document.getElementById('select-rambahan');
+          const exists = Array.from(selectRambahan.options).some(o => String(o.value) === String(savedConfig.totalEnd));
+          if (!exists) selectRambahan.add(new Option(savedConfig.totalEnd, savedConfig.totalEnd));
+          selectRambahan.value = savedConfig.totalEnd;
+        }
+        if (savedConfig.jarak) {
+          document.querySelectorAll('#grid-jarak .btn-option').forEach(btn => {
+            btn.classList.toggle('active', btn.innerText === savedConfig.jarak);
+          });
+        }
       }
     });
 
     function goToScoring() {
-      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser')) || { name: 'Pemanah Solo', club: 'Independen', email: 'umum@gmail.com' };
+      const accountKey = getCurrentAccountKey();
       const activeJarakBtn = document.querySelector('#grid-jarak .btn-option.active');
       const jarakVal = activeJarakBtn ? activeJarakBtn.innerText : '18 m';
       
@@ -885,21 +956,33 @@
 
       if (isSoloMode) {
         participants.push({
-          name: activeUser.name,
-          club: activeUser.club || 'Independen',
+          name: 'Pemanah Solo',
+          club: 'Independen',
+          bantalan: 'Bantalan 1',
+          sesi: 'Sesi 1',
           scores: []
         });
       } else {
         const names = document.querySelectorAll('.p-name');
         const clubs = document.querySelectorAll('.p-club');
+        const bantalans = document.querySelectorAll('.p-bantalan');
+        const sesis = document.querySelectorAll('.p-sesi');
+
         for(let i=0; i<names.length; i++) {
           if(names[i].value.trim() !== '') {
             participants.push({
               name: names[i].value.trim(),
               club: clubs[i].value.trim() || 'Independen',
+              bantalan: bantalans[i] ? bantalans[i].value : 'Bantalan 1',
+              sesi: sesis[i] ? sesis[i].value : 'Sesi 1',
               scores: []
             });
           }
+        }
+
+        if (participants.length > 0) {
+          const cleanRoster = participants.map(({ name, club, bantalan, sesi }) => ({ name, club, bantalan, sesi }));
+          localStorage.setItem(`savedParticipants_${accountKey}`, JSON.stringify(cleanRoster));
         }
       }
 
@@ -909,7 +992,8 @@
       }
 
       const config = {
-        eventName: isSoloMode ? `Latihan Solo - ${activeUser.name}` : (document.getElementById('event-name').value || 'Internal Match'),
+        ownerAccount: accountKey,
+        eventName: isSoloMode ? `Latihan Solo` : (document.getElementById('event-name').value || 'Internal Match'),
         location: document.getElementById('event-location') ? document.getElementById('event-location').value : 'Lapangan Panahan',
         busur: document.getElementById('select-busur').value,
         jarak: jarakVal,
@@ -918,11 +1002,7 @@
         participants: participants
       };
 
-      // Simpan menggunakan kunci unik berdasarkan email akun yang sedang login
-      const userEmail = activeUser.email ? activeUser.email.toLowerCase() : 'umum';
-      localStorage.setItem(`archeryConfig_${userEmail}`, JSON.stringify(config));
-      
-      // Simpan juga ke kunci umum agar scoring tetap berjalan lancar
+      localStorage.setItem(`archeryConfig_${accountKey}`, JSON.stringify(config));
       localStorage.setItem('archeryConfig', JSON.stringify(config));
 
       window.location.href = 'scoring.html';
