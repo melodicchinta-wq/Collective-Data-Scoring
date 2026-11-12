@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login & Verifikasi Masa Sewa - Archery Pro</title>
+  <title>Login & Verifikasi Akun Resmi - Archery Pro</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
@@ -24,14 +24,13 @@
     .btn-submit:hover { background-color: #0f172a; }
     
     .info-box { background: #e0e7ff; color: #3730a3; padding: 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; line-height: 1.4; margin-bottom: 20px; }
-/* bismillah bisa
-    /* TAMPILAN KARTU TAGIHAN KETIKA SEWA HABIS */
+
+    /* TAMPILAN KARTU TAGIHAN / AKUN BELUM TERDAFTAR */
     .invoice-card { text-align: center; }
     .invoice-icon { font-size: 2.5rem; margin-bottom: 8px; color: #f59e0b; }
     .bank-box { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 14px; padding: 12px; margin: 12px 0; text-align: left; font-size: 0.8rem; }
     .bank-item { display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: 700; color: #0f172a; }
     
-    /* STYLE QR CODE & TOMBOL WA */
     .qr-container { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 12px; margin: 12px 0; display: flex; flex-direction: column; align-items: center; }
     .qr-container img { width: 140px; height: 140px; border-radius: 8px; border: 4px solid #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
     
@@ -50,7 +49,7 @@
     <!-- FORM LOGIN UTAMA -->
     <div id="view-login">
       <div class="info-box">
-        <i class="fa-solid fa-circle-info"></i> Masuk dengan akun event / klub kamu untuk mulai mencatat skor panahan.
+        <i class="fa-solid fa-circle-info"></i> Masuk dengan email resmi yang sudah didaftarkan/diaktifkan oleh Admin.
       </div>
 
       <form onsubmit="handleLogin(event)">
@@ -60,7 +59,7 @@
         </div>
 
         <div class="form-group">
-          <label>Email Akun *</label>
+          <label>Email Akun Resmi *</label>
           <input type="email" id="login-email" class="form-control" placeholder="Contoh: bima@gmail.com" required>
         </div>
 
@@ -73,27 +72,26 @@
       </form>
     </div>
 
-    <!-- VIEW TAMPILAN TAGIHAN & QR CODE KETIKA MASA SEWA HABIS -->
+    <!-- VIEW TAMPILAN JIKA AKUN BELUM TERDAFTAR / KEDALUWARSA -->
     <div id="view-expired" class="invoice-card" style="display: none;">
-      <div class="invoice-icon">⏳</div>
-      <h2 style="color: #0f172a; font-weight: 800; font-size: 1.2rem; margin-bottom: 4px;">Masa Sewa Telah Habis</h2>
+      <div class="invoice-icon" id="status-icon">⏳</div>
+      <h2 id="status-title" style="color: #0f172a; font-weight: 800; font-size: 1.2rem; margin-bottom: 4px;">Akses Belum Terdaftar / Habis</h2>
       <p id="expired-desc" style="color: #64748b; font-size: 0.8rem; line-height: 1.4; margin-bottom: 10px;"></p>
 
       <div class="bank-box">
-        <div style="font-size: 0.7rem; color: #64748b; margin-bottom: 6px; font-weight: 700; text-transform: uppercase;">💳 Transfer Perpanjangan:</div>
+        <div style="font-size: 0.7rem; color: #64748b; margin-bottom: 6px; font-weight: 700; text-transform: uppercase;">💳 Pembayaran Sewa / Aktivasi:</div>
         <div class="bank-item"><span>Bank BJB:</span> <span style="color:#4f46e5;">1234-5678-9010</span></div>
         <div class="bank-item"><span>DANA / OVO:</span> <span style="color:#0284c7;">0812-3456-7890</span></div>
       </div>
 
       <!-- KOTAK QR CODE WHATSAPP -->
       <div class="qr-container">
-        <span style="font-size: 0.75rem; font-weight: 700; color: #334155; margin-bottom: 8px;"><i class="fa-solid fa-qrcode"></i> Scan QR untuk Konfirmasi WA:</span>
+        <span style="font-size: 0.75rem; font-weight: 700; color: #334155; margin-bottom: 8px;"><i class="fa-solid fa-qrcode"></i> Scan QR untuk Minta Akses WA:</span>
         <img id="qr-code-img" src="" alt="QR Code WhatsApp Admin">
       </div>
 
-      <!-- TOMBOL MENGGUNAKAN TAG A HREF STANDAR -->
       <a id="wa-link" href="#" target="_blank" class="btn-wa">
-        <i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i> Atau Klik Langsung ke WhatsApp
+        <i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i> Hubungi Admin untuk Aktivasi
       </a>
       <button type="button" class="btn-back" onclick="backToLogin()">← Kembali ke Menu Login</button>
     </div>
@@ -114,35 +112,48 @@
       const rentalKey = `archeryRentalExpiry_${email}`;
       let expiryTime = localStorage.getItem(rentalKey);
 
-      // Jika klien baru dan belum ada data sewa, berikan trial default 2 hari
       if (!expiryTime && role !== "admin") {
-        expiryTime = new Date().getTime() + (2 * 24 * 60 * 60 * 1000);
-        localStorage.setItem(rentalKey, expiryTime);
+        document.getElementById('view-login').style.display = 'none';
+        document.getElementById('view-expired').style.display = 'block';
+        
+        document.getElementById('status-icon').innerText = '🚫';
+        document.getElementById('status-title').innerText = 'Email Belum Terdaftar';
+        document.getElementById('expired-desc').innerHTML = `
+          Maaf, email <strong>${email}</strong> belum terdaftar di sistem lisensi resmi Archery Pro. Silakan lakukan pembayaran dan minta aktivasi akun ke Admin.
+        `;
+
+        const adminPhone = "6281234567890";
+        const waText = `Halo Admin, saya ingin mendaftar & mengaktifkan akun aplikasi Archery Pro:%0A- Nama: ${name}%0A- Email: ${email}%0A- Klub: ${club}%0A%0ABerikut saya lampirkan bukti pembayarannya.`;
+        
+        const finalWaUrl = `https://api.whatsapp.com/send?phone=${adminPhone}&text=${waText}`;
+        document.getElementById('wa-link').href = finalWaUrl;
+
+        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(finalWaUrl)}`;
+        document.getElementById('qr-code-img').src = qrApiUrl;
+        
+        return;
       }
 
       const currentTime = new Date().getTime();
 
-      // JIKA MASA SEWA HABIS (Kecuali Admin)
       if (role !== "admin" && currentTime > parseInt(expiryTime)) {
         const expiredDateStr = new Date(parseInt(expiryTime)).toLocaleDateString('id-ID', { dateStyle: 'full' });
         
         document.getElementById('view-login').style.display = 'none';
         document.getElementById('view-expired').style.display = 'block';
         
+        document.getElementById('status-icon').innerText = '⏳';
+        document.getElementById('status-title').innerText = 'Masa Sewa Telah Habis';
         document.getElementById('expired-desc').innerHTML = `
-          Masa aktif akun <strong>${name}</strong> (${email}) berakhir pada <em>${expiredDateStr}</em>. Silakan lakukan pembayaran dan scan QR di bawah.
+          Masa aktif akun <strong>${name}</strong> (${email}) berakhir pada <em>${expiredDateStr}</em>. Silakan lakukan pembayaran perpanjangan dan konfirmasi ke Admin.
         `;
 
-        const adminPhone = "6281234567890"; // Ganti dengan nomor WhatsApp kamu
+        const adminPhone = "6281234567890";
         const waText = `Halo Admin, saya ingin konfirmasi perpanjangan sewa aplikasi Archery Pro untuk akun:%0A- Nama: ${name}%0A- Email: ${email}%0A- Klub: ${club}%0A%0ABerikut saya lampirkan bukti pembayarannya.`;
         
-        // Menggunakan link API web WhatsApp resmi
         const finalWaUrl = `https://api.whatsapp.com/send?phone=${adminPhone}&text=${waText}`;
-
-        // Set langsung ke atribut href tag <a>
         document.getElementById('wa-link').href = finalWaUrl;
 
-        // Generate QR Code
         const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(finalWaUrl)}`;
         document.getElementById('qr-code-img').src = qrApiUrl;
         
@@ -152,11 +163,15 @@
       const activeUser = { name, email, club, role };
       localStorage.setItem('activeArcheryUser', JSON.stringify(activeUser));
 
+      // --- KUNCI PERBAIKANNYA DI SINI ---
+      // Jika yang login adalah Admin, paksa reset tampilan kembali ke "Mode Admin"
       if (role === "admin") {
+        localStorage.setItem('adminViewMode', 'admin'); // Reset ke mode admin
         alert("🔓 Login Berhasil! Anda masuk sebagai Admin Utama (Mimin).");
       } else {
         alert(`✨ Selamat datang, ${name}! Login berhasil.`);
       }
+      // ---------------------------------
 
       window.location.href = 'home.html';
     }
@@ -168,4 +183,3 @@
   </script>
 </body>
 </html>
-
