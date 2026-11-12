@@ -4,44 +4,424 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Public Scoreboard (Excel Style) - Archery Pro</title>
+  <title>Public Scoreboard - Archery Pro</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background-color: #f1f5f9; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body { 
+      background-color: #f1f5f9; 
+      color: #1e293b; 
+      min-height: 100vh; 
+      display: flex; 
+      flex-direction: column;
+      font-size: clamp(0.82rem, 1.5vw, 0.92rem);
+    }
 
     /* NAVBAR PUBLIK */
-    .public-navbar { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 14px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02); }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; color: #0f172a; }
-    .brand-icon { background-color: #18191c; color: #ffffff; padding: 6px 10px; border-radius: 12px; font-size: 1rem; }
+    .public-navbar { 
+      background-color: #ffffff; 
+      border-bottom: 1px solid #e2e8f0; 
+      padding: 12px 5%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand { 
+      display: flex; 
+      align-items: center; 
+      gap: 8px; 
+      font-weight: 800; 
+      font-size: clamp(1rem, 2.2vw, 1.2rem); 
+      color: #0f172a; 
+    }
+
+    .brand-icon { 
+      background-color: #18191c; 
+      color: #ffffff; 
+      padding: 5px 9px; 
+      border-radius: 10px; 
+      font-size: 0.95rem; 
+    }
+
+    .badge-public {
+      font-size: 0.68rem;
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
     
-    .btn-login-redirect { background: #4f46e5; color: white; padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+    .btn-login-redirect { 
+      background: #4f46e5; 
+      color: white; 
+      padding: 8px 14px; 
+      border-radius: 10px; 
+      font-weight: 700; 
+      font-size: clamp(0.75rem, 1.5vw, 0.85rem); 
+      text-decoration: none; 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
     .btn-login-redirect:hover { background: #4338ca; }
 
-    main { max-width: 1200px; width: 100%; margin: 0 auto; padding: 24px 16px; flex: 1; }
+    main { 
+      max-width: 1200px; 
+      width: 100%; 
+      margin: 0 auto; 
+      padding: clamp(16px, 3vw, 24px) 16px; 
+      flex: 1; 
+    }
 
-    /* KOTAK PEMBUNGKUS UNTUK SETIAP TABEL SESI */
-    .event-section-wrapper { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 16px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+    /* HEADER HALAMAN */
+    .page-header {
+      margin-bottom: 18px;
+    }
+    .page-header h1 {
+      font-size: clamp(1.15rem, 2.8vw, 1.5rem);
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.3;
+    }
+    .page-header p {
+      font-size: clamp(0.78rem, 1.6vw, 0.88rem);
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    /* CONTROL BAR (DROPDOWN, SEARCH & GOOGLE SHEETS) */
+    .control-panel {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr auto;
+      gap: 12px;
+      align-items: end;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .form-select, .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: clamp(0.8rem, 1.5vw, 0.88rem);
+      font-weight: 600;
+      color: #0f172a;
+      background-color: #f8fafc;
+      outline: none;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .form-select:focus, .form-input:focus {
+      border-color: #4f46e5;
+      background-color: #ffffff;
+    }
+
+    .btn-gsheets {
+      background: #0f9d58;
+      color: #ffffff;
+      border: none;
+      padding: 10px 18px;
+      height: 41px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: clamp(0.78rem, 1.5vw, 0.86rem);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .btn-gsheets:hover { background: #0b8043; }
+    .btn-gsheets:active { transform: scale(0.98); }
+    .btn-gsheets:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    /* KOTAK PEMBUNGKUS TABEL SESI */
+    .event-section-wrapper { 
+      background: #ffffff; 
+      border: 1px solid #cbd5e1; 
+      border-radius: 16px; 
+      padding: clamp(14px, 2.5vw, 20px); 
+      margin-bottom: 24px; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
+    }
 
     /* HEADER INFO EVENT */
-    .event-info-card { background: #18191c; color: #ffffff; border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-    .live-dot { width: 10px; height: 10px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 6px; animation: pulse 1.5s infinite; }
+    .event-info-card { 
+      background: #18191c; 
+      color: #ffffff; 
+      border-radius: 12px; 
+      padding: 14px 18px; 
+      margin-bottom: 16px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      flex-wrap: wrap; 
+      gap: 12px; 
+    }
+
+    .event-title {
+      font-size: clamp(0.98rem, 2vw, 1.15rem);
+      font-weight: 800;
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+
+    .event-meta {
+      font-size: clamp(0.72rem, 1.4vw, 0.8rem);
+      color: #94a3b8;
+      margin-top: 3px;
+    }
+
+    .live-dot { 
+      width: 8px; 
+      height: 8px; 
+      background-color: #22c55e; 
+      border-radius: 50%; 
+      display: inline-block; 
+      margin-right: 5px; 
+      animation: pulse 1.5s infinite; 
+    }
     @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-    /* TABEL GAYA EXCEL (SPREADSHEET STYLE) */
-    .excel-container { overflow-x: auto; }
-    .excel-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left; white-space: nowrap; }
-    .excel-table th { background-color: #f8fafc; color: #475569; padding: 10px 12px; border-bottom: 2px solid #cbd5e1; border-right: 1px solid #e2e8f0; font-weight: 800; text-transform: uppercase; }
-    .excel-table td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #f1f5f9; color: #334155; }
-    .excel-table tr:hover { background-color: #f8fafc; }
+    /* TABEL GAYA SPREADSHEET */
+    .excel-container { 
+      overflow-x: auto; 
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      max-height: 68vh;
+      -webkit-overflow-scrolling: touch;
+    }
 
-    .badge-x { background: #fef3c7; color: #b45309; padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 0.75rem; }
+    .excel-table { 
+      width: 100%; 
+      border-collapse: separate; 
+      border-spacing: 0;
+      font-size: clamp(0.75rem, 1.4vw, 0.84rem); 
+      text-align: left; 
+      white-space: nowrap; 
+    }
+
+    .excel-table th { 
+      background-color: #f8fafc; 
+      color: #475569; 
+      padding: 10px 12px; 
+      border-bottom: 2px solid #cbd5e1; 
+      border-right: 1px solid #e2e8f0; 
+      font-weight: 800; 
+      text-transform: uppercase;
+      font-size: clamp(0.68rem, 1.2vw, 0.75rem);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .excel-table td { 
+      padding: 9px 12px; 
+      border-bottom: 1px solid #e2e8f0; 
+      border-right: 1px solid #f1f5f9; 
+      color: #334155; 
+      background-color: #ffffff;
+    }
+
+    .excel-table tbody tr:hover td { 
+      background-color: #f1f5f9; 
+    }
+
+    /* Sticky kolom No & Nama di HP agar tidak hilang saat scroll horizontal */
+    .sticky-col-no {
+      position: sticky;
+      left: 0;
+      z-index: 5;
+      background-color: #f8fafc !important;
+      min-width: 40px;
+    }
+    .sticky-col-name {
+      position: sticky;
+      left: 40px;
+      z-index: 5;
+      border-right: 2px solid #cbd5e1 !important;
+    }
+    .excel-table th.sticky-col-no,
+    .excel-table th.sticky-col-name {
+      z-index: 15;
+    }
+
+    .badge-x { 
+      background: #fef3c7; 
+      color: #b45309; 
+      padding: 2px 6px; 
+      border-radius: 5px; 
+      font-weight: 800; 
+      font-size: 0.72rem; 
+    }
+
+    .arrow-detail {
+      color: #64748b;
+      font-size: 0.74rem;
+    }
+
+    .end-sum {
+      font-weight: 800;
+      color: #4f46e5;
+      margin-left: 3px;
+    }
+
+    /* MODAL PANDUAN GOOGLE SHEETS */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+    .modal-box {
+      background: #ffffff;
+      border-radius: 16px;
+      max-width: 480px;
+      width: 100%;
+      padding: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    }
+    .modal-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .tsv-preview-box {
+      width: 100%;
+      height: 110px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-family: monospace;
+      font-size: 0.75rem;
+      background: #f8fafc;
+      color: #1e293b;
+      resize: none;
+      margin-top: 8px;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .modal-steps {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin: 12px 0 16px;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: #166534;
+    }
+    .modal-steps ol {
+      padding-left: 18px;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+    .btn-modal-close {
+      background: #e2e8f0;
+      color: #334155;
+      border: none;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .btn-modal-copy {
+      background: #4f46e5;
+      color: #ffffff;
+      border: none;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-modal-open {
+      background: #0f9d58;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
     
-    @media (max-width: 768px) {
-      .public-navbar { padding: 12px 16px; }
-      .brand span { font-size: 1rem; }
+    /* RESPONSIVE BREAKPOINTS */
+    @media (max-width: 820px) {
+      .control-panel {
+        grid-template-columns: 1fr;
+      }
+      .btn-gsheets {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .public-navbar { padding: 10px 14px; }
+      .badge-public { display: none; }
+      .btn-login-redirect span { display: none; }
+      .btn-login-redirect::after { content: "Login"; }
+      .excel-table th, .excel-table td { padding: 8px 9px; }
     }
   </style>
 </head>
@@ -51,87 +431,318 @@
   <header class="public-navbar">
     <div class="brand">
       <div class="brand-icon">🎯</div>
-      <span>ARCHERY<span style="color:#6366f1;">PRO</span> <span style="font-size:0.75rem; background:#e0e7ff; color:#3730a3; padding:2px 8px; border-radius:6px; margin-left:6px;">PUBLIC VIEW</span></span>
+      <div>
+        ARCHERY<span style="color:#6366f1;">PRO</span>
+        <span class="badge-public">PUBLIC VIEW</span>
+      </div>
     </div>
-    <a href="login.html" class="btn-login-redirect"><i class="fa-solid fa-right-to-bracket"></i> Login Admin / Scorer</a>
+    <a href="index.html" class="btn-login-redirect">
+      <i class="fa-solid fa-right-to-bracket"></i> <span>Login Admin / Scorer</span>
+    </a>
   </header>
 
   <main>
-    <div style="margin-bottom: 20px;">
-      <h1 style="font-size: 1.4rem; font-weight: 800; color: #0f172a;">Live Rekap Seluruh Sesi Pertandingan</h1>
-      <p style="font-size: 0.85rem; color: #64748b;">Daftar papan skor seluruh turnamen atau klub dari semua akun yang aktif secara bersamaan.</p>
+    <div class="page-header">
+      <h1>Live Rekap Skor Pertandingan</h1>
+      <p>Pilih sesi turnamen pada dropdown di bawah untuk melihat papan skor atau menyalinnya ke Google Sheets.</p>
     </div>
 
-    <!-- CONTAINER UTAMA TEMPAT SEMUA TABEL SESI AKAN DIMUAT BERJEJER -->
+    <!-- PANEL FILTER DROPDOWN & GOOGLE SHEETS -->
+    <div class="control-panel">
+      <div class="control-group">
+        <label for="session-selector" class="control-label">
+          <i class="fa-solid fa-trophy" style="color:#4f46e5;"></i> Pilih Sesi Pertandingan
+        </label>
+        <select id="session-selector" class="form-select" onchange="handleSessionChange()">
+          <option value="">Memuat daftar sesi...</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="search-archer" class="control-label">
+          <i class="fa-solid fa-magnifying-glass" style="color:#64748b;"></i> Cari Nama / Klub
+        </label>
+        <input type="text" id="search-archer" class="form-input" placeholder="Ketik nama pemanah atau klub..." oninput="renderSelectedSession(true)">
+      </div>
+
+      <button id="btn-export" class="btn-gsheets" onclick="exportToGoogleSheets()" disabled>
+        <i class="fa-solid fa-table"></i> Salin ke Google Sheets
+      </button>
+    </div>
+
+    <!-- CONTAINER TABEL SESI TERPILIH -->
     <div id="all-events-container">
       <div style="text-align: center; color: #64748b; padding: 40px; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0;">
-        Memuat seluruh sesi pertandingan...
+        Memuat sesi pertandingan...
       </div>
     </div>
   </main>
 
-  <script>
-    // Fungsi untuk memindai dan merender SEMUA sesi dari seluruh akun secara bersamaan
-    function renderAllPublicExcelTables() {
-      const container = document.getElementById('all-events-container');
-      let configsToRender = [];
+  <!-- MODAL KONFIRMASI GOOGLE SHEETS -->
+  <div id="gsheets-modal" class="modal-overlay" onclick="if(event.target===this) closeModal()">
+    <div class="modal-box">
+      <div class="modal-title">
+        <i class="fa-solid fa-circle-check" style="color: #0f9d58; font-size: 1.3rem;"></i>
+        Siap Ditempel ke Google Sheets!
+      </div>
+      <p style="font-size: 0.8rem; color: #475569;">
+        Teks di bawah sudah disalin ke papan klip (clipboard). Google Sheets tidak terisi otomatis saat dibuka—Anda harus menekan <strong>Tempel (Paste)</strong> di dalam tabelnya:
+      </p>
 
-      // Scan seluruh localStorage untuk mencari berbagai bentuk penyimpanan sesi
+      <textarea id="tsv-preview" class="tsv-preview-box" readonly></textarea>
+
+      <div class="modal-steps">
+        <strong>Cara menempelkan ke Google Sheets:</strong>
+        <ol>
+          <li>Buka <strong>Google Sheets</strong> (lewat tombol di bawah atau aplikasi Google Sheets di HP).</li>
+          <li>Ketuk <strong>dua kali (double tap)</strong> pada kotak/sel <strong>A1</strong> sampai muncul menu pop-up.</li>
+          <li>Pilih <strong>Tempel (Paste)</strong>. Semua kolom dan skor langsung terisi otomatis!</li>
+        </ol>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-close" onclick="closeModal()">Tutup</button>
+        <button id="btn-recopy" class="btn-modal-copy" onclick="manualCopyFromBox()">
+          <i class="fa-regular fa-copy"></i> Salin Teks
+        </button>
+        <a href="https://docs.google.com/spreadsheets/u/0/create" target="_blank" rel="noopener" class="btn-modal-open">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Google Sheets
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allParsedSessions = [];
+    let selectedSessionKey = localStorage.getItem('publicSelectedSessionKey') || '';
+    let lastRenderedHash = '';
+
+    function closeModal() {
+      document.getElementById('gsheets-modal').style.display = 'none';
+    }
+
+    function copyTextSafely(text) {
+      const box = document.getElementById('tsv-preview');
+      box.value = text;
+      box.focus();
+      box.select();
+      box.setSelectionRange(0, 999999);
+      try {
+        document.execCommand('copy');
+      } catch (e) {}
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(() => {});
+      }
+    }
+
+    function manualCopyFromBox() {
+      const box = document.getElementById('tsv-preview');
+      copyTextSafely(box.value);
+      const btn = document.getElementById('btn-recopy');
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin!';
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fa-regular fa-copy"></i> Salin Teks';
+      }, 2000);
+    }
+
+    // Helper untuk memeriksa apakah objek merupakan konfigurasi sesi panahan yang valid
+    function isValidSessionObject(obj) {
+      if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return false;
+      return Boolean(
+        obj.eventName ||
+        (Array.isArray(obj.participants) && obj.participants.length > 0) ||
+        obj.busur ||
+        obj.jarak
+      );
+    }
+
+    // 1. Memindai SELURUH sesi dari localStorage secara menyeluruh (tanpa melewatkan satu pun)
+    function scanAllSessions() {
+      let configs = [];
+      let sessionCounter = 0;
+
+      // Urutkan key localStorage terlebih dahulu agar urutan indeks konsisten
+      let keys = [];
       for (let i = 0; i < localStorage.length; i++) {
-        let key = localStorage.key(i);
-        
-        // Menangkap archeryConfig, archeryConfig_*, maupun riwayat sesi lain
-        if (key === 'archeryConfig' || key.startsWith('archeryConfig_') || key.startsWith('archeryHistory_')) {
+        keys.push(localStorage.key(i));
+      }
+      keys.sort();
+
+      keys.forEach((key) => {
+        // Lewati key internal pilihan dropdown sendiri
+        if (key === 'publicSelectedSessionKey') return;
+
+        // Tangkap semua key yang berhubungan dengan archeryConfig, archeryHistory, atau key panahan lainnya
+        if (
+          key === 'archeryConfig' ||
+          key.startsWith('archeryConfig_') ||
+          key.startsWith('archeryHistory_') ||
+          key.toLowerCase().includes('archery')
+        ) {
           try {
-            let data = JSON.parse(localStorage.getItem(key));
-            
-            // Jika data berupa array (riwayat), masukkan satu-satu
+            let raw = localStorage.getItem(key);
+            if (!raw) return;
+            let data = JSON.parse(raw);
+
+            // Kasus A: Data berupa Array berisi daftar sesi (misal archeryHistory_*)
             if (Array.isArray(data)) {
               data.forEach((item, idx) => {
-                if (item && (item.eventName || (item.participants && item.participants.length > 0))) {
-                  configsToRender.push({ key: `${key}_${idx}`, data: item });
+                if (isValidSessionObject(item)) {
+                  sessionCounter++;
+                  let count = Array.isArray(item.participants) ? item.participants.length : 0;
+                  let title = item.eventName || `Turnamen Sesi ${sessionCounter}`;
+                  configs.push({
+                    uniqueKey: `${key}__arr_${idx}`,
+                    label: `${title} • ${item.busur || 'Standard'} (${item.jarak || '-'}) [${count} Peserta]`,
+                    data: item
+                  });
                 }
               });
-            } 
-            // Jika data berupa objek tunggal konfigurasi
-            else if (data && (data.eventName || (data.participants && data.participants.length > 0))) {
-              configsToRender.push({ key: key, data: data });
             }
-          } catch(e) {}
+            // Kasus B: Data berupa Objek Tunggal sesi
+            else if (isValidSessionObject(data)) {
+              sessionCounter++;
+              let count = Array.isArray(data.participants) ? data.participants.length : 0;
+              let title = data.eventName || `Turnamen Sesi ${sessionCounter}`;
+              configs.push({
+                uniqueKey: key,
+                label: `${title} • ${data.busur || 'Standard'} (${data.jarak || '-'}) [${count} Peserta]`,
+                data: data
+              });
+            }
+            // Kasus C: Data berupa Objek Map berisi beberapa sub-sesi di dalamnya
+            else if (data && typeof data === 'object') {
+              Object.keys(data).forEach((subKey) => {
+                let item = data[subKey];
+                if (isValidSessionObject(item)) {
+                  sessionCounter++;
+                  let count = Array.isArray(item.participants) ? item.participants.length : 0;
+                  let title = item.eventName || subKey || `Turnamen Sesi ${sessionCounter}`;
+                  configs.push({
+                    uniqueKey: `${key}__sub_${subKey}`,
+                    label: `${title} • ${item.busur || 'Standard'} (${item.jarak || '-'}) [${count} Peserta]`,
+                    data: item
+                  });
+                }
+              });
+            }
+          } catch (e) {}
         }
-      }
+      });
 
-      // Jika sama sekali belum ada data pertandingan dari akun manapun
-      if (configsToRender.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; color: #64748b; padding: 40px; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0;">
-            <i class="fa-solid fa-folder-open" style="font-size: 2.5rem; margin-bottom: 10px; color: #cbd5e1;"></i>
-            <p style="font-weight: 700;">Belum ada sesi pertandingan aktif yang tersimpan.</p>
-            <p style="font-size: 0.8rem; margin-top: 4px;">Silakan buat setup latihan/event terlebih dahulu melalui panel akun masing-masing.</p>
-          </div>
-        `;
+      return configs;
+    }
+
+    // 2. Memperbarui opsi dropdown hanya jika daftar sesi berubah
+    function updateDropdownOptions(sessions) {
+      const selector = document.getElementById('session-selector');
+      const btnExport = document.getElementById('btn-export');
+
+      if (sessions.length === 0) {
+        selector.innerHTML = `<option value="">-- Belum ada sesi tersedia --</option>`;
+        btnExport.disabled = true;
+        selectedSessionKey = '';
         return;
       }
 
+      btnExport.disabled = false;
+
+      const newSignature = sessions.map(s => `${s.uniqueKey}:${s.label}`).join('|');
+      if (selector.dataset.signature !== newSignature) {
+        let optionsHTML = '';
+        if (sessions.length > 1) {
+          optionsHTML += `<option value="ALL">📋 Tampilkan Semua Sesi (${sessions.length} Sesi)</option>`;
+        }
+        sessions.forEach(s => {
+          optionsHTML += `<option value="${s.uniqueKey}">${s.label}</option>`;
+        });
+        selector.innerHTML = optionsHTML;
+        selector.dataset.signature = newSignature;
+      }
+
+      const exists = sessions.some(s => s.uniqueKey === selectedSessionKey) || (selectedSessionKey === 'ALL' && sessions.length > 1);
+      if (!exists) {
+        selectedSessionKey = sessions[0].uniqueKey;
+        localStorage.setItem('publicSelectedSessionKey', selectedSessionKey);
+      }
+
+      selector.value = selectedSessionKey;
+    }
+
+    function handleSessionChange() {
+      const selector = document.getElementById('session-selector');
+      selectedSessionKey = selector.value;
+      localStorage.setItem('publicSelectedSessionKey', selectedSessionKey);
+      renderSelectedSession(true);
+    }
+
+    // 3. Menghitung skor & peringkat peserta
+    function calculateSessionRanking(config) {
+      let totalEnd = parseInt(config.totalEnd) || 5;
+      let participants = Array.isArray(config.participants) ? config.participants : [];
+
+      let list = participants.map((p) => {
+        let totalScore = 0;
+        let totalX = 0;
+        let endScoresSummary = [];
+
+        for (let i = 0; i < totalEnd; i++) {
+          let endArr = (p.scores && p.scores[i]) ? p.scores[i] : [];
+          let endSum = 0;
+          let formattedArrows = endArr.map(score => {
+            if (score === 'X') { totalScore += 10; totalX += 1; endSum += 10; return 'X'; }
+            else if (score === 'M') { endSum += 0; return 'M'; }
+            else { let val = parseInt(score) || 0; totalScore += val; endSum += val; return val; }
+          });
+          endScoresSummary.push({ arr: formattedArrows, sum: endSum });
+        }
+
+        return { ...p, totalScore, totalX, endScoresSummary };
+      });
+
+      list.sort((a, b) => b.totalScore - a.totalScore || b.totalX - a.totalX);
+      return list.map((item, idx) => ({ ...item, rank: idx + 1 }));
+    }
+
+    // 4. Merender tabel tanpa mereset posisi scroll horizontal/vertikal di HP
+    function renderSelectedSession(forceRender = false) {
+      const container = document.getElementById('all-events-container');
+      const searchKeyword = document.getElementById('search-archer').value.trim().toLowerCase();
+
+      allParsedSessions = scanAllSessions();
+      updateDropdownOptions(allParsedSessions);
+
+      if (allParsedSessions.length === 0) {
+        const emptyHTML = `
+          <div style="text-align: center; color: #64748b; padding: 40px 20px; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0;">
+            <i class="fa-solid fa-folder-open" style="font-size: 2.2rem; margin-bottom: 10px; color: #cbd5e1;"></i>
+            <p style="font-weight: 700; color: #334155;">Belum ada sesi pertandingan aktif yang tersimpan.</p>
+            <p style="font-size: 0.8rem; margin-top: 4px;">Silakan buat setup latihan/event terlebih dahulu melalui panel Admin / Scorer.</p>
+          </div>
+        `;
+        if (lastRenderedHash !== emptyHTML) {
+          container.innerHTML = emptyHTML;
+          lastRenderedHash = emptyHTML;
+        }
+        return;
+      }
+
+      const sessionsToRender = selectedSessionKey === 'ALL'
+        ? allParsedSessions
+        : allParsedSessions.filter(s => s.uniqueKey === selectedSessionKey);
+
       let masterHTML = '';
 
-      // Loop untuk membuat kotak tabel secara terpisah untuk setiap sesi
-      configsToRender.forEach((item, index) => {
+      sessionsToRender.forEach((item, index) => {
         let config = item.data;
         let eventName = config.eventName || `Turnamen Sesi ${index + 1}`;
-        let eventMeta = `${config.busur || 'Standard'} • ${config.jarak || '-'} • ${config.totalEnd || 5} Rambahan (${config.arrowCount || 3} Arrow per End)`;
+        let eventMeta = `${config.busur || 'Standard'} • ${config.jarak || '-'} • ${config.totalEnd || 5} Rambahan (${config.arrowCount || 3} Arrow/End)`;
         let eventLocation = config.location || 'Lapangan Utama';
         let totalEnd = parseInt(config.totalEnd) || 5;
 
-        if (!config.participants || config.participants.length === 0) {
-          return; 
-        }
-
-        // 1. BUAT HEADER TABEL GAYA EXCEL DINAMIS
         let headHTML = `
           <tr>
-            <th style="width: 40px; text-align:center;">No</th>
-            <th>Nama Pemanah</th>
+            <th class="sticky-col-no" style="width: 40px; text-align:center;">No</th>
+            <th class="sticky-col-name">Nama Pemanah</th>
             <th>Klub / Instansi</th>
         `;
         for (let i = 1; i <= totalEnd; i++) {
@@ -139,70 +750,68 @@
         }
         headHTML += `
             <th style="text-align:center; background:#e0e7ff; color:#3730a3;">10/X</th>
-            <th style="text-align:center; background:#dcfce7; color:#166534;">Total Skor</th>
+            <th style="text-align:center; background:#dcfce7; color:#166534;">Total</th>
           </tr>
         `;
 
-        // 2. PROSES & HITUNG SKOR PESERTA
-        let list = config.participants.map((p) => {
-          let totalScore = 0;
-          let totalX = 0;
-          let endScoresSummary = [];
+        let rankedList = calculateSessionRanking(config);
+        if (searchKeyword) {
+          rankedList = rankedList.filter(p =>
+            (p.name && p.name.toLowerCase().includes(searchKeyword)) ||
+            (p.club && p.club.toLowerCase().includes(searchKeyword))
+          );
+        }
 
-          for (let i = 0; i < totalEnd; i++) {
-            let endArr = (p.scores && p.scores[i]) ? p.scores[i] : [];
-            let endSum = 0;
-            let formattedArrows = endArr.map(score => {
-              if (score === 'X') { totalScore += 10; totalX += 1; endSum += 10; return 'X'; }
-              else if (score === 'M') { endSum += 0; return 'M'; }
-              else { let val = parseInt(score) || 0; totalScore += val; endSum += val; return val; }
-            });
-            endScoresSummary.push({ arr: formattedArrows, sum: endSum });
-          }
-
-          return { ...p, totalScore, totalX, endScoresSummary };
-        });
-
-        // Urutkan peringkat dari skor tertinggi
-        list.sort((a, b) => b.totalScore - a.totalScore || b.totalX - a.totalX);
-
-        // 3. RENDER ISI TABEL
         let bodyHTML = '';
-        list.forEach((p, idx) => {
-          bodyHTML += `
+        if (rankedList.length === 0) {
+          bodyHTML = `
             <tr>
-              <td style="text-align:center; font-weight:700; background:#f8fafc;">${idx + 1}</td>
-              <td><strong style="color:#0f172a;">${p.name}</strong></td>
-              <td><span style="color:#64748b;">${p.club}</span></td>
-          `;
-
-          p.endScoresSummary.forEach(end => {
-            let strArrows = end.arr.length > 0 ? end.arr.join(' | ') : '-';
-            bodyHTML += `<td style="text-align:center;">${strArrows} <span style="font-weight:700; color:#4f46e5; margin-left:4px;">(${end.sum})</span></td>`;
-          });
-
-          bodyHTML += `
-              <td style="text-align:center; font-weight:800;"><span class="badge-x">${p.totalX}X</span></td>
-              <td style="text-align:center; font-weight:800; color:#166534; background:#f0fdf4; font-size:0.9rem;">${p.totalScore}</td>
+              <td colspan="${totalEnd + 5}" style="text-align:center; padding: 24px; color:#64748b;">
+                ${searchKeyword 
+                  ? `Tidak ada pemanah atau klub yang cocok dengan pencarian "<strong>${searchKeyword}</strong>".`
+                  : `Belum ada peserta yang terdaftar pada sesi ini.`}
+              </td>
             </tr>
           `;
-        });
+        } else {
+          rankedList.forEach((p) => {
+            bodyHTML += `
+              <tr>
+                <td class="sticky-col-no" style="text-align:center; font-weight:700;">${p.rank}</td>
+                <td class="sticky-col-name"><strong style="color:#0f172a;">${p.name}</strong></td>
+                <td><span style="color:#64748b;">${p.club || '-'}</span></td>
+            `;
+
+            p.endScoresSummary.forEach(end => {
+              let strArrows = end.arr.length > 0 ? `<span class="arrow-detail">${end.arr.join(' | ')}</span>` : '<span class="arrow-detail">-</span>';
+              bodyHTML += `<td style="text-align:center;">${strArrows} <span class="end-sum">(${end.sum})</span></td>`;
+            });
+
+            bodyHTML += `
+                <td style="text-align:center; font-weight:800;"><span class="badge-x">${p.totalX}X</span></td>
+                <td style="text-align:center; font-weight:800; color:#166534; background:#f0fdf4;">${p.totalScore}</td>
+              </tr>
+            `;
+          });
+        }
 
         masterHTML += `
           <div class="event-section-wrapper">
             <div class="event-info-card">
               <div>
-                <span style="font-size: 0.7rem; font-weight: 800; color: #22c55e;"><span class="live-dot"></span> LIVE REKAP</span>
-                <h2 style="font-size: 1.1rem; font-weight: 800; margin-top: 2px;">${eventName}</h2>
-                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 2px;">${eventMeta}</p>
+                <span style="font-size: 0.68rem; font-weight: 800; color: #22c55e; letter-spacing:0.5px;">
+                  <span class="live-dot"></span> LIVE REKAP
+                </span>
+                <h2 class="event-title">${eventName}</h2>
+                <p class="event-meta">${eventMeta}</p>
               </div>
-              <div style="text-align: right;">
+              <div style="text-align: left;">
                 <span style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Lokasi</span>
-                <div style="font-weight: 700; font-size: 0.8rem;">${eventLocation}</div>
+                <div style="font-weight: 700; font-size: 0.82rem;">${eventLocation}</div>
               </div>
             </div>
 
-            <div class="excel-container">
+            <div class="excel-container" data-scroll-id="${item.uniqueKey}">
               <table class="excel-table">
                 <thead>${headHTML}</thead>
                 <tbody>${bodyHTML}</tbody>
@@ -212,16 +821,88 @@
         `;
       });
 
+      if (!forceRender && masterHTML === lastRenderedHash) {
+        return;
+      }
+
+      const scrollPositions = {};
+      container.querySelectorAll('.excel-container').forEach(el => {
+        const id = el.getAttribute('data-scroll-id');
+        if (id) {
+          scrollPositions[id] = { left: el.scrollLeft, top: el.scrollTop };
+        }
+      });
+
       container.innerHTML = masterHTML;
+      lastRenderedHash = masterHTML;
+
+      container.querySelectorAll('.excel-container').forEach(el => {
+        const id = el.getAttribute('data-scroll-id');
+        if (id && scrollPositions[id]) {
+          el.scrollLeft = scrollPositions[id].left;
+          el.scrollTop = scrollPositions[id].top;
+        }
+      });
     }
 
-    // Jalankan saat pertama kali dibuka & refresh otomatis tiap 2 detik
+    // 5. Salin format Tab-Separated (TSV) agar otomatis terbagi per kolom saat Paste di Google Sheets
+    function exportToGoogleSheets() {
+      if (allParsedSessions.length === 0) return;
+
+      const sessionsToExport = selectedSessionKey === 'ALL'
+        ? allParsedSessions
+        : allParsedSessions.filter(s => s.uniqueKey === selectedSessionKey);
+
+      if (sessionsToExport.length === 0) return;
+
+      let tsvLines = [];
+
+      sessionsToExport.forEach((item, idx) => {
+        let config = item.data;
+        let totalEnd = parseInt(config.totalEnd) || 5;
+        let rankedList = calculateSessionRanking(config);
+
+        if (idx > 0) {
+          tsvLines.push('');
+          tsvLines.push('');
+        }
+
+        tsvLines.push(`REKAP SKOR: ${config.eventName || 'Pertandingan Panahan'}`);
+        tsvLines.push(`Kategori: ${config.busur || 'Standard'} | Jarak: ${config.jarak || '-'} | Lokasi: ${config.location || 'Lapangan Utama'}`);
+        tsvLines.push('');
+
+        let headers = ['Peringkat', 'Nama Pemanah', 'Klub / Instansi'];
+        for (let i = 1; i <= totalEnd; i++) {
+          headers.push(`End ${i} (Skor)`);
+          headers.push(`End ${i} (Rincian)`);
+        }
+        headers.push('Jumlah 10/X', 'Total Skor');
+        tsvLines.push(headers.join('\t'));
+
+        rankedList.forEach(p => {
+          let row = [p.rank, p.name, p.club || '-'];
+          p.endScoresSummary.forEach(end => {
+            row.push(end.sum);
+            row.push(end.arr.length > 0 ? end.arr.join(', ') : '-');
+          });
+          row.push(p.totalX, p.totalScore);
+          tsvLines.push(row.join('\t'));
+        });
+      });
+
+      const finalTSV = tsvLines.join('\n');
+
+      document.getElementById('gsheets-modal').style.display = 'flex';
+      copyTextSafely(finalTSV);
+    }
+
+    // Inisialisasi & Auto-Refresh tiap 2 detik
     document.addEventListener("DOMContentLoaded", function() {
-      renderAllPublicExcelTables();
+      renderSelectedSession(true);
     });
 
     setInterval(() => {
-      renderAllPublicExcelTables();
+      renderSelectedSession(false);
     }, 2000);
   </script>
 </body>
