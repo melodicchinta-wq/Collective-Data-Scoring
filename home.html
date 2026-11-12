@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -472,6 +473,7 @@
       <a href="scoring.html"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
       <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
       <a href="pendaftaran.html"><i class="fa-solid fa-users"></i> Registrasi</a>
+      <a href="public_score.html"><i class="fa-solid fa-table"></i> Public Score</a>
 
       <div class="role-selector-wrapper">
         <select id="app-role-picker-desktop" class="role-select" onchange="switchRole(this.value)">
@@ -511,6 +513,7 @@
         <a href="scoring.html"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
         <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
         <a href="pendaftaran.html"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
+        <a href="public_score.html"><i class="fa-solid fa-table"></i> Public Score</a>
 
         <div class="role-selector-wrapper" style="margin-top: 10px;">
           <select id="app-role-picker-mobile" class="role-select" style="width: 100%;" onchange="switchRole(this.value)">
@@ -677,12 +680,29 @@
     let activeType = '';
     let isSoloMode = false;
     
-    // Master opsi default untuk Bantalan dan Sesi
     let masterBantalan = ["Bantalan 1", "Bantalan 2", "Bantalan 3", "Bantalan 4", "Bantalan 5"];
     let masterSesi = ["Sesi 1", "Sesi 2", "Sesi 3"];
 
     function getCurrentAccountKey() {
-      return 'default_user';
+      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
+      if (!activeUser || !activeUser.email) return 'default_user';
+      return String(activeUser.email).trim().toLowerCase().replace(/[^a-z0-9@._-]/g, '_');
+    }
+
+    function loadActiveUserProfile() {
+      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
+      if (activeUser) {
+        const nameText = document.getElementById('user-name-text');
+        const clubText = document.getElementById('user-club-text');
+        const avatarBox = document.getElementById('user-avatar-box');
+
+        if (nameText && activeUser.name) nameText.innerText = activeUser.name;
+        if (clubText && activeUser.club) clubText.innerText = activeUser.club;
+        if (avatarBox && activeUser.name) {
+          const initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+          avatarBox.innerText = initials || 'A';
+        }
+      }
     }
 
     function toggleMobileSidebar() {
@@ -885,6 +905,10 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
+      console.log("Data User:", localStorage.getItem('activeArcheryUser')); // <--- TAMBAHKAN INI
+loadActiveUserProfile();
+      loadActiveUserProfile();
+
       const path = window.location.pathname;
       let currentRole = 'admin';
       
@@ -898,6 +922,7 @@
       if (deskPicker) deskPicker.value = currentRole;
       if (mobPicker) mobPicker.value = currentRole;
 
+      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
       const accountKey = getCurrentAccountKey();
       const savedConfig = JSON.parse(localStorage.getItem(`archeryConfig_${accountKey}`));
       const savedParticipants = JSON.parse(localStorage.getItem(`savedParticipants_${accountKey}`));
@@ -912,7 +937,10 @@
             addParticipantRow(p.name, p.club || 'Independen', p.bantalan || 'Bantalan 1', p.sesi || 'Sesi 1');
           });
         } else {
-          addParticipantRow('Pemanah Utama', 'Independen');
+          addParticipantRow(
+            activeUser ? activeUser.name : 'Pemanah Utama',
+            activeUser ? (activeUser.club || 'Independen') : 'Independen'
+          );
         }
       }
 
@@ -948,6 +976,7 @@
     });
 
     function goToScoring() {
+      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser')) || { name: 'Pemanah Solo', club: 'Independen' };
       const accountKey = getCurrentAccountKey();
       const activeJarakBtn = document.querySelector('#grid-jarak .btn-option.active');
       const jarakVal = activeJarakBtn ? activeJarakBtn.innerText : '18 m';
@@ -956,8 +985,8 @@
 
       if (isSoloMode) {
         participants.push({
-          name: 'Pemanah Solo',
-          club: 'Independen',
+          name: activeUser.name,
+          club: activeUser.club || 'Independen',
           bantalan: 'Bantalan 1',
           sesi: 'Sesi 1',
           scores: []
@@ -993,7 +1022,7 @@
 
       const config = {
         ownerAccount: accountKey,
-        eventName: isSoloMode ? `Latihan Solo` : (document.getElementById('event-name').value || 'Internal Match'),
+        eventName: isSoloMode ? `Latihan Solo - ${activeUser.name}` : (document.getElementById('event-name').value || 'Internal Match'),
         location: document.getElementById('event-location') ? document.getElementById('event-location').value : 'Lapangan Panahan',
         busur: document.getElementById('select-busur').value,
         jarak: jarakVal,
