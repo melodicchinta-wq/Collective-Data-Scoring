@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -42,7 +43,6 @@
       display: none; background: #f1f5f9; border: 1px solid #cbd5e1;
       border-radius: 10px; padding: 3px; gap: 4px; align-items: center;
     }
-    /* Class ini hanya ditambahkan oleh JS jika admin login */
     .view-switcher.admin-active { display: inline-flex; }
 
     .btn-switch {
@@ -179,15 +179,8 @@
     /* --- MEDIA QUERIES RESPONSIVE --- */
     @media (max-width: 900px) {
       .desktop-navbar { padding: 12px 16px; }
-      
-      /* PAKSA SEMBUNYIKAN MENU DESKTOP DI HP */
       .nav-links-desktop { display: none !important; } 
-      
-      /* Tampilkan Hamburger Menu */
       .btn-hamburger-mobile { display: block; }
-
-      /* Penyesuaian tombol switch dan login agar muat di HP */
-      /* HAPUS !important DI SINI AGAR JS BISA MENYEMBUNYIKANNYA */
       .view-switcher.admin-active { display: inline-flex; }
       .btn-switch { padding: 4px 8px; font-size: 0.7rem; }
       .btn-login-redirect { padding: 6px 10px; font-size: 0.75rem; }
@@ -206,7 +199,6 @@
   <!-- DESKTOP NAVBAR -->
   <header class="desktop-navbar">
     <div style="display: flex; align-items: center; gap: 12px;">
-      <!-- Tombol Hamburger HANYA muncul di HP. JS akan menyembunyikannya di mode publik -->
       <button class="btn-hamburger-mobile" id="hamburger-btn" onclick="toggleMobileSidebar()">
         <i class="fa-solid fa-bars"></i>
       </button>
@@ -216,7 +208,6 @@
       </div>
     </div>
 
-    <!-- Menu Desktop (Otomatis sembunyi di HP berkat CSS Media Query) -->
     <nav class="nav-links-desktop" id="desktop-nav-links">
       <a href="home.html"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
       <a href="scoring.html"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
@@ -226,7 +217,6 @@
     </nav>
 
     <div class="header-right-actions">
-      <!-- Switcher (JS akan menyembunyikan ini secara total di mode publik) -->
       <div class="view-switcher" id="admin-view-switcher">
         <button type="button" class="btn-switch active" id="btn-mode-admin" onclick="switchAdminMode('admin')">
           <i class="fa-solid fa-shield-halved"></i> Admin
@@ -236,7 +226,7 @@
         </button>
       </div>
 
-      <a href="login.html" class="btn-login-redirect" id="top-login-btn">
+      <a href="index.html" class="btn-login-redirect" id="top-login-btn">
         <i class="fa-solid fa-right-to-bracket"></i> <span id="login-btn-text">Login</span>
       </a>
     </div>
@@ -414,52 +404,38 @@
 
       const isAdmin = activeUser && activeUser.role === 'admin';
 
-      // JIKA MODE PUBLIK ATAU BUKAN ADMIN
       if (currentAdminViewMode === 'public' || !isAdmin) {
         if (adminPanel) adminPanel.style.display = 'none';
         if (desktopNav) desktopNav.classList.remove('admin-active');
-        
-        // SEMBUNYIKAN HAMBURGER
         if (hamburgerBtn) {
           hamburgerBtn.classList.remove('admin-active');
           hamburgerBtn.style.display = 'none'; 
         }
-        
-        // SEMBUNYIKAN SWITCHER TOTAL (Hapus class admin-active)
         if (viewSwitcher) {
           viewSwitcher.classList.remove('admin-active'); 
           viewSwitcher.style.display = 'none'; 
         }
-        
         if (loginBtn) loginBtn.classList.add('public-mode');
         if (loginBtnText) loginBtnText.innerText = 'Login';
       } 
-      // JIKA MODE ADMIN
       else {
-        // MUNCULKAN SWITCHER
         if (viewSwitcher) {
           viewSwitcher.classList.add('admin-active');
           viewSwitcher.style.display = ''; 
         }
-        
         if (btnAdmin) btnAdmin.classList.add('active');
         if (btnPublic) btnPublic.classList.remove('active');
-        
         if (adminPanel) adminPanel.style.display = 'flex';
         if (desktopNav) desktopNav.classList.add('admin-active');
-        
-        // MUNCULKAN HAMBURGER KEMBALI
         if (hamburgerBtn) {
           hamburgerBtn.classList.add('admin-active');
           hamburgerBtn.style.display = ''; 
         }
-        
         if (loginBtn) loginBtn.classList.remove('public-mode');
         if (loginBtnText) loginBtnText.innerText = `Admin (${activeUser.name})`;
       }
     }
 
-    // 2. FUNGSI LOGOUT TOTAL (KLIK 2X)
     function activatePublicMode() {
       localStorage.removeItem('activeArcheryUser');
       currentAdminViewMode = 'public';
@@ -488,7 +464,7 @@
       }
     }
 
-    // 3. FUNGSI RENDER TABEL
+    // 2. FUNGSI RENDER TABEL
     function renderSelectedSession(forceRender = false) {
       const container = document.getElementById('all-events-container');
       const searchKeyword = document.getElementById('search-archer').value.trim().toLowerCase();
@@ -521,16 +497,17 @@
         let eventLocation = config.location || 'Lapangan Utama';
         let totalEnd = parseInt(config.totalEnd) || 5;
 
+        // PERBAIKAN HEADER: Fokus ke Skor Total
         let headHTML = `
           <tr>
-            <th class="sticky-col-no" style="width: 40px; text-align:center;">No</th>
+            <th class="sticky-col-no" style="width: 40px; text-align:center;">Rank</th>
             <th class="sticky-col-name">Nama Pemanah</th>
             <th>Klub / Instansi</th>
         `;
         for (let i = 1; i <= totalEnd; i++) { headHTML += `<th style="text-align:center;">End ${i}</th>`; }
         headHTML += `
-            <th style="text-align:center; background:#e0e7ff; color:#3730a3;">10/X</th>
-            <th style="text-align:center; background:#dcfce7; color:#166534;">Total</th>
+            <th style="text-align:center; background:#fef3c7; color:#b45309;">10/X</th>
+            <th style="text-align:center; background:#dcfce7; color:#166534; font-size: 0.85rem;">TOTAL SKOR</th>
           </tr>
         `;
 
@@ -542,9 +519,15 @@
           bodyHTML = `<tr><td colspan="${totalEnd + 5}" style="text-align:center; padding: 24px; color:#64748b;">${searchKeyword ? `Tidak ada pemanah atau klub yang cocok dengan pencarian "<strong>${searchKeyword}</strong>".` : `Belum ada peserta yang terdaftar pada sesi ini.`}</td></tr>`;
         } else {
           rankedList.forEach((p) => {
+            // Tampilan Juara (Medali Emas untuk Rank 1)
+            let rankDisplay = p.rank;
+            if (p.rank === 1) rankDisplay = '<i class="fa-solid fa-medal" style="color:#fbbf24; font-size:1.1rem;"></i>';
+            else if (p.rank === 2) rankDisplay = '<i class="fa-solid fa-medal" style="color:#94a3b8; font-size:1.1rem;"></i>';
+            else if (p.rank === 3) rankDisplay = '<i class="fa-solid fa-medal" style="color:#d97706; font-size:1.1rem;"></i>';
+
             bodyHTML += `
               <tr>
-                <td class="sticky-col-no" style="text-align:center; font-weight:700;">${p.rank}</td>
+                <td class="sticky-col-no" style="text-align:center; font-weight:800; font-size: 1rem;">${rankDisplay}</td>
                 <td class="sticky-col-name"><strong style="color:#0f172a;">${p.name}</strong></td>
                 <td><span style="color:#64748b;">${p.club || '-'}</span></td>
             `;
@@ -554,7 +537,7 @@
             });
             bodyHTML += `
                 <td style="text-align:center; font-weight:800;"><span class="badge-x">${p.totalX}X</span></td>
-                <td style="text-align:center; font-weight:800; color:#166534; background:#f0fdf4;">${p.totalScore}</td>
+                <td style="text-align:center; font-weight:900; font-size: 1.05rem; color:#166534; background:#f0fdf4;">${p.totalScore}</td>
               </tr>
             `;
           });
@@ -621,67 +604,62 @@
     }
 
     function scanAllSessions() {
-  let configs = [];
-  let seenFingerprints = new Set();
-  let sessionCounter = 0;
+      let configs = [];
+      let seenFingerprints = new Set();
+      let sessionCounter = 0;
 
-  let keys = [];
-  for (let i = 0; i < localStorage.length; i++) { keys.push(localStorage.key(i)); }
-  keys.sort((a, b) => { if (a === 'archeryConfig') return 1; if (b === 'archeryConfig') return -1; return a.localeCompare(b); });
+      let keys = [];
+      for (let i = 0; i < localStorage.length; i++) { keys.push(localStorage.key(i)); }
+      keys.sort((a, b) => { if (a === 'archeryConfig') return 1; if (b === 'archeryConfig') return -1; return a.localeCompare(b); });
 
-  const addUniqueSession = (uniqueKey, item) => {
-    if (!isValidSessionObject(item)) return;
-    const fingerprint = getSessionFingerprint(item);
-    if (seenFingerprints.has(fingerprint)) return;
-    seenFingerprints.add(fingerprint);
-    sessionCounter++;
-    let count = Array.isArray(item.participants) ? item.participants.length : 0;
-    let title = item.eventName || `Turnamen Sesi ${sessionCounter}`;
-    configs.push({
-      uniqueKey: uniqueKey,
-      label: `${title} • ${item.busur || 'Standard'} (${item.jarak || '-'}) [${count} Peserta]`,
-      data: item
-    });
-  };
+      const addUniqueSession = (uniqueKey, item) => {
+        if (!isValidSessionObject(item)) return;
+        const fingerprint = getSessionFingerprint(item);
+        if (seenFingerprints.has(fingerprint)) return;
+        seenFingerprints.add(fingerprint);
+        sessionCounter++;
+        let count = Array.isArray(item.participants) ? item.participants.length : 0;
+        let title = item.eventName || `Turnamen Sesi ${sessionCounter}`;
+        configs.push({
+          uniqueKey: uniqueKey,
+          label: `${title} • ${item.busur || 'Standard'} (${item.jarak || '-'}) [${count} Peserta]`,
+          data: item
+        });
+      };
 
-  keys.forEach((key) => {
-    if (key === 'publicSelectedSessionKey' || key === 'archeryDatabase' || key === 'archerySavedProfiles' || key === 'activeArcheryUser' || key.startsWith('savedParticipants_') || key.startsWith('archeryRentalExpiry_')) return;
-    
-    // --- PERBAIKAN DI SINI ---
-    // Tangkap semua key yang berawalan 'archeryConfig_' dan 'archeryHistory_'
-    if (key === 'archeryConfig' || key.startsWith('archeryConfig_') || key.startsWith('archeryHistory_')) {
-      try {
-        let raw = localStorage.getItem(key);
-        if (!raw) return;
-        let data = JSON.parse(raw);
+      keys.forEach((key) => {
+        if (key === 'publicSelectedSessionKey' || key === 'archeryDatabase' || key === 'archerySavedProfiles' || key === 'activeArcheryUser' || key.startsWith('savedParticipants_') || key.startsWith('archeryRentalExpiry_')) return;
         
-        // Jika datanya berupa Array (seperti archeryHistory_email@...)
-        if (Array.isArray(data)) {
-          data.forEach((item, idx) => { 
-            // Hanya ambil data yang memiliki properti 'participants' (bukan data config)
-            if (item && item.participants) {
-              addUniqueSession(`${key}__arr_${idx}`, item); 
+        // Membaca data archeryConfig dan archeryHistory
+        if (key === 'archeryConfig' || key.startsWith('archeryConfig_') || key.startsWith('archeryHistory_')) {
+          try {
+            let raw = localStorage.getItem(key);
+            if (!raw) return;
+            let data = JSON.parse(raw);
+            
+            if (Array.isArray(data)) {
+              data.forEach((item, idx) => { 
+                if (item && item.participants) {
+                  addUniqueSession(`${key}__arr_${idx}`, item); 
+                }
+              });
+            } 
+            else if (isValidSessionObject(data)) {
+              addUniqueSession(key, data);
+            } 
+            else if (data && typeof data === 'object') {
+              Object.keys(data).forEach((subKey) => { 
+                if (data[subKey] && data[subKey].participants) {
+                  addUniqueSession(`${key}__sub_${subKey}`, data[subKey]); 
+                }
+              });
             }
-          });
-        } 
-        // Jika datanya Object tunggal
-        else if (isValidSessionObject(data)) {
-          addUniqueSession(key, data);
-        } 
-        // Jika datanya Object berisi sub-object
-        else if (data && typeof data === 'object') {
-          Object.keys(data).forEach((subKey) => { 
-            if (data[subKey] && data[subKey].participants) {
-              addUniqueSession(`${key}__sub_${subKey}`, data[subKey]); 
-            }
-          });
+          } catch (e) {
+            console.error("Gagal membaca data dari key:", key, e);
+          }
         }
-      } catch (e) {
-        console.error("Gagal membaca data dari key:", key, e);
-      }
-    }
-  });
-  return configs;
+      });
+      return configs;
     }
 
     function updateDropdownOptions(sessions) {
@@ -727,6 +705,7 @@
       renderSelectedSession(true);
     }
 
+    // LOGIKA PERINGKAT & SKOR TOTAL
     function calculateSessionRanking(config) {
       let totalEnd = parseInt(config.totalEnd) || 5;
       let participants = Array.isArray(config.participants) ? config.participants : [];
@@ -749,7 +728,12 @@
         return { ...p, totalScore, totalX, endScoresSummary };
       });
 
-      list.sort((a, b) => b.totalScore - a.totalScore || b.totalX - a.totalX);
+      // Urutkan: Skor Total Tertinggi, lalu X Terbanyak
+      list.sort((a, b) => {
+        if (b.totalScore !== a.totalScore) return b.totalScore - a.totalScore;
+        return b.totalX - a.totalX;
+      });
+      
       return list.map((item, idx) => ({ ...item, rank: idx + 1 }));
     }
 
@@ -890,7 +874,7 @@
         tsvLines.push('');
         let headers = ['Peringkat', 'Nama Pemanah', 'Klub / Instansi'];
         for (let i = 1; i <= totalEnd; i++) { headers.push(`End ${i} (Skor)`); headers.push(`End ${i} (Rincian)`); }
-        headers.push('Jumlah 10/X', 'Total Skor');
+        headers.push('Jumlah 10/X', 'TOTAL SKOR');
         tsvLines.push(headers.join('\t'));
         rankedList.forEach(p => {
           let row = [p.rank, p.name, p.club || '-'];
