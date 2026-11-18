@@ -1,32 +1,33 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Papan Skor & Leaderboard - Archery Score</title>
+  <title>Papan Skor & Leaderboard - SCORINGPTU</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <style>
+    /* RESET & BASE */
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+    body { background-color: #f3f5f9; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
+    
+    /* ROLE SELECTOR */
     .role-selector-wrapper { position: relative; display: inline-block; }
     .role-select { background-color: #18191c; color: #ffffff; border: 1px solid #e2e8f0; padding: 8px 14px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; cursor: pointer; outline: none; transition: all 0.2s ease; }
     .role-select:hover { background-color: #0f172a; }
     
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
-    body { background-color: #f3f5f9; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
-    
+    /* NAVBAR DESKTOP */
     .desktop-navbar { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 14px 8%; position: sticky; top: 0; z-index: 90; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02); }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; color: #0f172a; }
     .brand-icon { background-color: #18191c; color: #ffffff; padding: 6px 10px; border-radius: 12px; font-size: 1rem; }
-    
     .nav-links-desktop { display: flex; gap: 12px; align-items: center; }
     .nav-links-desktop a { color: #64748b; text-decoration: none; font-size: 0.9rem; font-weight: 600; padding: 8px 16px; border-radius: 12px; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px; }
     .nav-links-desktop a:hover, .nav-links-desktop a.active { background-color: #18191c; color: #ffffff; }
-    
     .user-profile-header { display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 6px 14px; border-radius: 30px; border: 1px solid #e2e8f0; }
     .user-avatar { width: 30px; height: 30px; background: #e0e7ff; color: #4f46e5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
     
+    /* SIDEBAR MOBILE */
     .btn-hamburger-mobile { display: none; background: none; border: none; font-size: 1.4rem; color: #0f172a; cursor: pointer; }
     .mobile-sidebar-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); z-index: 200; display: none; }
     .mobile-sidebar-overlay.active { display: block; }
@@ -36,8 +37,8 @@
     .mobile-nav-menu a { color: #94a3b8; text-decoration: none; padding: 12px 16px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
     .mobile-nav-menu a.active, .mobile-nav-menu a:hover { background-color: rgba(255, 255, 255, 0.15); color: #ffffff; }
 
+    /* MAIN CONTENT */
     main { max-width: 900px; width: 100%; margin: 0 auto; padding: 24px 20px 60px 20px; flex: 1; }
-    
     .page-navigation { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
     .btn-change-setup { background: #ffffff; border: 1px solid #e2e8f0; color: #0f172a; padding: 8px 14px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
     
@@ -56,7 +57,6 @@
     .btn-input-mode.active { background: #fbbf24; border-color: #f59e0b; color: #78350f; box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2); }
     
     .virtual-target-card { background: #18191c; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; position: relative; }
-    
     .target-wrapper { position: relative; width: 100%; max-width: 300px; height: 300px; border: 2px solid #334155; border-radius: 12px; overflow: hidden; background-color: #000; touch-action: none; cursor: grab; margin-top: 10px; }
     .target-wrapper:active { cursor: grabbing; }
     .canvas-container { position: absolute; transform-origin: 0 0; }
@@ -122,9 +122,26 @@
     .modal.active { display: flex; }
     .modal-content { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 24px; width: 100%; max-width: 420px; padding: 24px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
 
+    /* PENGATURAN FOOTER DESKTOP VS MOBILE */
+    .desktop-footer { display: block; } /* Tampil di Desktop */
+    .mobile-footer-text { display: none; } /* Sembunyi di Desktop */
+
+    /* ========================================================= */
+    /* RESPONSIVE: TABLET & HP                                   */
+    /* ========================================================= */
     @media (max-width: 900px) { 
-      .nav-links-desktop { display: none; } .btn-hamburger-mobile { display: block; } .desktop-navbar { padding: 12px 16px; } main { padding: 16px 12px; } .dashboard-card { padding: 16px 12px; border-radius: 16px; }
-      .podium-container { display: flex; flex-direction: column; align-items: center; gap: 12px; } .podium-box { width: 100%; max-width: 100%; } .podium-box.rank-1-box { transform: none; }
+      .nav-links-desktop { display: none; } 
+      .btn-hamburger-mobile { display: block; } 
+      .desktop-navbar { padding: 12px 16px; } 
+      main { padding: 16px 12px; } 
+      .dashboard-card { padding: 16px 12px; border-radius: 16px; }
+      .podium-container { display: flex; flex-direction: column; align-items: center; gap: 12px; } 
+      .podium-box { width: 100%; max-width: 100%; } 
+      .podium-box.rank-1-box { transform: none; }
+      
+      /* FOOTER: Sembunyikan di bawah, Munculkan di Sidebar */
+      .desktop-footer { display: none; }
+      .mobile-footer-text { display: block; }
     }
   </style>
 </head>
@@ -133,13 +150,13 @@
   <header class="desktop-navbar">
     <div style="display: flex; align-items: center; gap: 12px;">
       <button class="btn-hamburger-mobile" onclick="toggleMobileSidebar()"><i class="fa-solid fa-bars"></i></button>
-      <div class="brand"><div class="brand-icon">🎯</div><span>ARCHERY<span style="color:#6366f1;">PRO</span></span></div>
+      <div class="brand"><div class="brand-icon">🎯</div><span>SCORING<span style="color:#6366f1;">PTU</span></span></div>
     </div>
     <nav class="nav-links-desktop">
-      <a href="home.html"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
-      <a href="scoring.html" class="active"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
-      <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
-      <a href="pendaftaran.html"><i class="fa-solid fa-users"></i> Registrasi</a>
+      <a href="{{ url('/home') }}"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
+      <a href="{{ url('/scoring') }}" class="active"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
+      <a href="{{ url('/riwayat') }}"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
+      <a href="{{ url('/pendaftaran') }}"><i class="fa-solid fa-users"></i> Registrasi</a>
       <div class="role-selector-wrapper">
         <select id="app-role-picker-desktop" class="role-select" onchange="switchRole(this.value)">
           <option value="scorer" selected>📱 Scorer (HP)</option>
@@ -151,24 +168,33 @@
     <div class="user-profile-header">
       <div class="user-avatar" id="user-avatar-box">A</div>
       <div style="display: flex; flex-direction: column; line-height: 1.2;">
-        <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;" id="user-name-text">Archer Pro</span>
+        <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;" id="user-name-text">SCORINGPTU</span>
         <span style="font-size: 0.7rem; color: #64748b; font-weight: 600;" id="user-club-text">Klub Panahan</span>
       </div>
     </div>
   </header>
 
+  <!-- MOBILE SIDEBAR -->
   <div class="mobile-sidebar-overlay" id="mobile-overlay" onclick="toggleMobileSidebar()"></div>
   <aside class="mobile-sidebar" id="mobile-sidebar">
     <div>
       <div style="display: flex; align-items: center; justify-content: space-between;">
-        <div class="brand" style="color:#fff;"><div class="brand-icon" style="background:#fff; color:#18191c;">🎯</div><span>ARCHERY<span style="color:#818cf8;">PRO</span></span></div>
-        <button onclick="toggleMobileSidebar()" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+        <div class="brand" style="color:#fff;">
+          <div class="brand-icon" style="background:#fff; color:#18191c;">🎯</div>
+          <span>SCORING<span style="color:#818cf8;">PTU</span></span>
+        </div>
+        <button onclick="toggleMobileSidebar()" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
+
       <nav class="mobile-nav-menu">
-        <a href="home.html"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
-        <a href="scoring.html" class="active"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
-        <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
-        <a href="pendaftaran.html"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
+        <a href="{{ url('/home') }}"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
+        <a href="{{ url('/scoring') }}" class="active"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
+        <a href="{{ url('/riwayat') }}"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
+        <a href="{{ url('/pendaftaran') }}"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
+
+        <!-- DROPDOWN PERAN MOBILE -->
         <div class="role-selector-wrapper" style="margin-top: 10px;">
           <select id="app-role-picker-mobile" class="role-select" style="width: 100%;" onchange="switchRole(this.value)">
             <option value="scorer" selected>📱 Scorer (HP)</option>
@@ -178,7 +204,11 @@
         </div>
       </nav>
     </div>
-    <div style="font-size: 0.75rem; color: #64748b; text-align: center;"><p>&copy; 2026 Archery Tool</p></div>
+
+    <!-- FOOTER KHUSUS DI DALAM SIDEBAR (TAMPIL DI HP) -->
+    <div class="mobile-footer-text" style="font-size: 0.75rem; color: #94a3b8; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+      <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah &bull; Dibuat dng Laravel</p>
+    </div>
   </aside>
 
   <main>
@@ -291,6 +321,12 @@
     </div>
   </div>
 
+  <!-- FOOTER KHUSUS DI BAWAH (HANYA TAMPIL DI DESKTOP) -->
+  <!-- PERBAIKAN: Menambahkan class="desktop-footer" -->
+  <footer class="desktop-footer" style="background: #222; color: white; text-align: center; padding: 20px; margin-top: 50px;">
+    <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah &bull; Dibuat dng Laravel</p>
+  </footer>
+
   <script>
     // Kunci unik berdasarkan akun yang sedang login
     function getCurrentAccountKey() {
@@ -322,7 +358,7 @@
       localStorage.setItem('archeryConfig', JSON.stringify(appConfig));
     }
 
-    let currentEnd = 1;         
+    let currentEnd = 1;        
     let activeSessionIndex = 0; 
     let activeArcherIndex = 0;  
     let currentArrowsInput = [];
@@ -331,8 +367,9 @@
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     const container = document.getElementById('canvasContainer');
     const wrapper = document.getElementById('targetWrapper');
+
     const waletImg = new Image();
-    waletImg.src = "target.jpg";
+    waletImg.src = "{{ asset('img/target.jpg') }}";
 
     let scale = 1, posX = 0, posY = 0, isDragging = false, startX, startY;
 
@@ -773,10 +810,14 @@
     }
 
     function switchRole(role) {
-      if (role === 'admin') window.location.href = 'pendaftaran.html';
-      else if (role === 'display') window.location.href = 'display.html';
-      else if (role === 'scorer') window.location.href = 'scoring.html';
+    if (role === 'admin') {
+        window.location.href = '/pendaftaran';
+    } else if (role === 'display') {
+        window.location.href = '/display';
+    } else if (role === 'scorer') {
+        window.location.href = '/scoring';
     }
+}
 
     document.addEventListener("DOMContentLoaded", function() {
       const path = window.location.pathname;
