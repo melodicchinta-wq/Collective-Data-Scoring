@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Riwayat Sesi - Archery Score</title>
+  <title>Riwayat Sesi - SCORINGPTU</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
@@ -298,12 +298,25 @@
     }
     .end-row-item:last-child { border-bottom: none; }
 
+    /* PENGATURAN FOOTER DESKTOP VS MOBILE */
+    .desktop-footer {
+      display: block; /* Default tampil di desktop */
+    }
+    .mobile-footer-text {
+      display: none; /* Default disembunyikan di desktop */
+    }
+
     /* BREAKPOINT: RESPONSIVE HP VS LAPTOP */
     @media (max-width: 900px) {
       .nav-links-desktop { display: none; }
       .btn-hamburger-mobile { display: block; }
       .desktop-navbar { padding: 12px 20px; }
       main { padding: 16px; }
+
+      /* Footer desktop disembunyikan di HP */
+      .desktop-footer { display: none; }
+      /* Footer dipindah ke sidebar khusus HP */
+      .mobile-footer-text { display: block; }
     }
   </style>
 </head>
@@ -317,15 +330,15 @@
       </button>
       <div class="brand">
         <div class="brand-icon">🎯</div>
-        <span>ARCHERY<span style="color:#6366f1;">PRO</span></span>
+        <span>SCORING<span style="color:#6366f1;">PTU</span></span>
       </div>
     </div>
 
     <nav class="nav-links-desktop">
-      <a href="home.html"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
-      <a href="scoring.html"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
-      <a href="riwayat.html" class="active"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
-      <a href="pendaftaran.html"><i class="fa-solid fa-users"></i> Registrasi</a>
+      <a href="{{ url('/home') }}"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
+      <a href="{{ url('/scoring') }}"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
+      <a href="{{ url('/riwayat') }}" class="active"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
+      <a href="{{ url('/pendaftaran') }}"><i class="fa-solid fa-users"></i> Registrasi</a>
 
       <!-- DROPDOWN PERAN DESKTOP -->
       <div class="role-selector-wrapper">
@@ -338,13 +351,12 @@
     </nav>
 
     <div class="user-profile-header">
-  <div class="user-avatar" id="user-avatar-box">A</div>
-  <div style="display: flex; flex-direction: column; line-height: 1.2;">
-    <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;" id="user-name-text">Archer Pro</span>
-    <span style="font-size: 0.7rem; color: #64748b; font-weight: 600;" id="user-club-text">Klub Panahan</span>
-  </div>
-</div>
-
+      <div class="user-avatar" id="user-avatar-box">A</div>
+      <div style="display: flex; flex-direction: column; line-height: 1.2;">
+        <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;" id="user-name-text">SCORINGPTU</span>
+        <span style="font-size: 0.7rem; color: #64748b; font-weight: 600;" id="user-club-text">Klub Panahan</span>
+      </div>
+    </div>
   </header>
 
   <!-- MOBILE SIDEBAR -->
@@ -354,7 +366,7 @@
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div class="brand" style="color:#fff;">
           <div class="brand-icon" style="background:#fff; color:#18191c;">🎯</div>
-          <span>ARCHERY<span style="color:#818cf8;">PRO</span></span>
+          <span>SCORING<span style="color:#818cf8;">PTU</span></span>
         </div>
         <button onclick="toggleMobileSidebar()" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;">
           <i class="fa-solid fa-xmark"></i>
@@ -362,10 +374,10 @@
       </div>
 
       <nav class="mobile-nav-menu">
-        <a href="home.html"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
-        <a href="scoring.html"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
-        <a href="riwayat.html" class="active"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
-        <a href="pendaftaran.html"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
+        <a href="{{ url('/home') }}"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
+        <a href="{{ url('/scoring') }}"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
+        <a href="{{ url('/riwayat') }}" class="active"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
+        <a href="{{ url('/pendaftaran') }}"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
 
         <!-- DROPDOWN PERAN MOBILE -->
         <div class="role-selector-wrapper" style="margin-top: 10px;">
@@ -378,8 +390,9 @@
       </nav>
     </div>
 
-    <div style="font-size: 0.75rem; color: #64748b; text-align: center;">
-      <p>&copy; 2026 Archery Tool</p>
+    <!-- FOOTER KHUSUS DI DALAM SIDEBAR (TAMPIL DI HP) -->
+    <div class="mobile-footer-text" style="font-size: 0.75rem; color: #94a3b8; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+      <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah &bull; Dibuat dng Laravel</p>
     </div>
   </aside>
 
@@ -439,37 +452,39 @@
     </div>
   </div>
 
+  <!-- FOOTER KHUSUS DI BAWAH (HANYA TAMPIL DI DESKTOP) -->
+  <footer class="desktop-footer" style="background: #222; color: white; text-align: center; padding: 20px; margin-top: 50px;">
+    <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah &bull; Dibuat dng Laravel</p>
+  </footer>
+
   <script src="auth.js"></script>
 
   <script>
     function loadActiveUserProfile() {
-  const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
-  if (activeUser) {
-    const nameText = document.getElementById('user-name-text');
-    const clubText = document.getElementById('user-club-text');
-    const avatarBox = document.getElementById('user-avatar-box');
-    
-    // Masukkan nama dan komunitas dari data login
-    if (nameText && activeUser.name) nameText.innerText = activeUser.name;
-    if (clubText && activeUser.club) clubText.innerText = activeUser.club;
-    
-    // Mengubah inisial avatar otomatis berdasarkan nama
-    if (avatarBox && activeUser.name) {
-      const initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-      avatarBox.innerText = initials || 'A';
+      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
+      if (activeUser) {
+        const nameText = document.getElementById('user-name-text');
+        const clubText = document.getElementById('user-club-text');
+        const avatarBox = document.getElementById('user-avatar-box');
+        
+        if (nameText && activeUser.name) nameText.innerText = activeUser.name;
+        if (clubText && activeUser.club) clubText.innerText = activeUser.club;
+        
+        if (avatarBox && activeUser.name) {
+          const initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+          avatarBox.innerText = initials || 'A';
+        }
+      }
     }
-  }
-}
 
-// Panggil fungsi ini saat halaman selesai dimuat
-document.addEventListener("DOMContentLoaded", function() {
-  loadActiveUserProfile();
-});
+    document.addEventListener("DOMContentLoaded", function() {
+      loadActiveUserProfile();
+    });
 
-function getAccountHistoryKey() {
-    const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser')) || { email: 'guest' };
-    return `archeryHistory_${activeUser.email}`;
-}
+    function getAccountHistoryKey() {
+        const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser')) || { email: 'guest' };
+        return `archeryHistory_${activeUser.email}`;
+    }
     
     let activeSessionData = null;
 
@@ -478,7 +493,6 @@ function getAccountHistoryKey() {
       document.getElementById('mobile-overlay').classList.toggle('active');
     }
 
-    // Script perpindahan Peran
     function switchRole(role) {
       if (role === 'admin') {
         window.location.href = 'pendaftaran.html';
@@ -489,7 +503,6 @@ function getAccountHistoryKey() {
       }
     }
 
-    // Set nilai otomatis sesuai halaman yang aktif saat ini (Sinkronisasi Desktop & Mobile)
     document.addEventListener("DOMContentLoaded", function() {
       const path = window.location.pathname;
       let currentRole = 'admin';
@@ -506,64 +519,64 @@ function getAccountHistoryKey() {
     });
     
     function loadHistory() {
-    const historyKey = getAccountHistoryKey();
-    const historyList = JSON.parse(localStorage.getItem(historyKey)) || [];
-    const container = document.getElementById('history-list-container');
-    document.getElementById('history-count').innerText = `${historyList.length} Sesi Tersimpan`;
+      const historyKey = getAccountHistoryKey();
+      const historyList = JSON.parse(localStorage.getItem(historyKey)) || [];
+      const container = document.getElementById('history-list-container');
+      document.getElementById('history-count').innerText = `${historyList.length} Sesi Tersimpan`;
 
-    if (historyList.length === 0) {
-      container.innerHTML = `
-        <div class="empty-state">
-          <div style="font-size: 3rem; margin-bottom: 10px;">🎯</div>
-          <p style="font-weight: 800; color: #0f172a; font-size: 1.1rem;">Belum Ada Riwayat Sesi</p>
-          <p style="font-size: 0.85rem; margin-top: 6px; color: #64748b;">Selesaikan sesi latihan pertama Anda untuk melihat riwayat di sini!</p>
-        </div>
-      `;
-      return;
+      if (historyList.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div style="font-size: 3rem; margin-bottom: 10px;">🎯</div>
+            <p style="font-weight: 800; color: #0f172a; font-size: 1.1rem;">Belum Ada Riwayat Sesi</p>
+            <p style="font-size: 0.85rem; margin-top: 6px; color: #64748b;">Selesaikan sesi latihan pertama Anda untuk melihat riwayat di sini!</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      historyList.forEach((session, index) => {
+        const winner = session.participants[0] || { name: '-', club: '-', totalScore: 0 };
+        const card = document.createElement('div');
+        card.className = 'history-card';
+        card.innerHTML = `
+          <div class="history-header">
+            <div>
+              <div class="history-title">${session.eventName || 'Sesi Latihan Panahan'}</div>
+              <div class="history-date"><i class="fa-regular fa-calendar"></i> ${session.date}</div>
+            </div>
+            <div class="history-badge">${session.busur}</div>
+          </div>
+
+          <div class="history-meta">
+            <span><i class="fa-solid fa-location-dot" style="color:#6366f1;"></i> Lokasi: <strong>${session.location || 'Lapangan Utama'}</strong></span>
+            <span><i class="fa-solid fa-bullseye" style="color:#6366f1;"></i> Jarak: <strong>${session.jarak}</strong> | 🏹 <strong>${session.totalEnd} End</strong> (${session.arrowCount} Arrow)</span>
+          </div>
+
+          <div class="winner-box">
+            <div>
+              <span style="font-size: 0.75rem; color: #64748b; font-weight:700;">🏆 JUARA 1:</span>
+              <div style="font-weight: 800; color: #0f172a; font-size: 0.95rem;">${winner.name} <span style="font-weight: 500; font-size:0.8rem; color:#64748b;">(${winner.club})</span></div>
+            </div>
+            <div style="font-weight: 800; color: #4f46e5; font-size: 1.15rem;">${winner.totalScore} Poin</div>
+          </div>
+
+          <div class="history-actions">
+            <button class="btn-action btn-danger-sm" onclick="deleteHistoryItem(${index})"><i class="fa-solid fa-trash"></i> Hapus</button>
+            <button class="btn-action" onclick="openDetailModal(${index})" style="background:#18191c; color:#ffffff; border:none;"><i class="fa-solid fa-eye"></i> Lihat Detail Lengkap</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
     }
 
-    container.innerHTML = '';
-    historyList.forEach((session, index) => {
-      const winner = session.participants[0] || { name: '-', club: '-', totalScore: 0 };
-      const card = document.createElement('div');
-      card.className = 'history-card';
-      card.innerHTML = `
-        <div class="history-header">
-          <div>
-            <div class="history-title">${session.eventName || 'Sesi Latihan Panahan'}</div>
-            <div class="history-date"><i class="fa-regular fa-calendar"></i> ${session.date}</div>
-          </div>
-          <div class="history-badge">${session.busur}</div>
-        </div>
-
-        <div class="history-meta">
-          <span><i class="fa-solid fa-location-dot" style="color:#6366f1;"></i> Lokasi: <strong>${session.location || 'Lapangan Utama'}</strong></span>
-          <span><i class="fa-solid fa-bullseye" style="color:#6366f1;"></i> Jarak: <strong>${session.jarak}</strong> | 🏹 <strong>${session.totalEnd} End</strong> (${session.arrowCount} Arrow)</span>
-        </div>
-
-        <div class="winner-box">
-          <div>
-            <span style="font-size: 0.75rem; color: #64748b; font-weight:700;">🏆 JUARA 1:</span>
-            <div style="font-weight: 800; color: #0f172a; font-size: 0.95rem;">${winner.name} <span style="font-weight: 500; font-size:0.8rem; color:#64748b;">(${winner.club})</span></div>
-          </div>
-          <div style="font-weight: 800; color: #4f46e5; font-size: 1.15rem;">${winner.totalScore} Poin</div>
-        </div>
-
-        <div class="history-actions">
-          <button class="btn-action btn-danger-sm" onclick="deleteHistoryItem(${index})"><i class="fa-solid fa-trash"></i> Hapus</button>
-          <button class="btn-action" onclick="openDetailModal(${index})" style="background:#18191c; color:#ffffff; border:none;"><i class="fa-solid fa-eye"></i> Lihat Detail Lengkap</button>
-        </div>
-      `;
-      container.appendChild(card);
-    });
-  }
-
-
     function openDetailModal(index) {
-  const historyKey = getAccountHistoryKey(); // <-- Gunakan key per akun
-  const historyList = JSON.parse(localStorage.getItem(historyKey)) || [];
-  activeSessionData = historyList[index];
-  if (!activeSessionData) return;
+      const historyKey = getAccountHistoryKey();
+      const historyList = JSON.parse(localStorage.getItem(historyKey)) || [];
+      activeSessionData = historyList[index];
+      if (!activeSessionData) return;
+      
       document.getElementById('modal-title').innerText = activeSessionData.eventName || 'Detail Sesi Latihan';
       document.getElementById('modal-event-info').innerHTML = `
         <strong style="color:#0f172a;"><i class="fa-solid fa-circle-info"></i> Rincian Acara:</strong><br>
@@ -677,10 +690,6 @@ function getAccountHistoryKey() {
         loadHistory();
       }
     }
-    const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser')) || { email: 'default_user' };
-const historyKey = `archeryHistory_${activeUser.email}`;
-let historyList = JSON.parse(localStorage.getItem(historyKey)) || [];
-
 
     loadHistory();
   </script>
