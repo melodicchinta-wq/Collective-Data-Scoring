@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Public Scoreboard - Archery Pro</title>
+  <title>Public Scoreboard - SCORINGPTU</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
@@ -203,7 +203,7 @@
       </button>
       <div class="brand">
         <div class="brand-icon">🎯</div>
-        <span>ARCHERY<span style="color:#6366f1;">PRO</span></span>
+        <span>SCORING<span style="color:#6366f1;">PTU</span></span>
       </div>
     </div>
 
@@ -225,7 +225,7 @@
         </button>
       </div>
 
-      <a href="login.html" class="btn-login-redirect" id="top-login-btn">
+      <a href="{{ url('/login') }}" class="btn-login-redirect" id="top-login-btn">
         <i class="fa-solid fa-right-to-bracket"></i> <span id="login-btn-text">Login</span>
       </a>
     </div>
@@ -238,7 +238,7 @@
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div class="brand" style="color:#fff;">
           <div class="brand-icon" style="background:#fff; color:#18191c;">🎯</div>
-          <span>ARCHERY<span style="color:#818cf8;">PRO</span></span>
+          <span>SCORING<span style="color:#818cf8;">PTU</span></span>
         </div>
         <button onclick="toggleMobileSidebar()" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;">
           <i class="fa-solid fa-xmark"></i>
@@ -246,16 +246,25 @@
       </div>
 
       <nav class="mobile-nav-menu">
-        <a href="home.html"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
-        <a href="scoring.html"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
-        <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
-        <a href="pendaftaran.html"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
-        <a href="index.html" class="active"><i class="fa-solid fa-table"></i> Public Score</a>
+        <a href="{{ url('/home') }}"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
+        <a href="{{ url('/scoring') }}"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
+        <a href="{{ url('/riwayat') }}" class="active"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
+        <a href="{{ url('/pendaftaran') }}"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
+
+        <!-- DROPDOWN PERAN MOBILE -->
+        <div class="role-selector-wrapper" style="margin-top: 10px;">
+          <select id="app-role-picker-mobile" class="role-select" style="width: 100%;" onchange="switchRole(this.value)">
+            <option value="scorer">📱 Scorer (HP)</option>
+            <option value="display">🖥️ Live Display</option>
+            <option value="admin">⚙️ Admin / Panitia</option>
+          </select>
+        </div>
       </nav>
     </div>
 
-    <div style="font-size: 0.75rem; color: #64748b; text-align: center;">
-      <p>&copy; 2026 Archery Tool</p>
+    <!-- FOOTER KHUSUS DI DALAM SIDEBAR (TAMPIL DI HP) -->
+    <div class="mobile-footer-text" style="font-size: 0.75rem; color: #94a3b8; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+      <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah &bull; Dibuat dng Laravel</p>
     </div>
   </aside>
 
@@ -381,6 +390,10 @@
       </div>
     </div>
   </div>
+
+  <footer style="background: #222; color: white; text-align: center; padding: 20px; margin-top: 50px;">
+    <p>Copyright &copy; 2026 . Mela Aulia Syarifah. Dibuat dng laravel</p>
+  </footer>
 
   <script>
     let allParsedSessions = [];
@@ -514,7 +527,7 @@
 
         let bodyHTML = '';
         if (rankedList.length === 0) {
-          bodyHTML = `<tr><td colspan="${totalEnd + 5}" style="text-align:center; padding: 24px; color:#64748b;">${searchKeyword ? `Tidak ada pemanah atau klub yang cocok dengan pencarian "<strong>${searchKeyword}</strong>".` : `Belum ada peserta yang terdaftar pada sesi ini.`}</td></tr>`;
+          bodyHTML = `<tr><td colspan="${totalEnd + 5}" style="text-align:center; padding: 24px; color:#64748b;">${searchKeyword ? `Tidak ada pemanah atau klub yang cocok dng pencarian "<strong>${searchKeyword}</strong>".` : `Belum ada peserta yang terdaftar pada sesi ini.`}</td></tr>`;
         } else {
           rankedList.forEach((p) => {
             let rankDisplay = p.rank;
