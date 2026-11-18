@@ -24,18 +24,6 @@
     .btn-submit:hover { background-color: #0f172a; }
     
     .info-box { background: #e0e7ff; color: #3730a3; padding: 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; line-height: 1.4; margin-bottom: 20px; }
-
-    /* TAMPILAN KARTU TAGIHAN / AKUN BELUM TERDAFTAR */
-    .invoice-card { text-align: center; }
-    .invoice-icon { font-size: 2.5rem; margin-bottom: 8px; color: #f59e0b; }
-    .bank-box { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 14px; padding: 12px; margin: 12px 0; text-align: left; font-size: 0.8rem; }
-    .bank-item { display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: 700; color: #0f172a; }
-    
-    .qr-container { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 12px; margin: 12px 0; display: flex; flex-direction: column; align-items: center; }
-    .qr-container img { width: 140px; height: 140px; border-radius: 8px; border: 4px solid #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    
-    .btn-wa { display: flex; align-items: center; justify-content: center; gap: 8px; background-color: #25d366; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 800; width: 100%; cursor: pointer; text-decoration: none; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25); margin-top: 8px; }
-    .btn-back { background: #f1f5f9; color: #64748b; border: none; padding: 10px; border-radius: 10px; font-weight: 700; width: 100%; cursor: pointer; margin-top: 6px; font-size: 0.85rem; }
   </style>
 </head>
 <body>
@@ -49,7 +37,7 @@
     <!-- FORM LOGIN UTAMA -->
     <div id="view-login">
       <div class="info-box">
-        <i class="fa-solid fa-circle-info"></i> Masuk dengan email resmi yang sudah didaftarkan/diaktifkan oleh Admin.
+        <i class="fa-solid fa-circle-info"></i> Masukkan data diri Anda untuk langsung masuk ke aplikasi Archery Pro.
       </div>
 
       <form onsubmit="handleLogin(event)">
@@ -59,7 +47,7 @@
         </div>
 
         <div class="form-group">
-          <label>Email Akun Resmi *</label>
+          <label>Email Akun *</label>
           <input type="email" id="login-email" class="form-control" placeholder="Contoh: bima@gmail.com" required>
         </div>
 
@@ -72,30 +60,6 @@
       </form>
     </div>
 
-    <!-- VIEW TAMPILAN JIKA AKUN BELUM TERDAFTAR / KEDALUWARSA -->
-    <div id="view-expired" class="invoice-card" style="display: none;">
-      <div class="invoice-icon" id="status-icon">⏳</div>
-      <h2 id="status-title" style="color: #0f172a; font-weight: 800; font-size: 1.2rem; margin-bottom: 4px;">Akses Belum Terdaftar / Habis</h2>
-      <p id="expired-desc" style="color: #64748b; font-size: 0.8rem; line-height: 1.4; margin-bottom: 10px;"></p>
-
-      <div class="bank-box">
-        <div style="font-size: 0.7rem; color: #64748b; margin-bottom: 6px; font-weight: 700; text-transform: uppercase;">💳 Pembayaran Sewa / Aktivasi:</div>
-        <div class="bank-item"><span>Bank BJB:</span> <span style="color:#4f46e5;">1234-5678-9010</span></div>
-        <div class="bank-item"><span>DANA / OVO:</span> <span style="color:#0284c7;">0812-3456-7890</span></div>
-      </div>
-
-      <!-- KOTAK QR CODE WHATSAPP -->
-      <div class="qr-container">
-        <span style="font-size: 0.75rem; font-weight: 700; color: #334155; margin-bottom: 8px;"><i class="fa-solid fa-qrcode"></i> Scan QR untuk Minta Akses WA:</span>
-        <img id="qr-code-img" src="" alt="QR Code WhatsApp Admin">
-      </div>
-
-      <a id="wa-link" href="#" target="_blank" class="btn-wa">
-        <i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i> Hubungi Admin untuk Aktivasi
-      </a>
-      <button type="button" class="btn-back" onclick="backToLogin()">← Kembali ke Menu Login</button>
-    </div>
-
   </div>
 
   <script>
@@ -106,80 +70,25 @@
       const email = document.getElementById('login-email').value.trim().toLowerCase();
       const club = document.getElementById('login-club').value.trim();
 
+      // Tentukan role otomatis (jika email mimin@gmail.com, otomatis jadi admin, selain itu klien/user biasa)
       const adminEmail = "mimin@gmail.com"; 
       const role = (email === adminEmail) ? "admin" : "klien";
 
-      const rentalKey = `archeryRentalExpiry_${email}`;
-      let expiryTime = localStorage.getItem(rentalKey);
-
-      if (!expiryTime && role !== "admin") {
-        document.getElementById('view-login').style.display = 'none';
-        document.getElementById('view-expired').style.display = 'block';
-        
-        document.getElementById('status-icon').innerText = '🚫';
-        document.getElementById('status-title').innerText = 'Email Belum Terdaftar';
-        document.getElementById('expired-desc').innerHTML = `
-          Maaf, email <strong>${email}</strong> belum terdaftar di sistem lisensi resmi Archery Pro. Silakan lakukan pembayaran dan minta aktivasi akun ke Admin.
-        `;
-
-        const adminPhone = "6281234567890";
-        const waText = `Halo Admin, saya ingin mendaftar & mengaktifkan akun aplikasi Archery Pro:%0A- Nama: ${name}%0A- Email: ${email}%0A- Klub: ${club}%0A%0ABerikut saya lampirkan bukti pembayarannya.`;
-        
-        const finalWaUrl = `https://api.whatsapp.com/send?phone=${adminPhone}&text=${waText}`;
-        document.getElementById('wa-link').href = finalWaUrl;
-
-        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(finalWaUrl)}`;
-        document.getElementById('qr-code-img').src = qrApiUrl;
-        
-        return;
-      }
-
-      const currentTime = new Date().getTime();
-
-      if (role !== "admin" && currentTime > parseInt(expiryTime)) {
-        const expiredDateStr = new Date(parseInt(expiryTime)).toLocaleDateString('id-ID', { dateStyle: 'full' });
-        
-        document.getElementById('view-login').style.display = 'none';
-        document.getElementById('view-expired').style.display = 'block';
-        
-        document.getElementById('status-icon').innerText = '⏳';
-        document.getElementById('status-title').innerText = 'Masa Sewa Telah Habis';
-        document.getElementById('expired-desc').innerHTML = `
-          Masa aktif akun <strong>${name}</strong> (${email}) berakhir pada <em>${expiredDateStr}</em>. Silakan lakukan pembayaran perpanjangan dan konfirmasi ke Admin.
-        `;
-
-        const adminPhone = "6281234567890";
-        const waText = `Halo Admin, saya ingin konfirmasi perpanjangan sewa aplikasi Archery Pro untuk akun:%0A- Nama: ${name}%0A- Email: ${email}%0A- Klub: ${club}%0A%0ABerikut saya lampirkan bukti pembayarannya.`;
-        
-        const finalWaUrl = `https://api.whatsapp.com/send?phone=${adminPhone}&text=${waText}`;
-        document.getElementById('wa-link').href = finalWaUrl;
-
-        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(finalWaUrl)}`;
-        document.getElementById('qr-code-img').src = qrApiUrl;
-        
-        return;
-      }
-
+      // Simpan data sesi login aktif tanpa batasan database atau masa sewa
       const activeUser = { name, email, club, role };
       localStorage.setItem('activeArcheryUser', JSON.stringify(activeUser));
 
-      // --- KUNCI PERBAIKANNYA DI SINI ---
-      // Jika yang login adalah Admin, paksa reset tampilan kembali ke "Mode Admin"
       if (role === "admin") {
-        localStorage.setItem('adminViewMode', 'admin'); // Reset ke mode admin
-        alert("🔓 Login Berhasil! Anda masuk sebagai Admin Utama (Mimin).");
+        localStorage.setItem('adminViewMode', 'admin');
+        alert("🔓 Login Berhasil! Anda masuk sebagai Admin Utama.");
       } else {
         alert(`✨ Selamat datang, ${name}! Login berhasil.`);
       }
-      // ---------------------------------
 
+      // Langsung arahkan ke halaman utama (home.html)
       window.location.href = 'home.html';
-    }
-
-    function backToLogin() {
-      document.getElementById('view-expired').style.display = 'none';
-      document.getElementById('view-login').style.display = 'block';
     }
   </script>
 </body>
 </html>
+
