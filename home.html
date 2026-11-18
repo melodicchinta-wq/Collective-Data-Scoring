@@ -4,11 +4,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Setup Latihan Panahan - Archery Score</title>
+  <title>Setup Latihan Panahan - SCORINGPTU</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
+    /* 1. Pengaturan Default (Tampilan Desktop) */
+.desktop-footer {
+  display: block; /* Munculkan footer di bawah */
+}
+.mobile-footer-text {
+  display: none; /* Sembunyikan footer di sidebar */
+}
+
+/* 2. Pengaturan untuk HP (Layar di bawah 900px) */
+@media (max-width: 900px) {
+  .desktop-footer {
+    display: none; /* Sembunyikan footer bawah di HP */
+  }
+  .mobile-footer-text {
+    display: block; /* Munculkan footer di dalam sidebar HP */
+  }
+}
     .role-selector-wrapper {
       position: relative;
       display: inline-block;
@@ -464,16 +481,16 @@
       </button>
       <div class="brand">
         <div class="brand-icon">🎯</div>
-        <span>ARCHERY<span style="color:#6366f1;">PRO</span></span>
+        <span>SCORING<span style="color:#6366f1;">PTU</span></span>
       </div>
     </div>
 
     <nav class="nav-links-desktop">
-      <a href="home.html" class="active"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
-      <a href="scoring.html"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
-      <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
-      <a href="pendaftaran.html"><i class="fa-solid fa-users"></i> Registrasi</a>
-      <a href="index.html"><i class="fa-solid fa-table"></i> Public Score</a>
+      <a href="{{ url('/home') }}" class="active"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
+      <a href="{{ url('/scoring') }}"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
+      <a href="{{ url('/riwayat') }}"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
+      <a href="{{ url('/pendaftaran') }}"><i class="fa-solid fa-users"></i> Registrasi</a>
+      <a href="{{ url('/index') }}"><i class="fa-solid fa-table"></i> Public Score</a>
 
       <div class="role-selector-wrapper">
         <select id="app-role-picker-desktop" class="role-select" onchange="switchRole(this.value)">
@@ -495,13 +512,14 @@
     </div>
   </header>
 
+  <!-- MOBILE SIDEBAR -->
   <div class="mobile-sidebar-overlay" id="mobile-overlay" onclick="toggleMobileSidebar()"></div>
   <aside class="mobile-sidebar" id="mobile-sidebar">
     <div>
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div class="brand" style="color:#fff;">
           <div class="brand-icon" style="background:#fff; color:#18191c;">🎯</div>
-          <span>ARCHERY<span style="color:#818cf8;">PRO</span></span>
+          <span>SCORING<span style="color:#818cf8;">PTU</span></span>
         </div>
         <button onclick="toggleMobileSidebar()" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;">
           <i class="fa-solid fa-xmark"></i>
@@ -509,28 +527,27 @@
       </div>
 
       <nav class="mobile-nav-menu">
-        <a href="home.html" class="active"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
-        <a href="scoring.html"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
-        <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
-        <a href="pendaftaran.html"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
-        <a href="index.html"><i class="fa-solid fa-table"></i> Public Score</a>
+        <a href="{{ url('/home') }}"class="active"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
+        <a href="{{ url('/scoring') }}"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
+        <a href="{{ url('/riwayat') }}"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
+        <a href="{{ url('/pendaftaran') }}"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
 
+        <!-- DROPDOWN PERAN MOBILE -->
         <div class="role-selector-wrapper" style="margin-top: 10px;">
           <select id="app-role-picker-mobile" class="role-select" style="width: 100%;" onchange="switchRole(this.value)">
             <option value="scorer">📱 Scorer (HP)</option>
             <option value="display">🖥️ Live Display</option>
-            <option value="admin" selected>⚙️ Admin / Panitia</option>
+            <option value="admin">⚙️ Admin / Panitia</option>
           </select>
         </div>
       </nav>
     </div>
 
-    <div>
-      <div style="font-size: 0.75rem; color: #64748b; text-align: center;">
-        <p>&copy; 2026 Archery Tool</p>
-      </div>
+        <!-- Letakkan di dalam sidebar, di bawah menu -->
+    <div class="mobile-footer-text" style="font-size: 0.75rem; color: #94a3b8; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
+      <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah &bull; Dibuat dng Laravel</p>
     </div>
-  </aside>
+  </aside> <!-- Penutup sidebar -->
 
   <main>
     <div class="page-navigation">
@@ -675,6 +692,12 @@
       <button onclick="closeModal()" class="form-control" style="width: 100%; cursor:pointer; font-weight:700; background:#f1f5f9; border:none;">Selesai</button>
     </div>
   </div>
+
+  <!-- Letakkan di bawah, pastikan ada class="desktop-footer" -->
+  <footer class="desktop-footer" style="background: #222; color: white; text-align: center; padding: 20px; margin-top: 50px;">
+    <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah &bull; Dibuat dng Laravel</p>
+  </footer>
+
 
   <script>
     let activeType = '';
@@ -895,14 +918,15 @@
     }
 
     function switchRole(role) {
-      if (role === 'admin') {
-        window.location.href = 'pendaftaran.html';
-      } else if (role === 'display') {
-        window.location.href = 'display.html';
-      } else if (role === 'scorer') {
-        window.location.href = 'scoring.html';
-      }
+    if (role === 'admin') {
+        window.location.href = '/pendaftaran';
+    } else if (role === 'display') {
+        window.location.href = '/display';
+    } else if (role === 'scorer') {
+        window.location.href = '/scoring';
     }
+
+}
 
     document.addEventListener("DOMContentLoaded", function() {
       console.log("Data User:", localStorage.getItem('activeArcheryUser')); // <--- TAMBAHKAN INI
