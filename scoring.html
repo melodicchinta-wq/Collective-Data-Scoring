@@ -369,7 +369,7 @@
     const wrapper = document.getElementById('targetWrapper');
 
     const waletImg = new Image();
-    waletImg.src = "{{ asset('img/target.jpg') }}";
+    waletImg.src = "target.jpg";
 
     let scale = 1, posX = 0, posY = 0, isDragging = false, startX, startY;
 
@@ -810,13 +810,13 @@
     }
 
     function switchRole(role) {
-    if (role === 'admin') {
-        window.location.href = '/pendaftaran';
-    } else if (role === 'display') {
-        window.location.href = '/display';
-    } else if (role === 'scorer') {
-        window.location.href = '/scoring';
-    }
+  if (role === 'admin') {
+    window.location.href = 'pendaftaran.html';
+  } else if (role === 'display') {
+    window.location.href = 'display.html';
+  } else if (role === 'scorer') {
+    window.location.href = 'scoring.html';
+  }
 }
 
     document.addEventListener("DOMContentLoaded", function() {
