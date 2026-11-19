@@ -1,116 +1,452 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registrasi Peserta Panahan - SCORINGPTU</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <!-- Library SheetJS untuk membaca file Excel/CSV -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  
+
   <style>
-    /* 1. Pengaturan Default (Tampilan Desktop) */
-.desktop-footer {
-  display: block; /* Munculkan footer di bawah */
-}
-.mobile-footer-text {
-  display: none; /* Sembunyikan footer di sidebar */
-}
+    .role-selector-wrapper {
+      position: relative;
+      display: inline-block;
+    }
 
-/* 2. Pengaturan untuk HP (Layar di bawah 900px) */
-@media (max-width: 900px) {
-  .desktop-footer {
-    display: none; /* Sembunyikan footer bawah di HP */
-  }
-  .mobile-footer-text {
-    display: block; /* Munculkan footer di dalam sidebar HP */
-  }
-}
-    .role-selector-wrapper { position: relative; display: inline-block; }
-    .role-select { background-color: #18191c; color: #ffffff; border: 1px solid #e2e8f0; padding: 8px 14px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; cursor: pointer; outline: none; transition: all 0.2s ease; }
-    .role-select:hover { background-color: #0f172a; }
+    .role-select {
+      background-color: #18191c;
+      color: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s ease;
+    }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
-    body { background-color: #f3f5f9; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
+    .role-select:hover {
+      background-color: #0f172a;
+    }
 
-    .desktop-navbar { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 14px 8%; position: sticky; top: 0; z-index: 90; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02); }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; color: #0f172a; }
-    .brand-icon { background-color: #18191c; color: #ffffff; padding: 6px 10px; border-radius: 12px; font-size: 1rem; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    }
 
-    .nav-links-desktop { display: flex; gap: 12px; align-items: center; }
-    .nav-links-desktop a { color: #64748b; text-decoration: none; font-size: 0.9rem; font-weight: 600; padding: 8px 16px; border-radius: 12px; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px; }
-    .nav-links-desktop a:hover, .nav-links-desktop a.active { background-color: #18191c; color: #ffffff; }
+    body {
+      background-color: #f3f5f9;
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-    .user-profile-header { display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 6px 14px; border-radius: 30px; border: 1px solid #e2e8f0; }
-    .user-avatar { width: 30px; height: 30px; background: #e0e7ff; color: #4f46e5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
+    .desktop-navbar {
+      background-color: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 14px 8%;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    }
 
-    .btn-hamburger-mobile { display: none; background: none; border: none; font-size: 1.4rem; color: #0f172a; cursor: pointer; }
-    .mobile-sidebar-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); z-index: 200; display: none; }
-    .mobile-sidebar-overlay.active { display: block; }
-    .mobile-sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background-color: #18191c; color: #ffffff; z-index: 210; transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; justify-content: space-between; padding: 24px 20px; box-shadow: 10px 0 30px rgba(0,0,0,0.2); }
-    .mobile-sidebar.active { left: 0; }
-    .mobile-nav-menu { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
-    .mobile-nav-menu a { color: #94a3b8; text-decoration: none; padding: 12px 16px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
-    .mobile-nav-menu a.active, .mobile-nav-menu a:hover { background-color: rgba(255, 255, 255, 0.15); color: #ffffff; }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: #0f172a;
+    }
 
-    main { max-width: 950px; width: 100%; margin: 0 auto; padding: 24px 20px 60px 20px; flex: 1; }
-    .page-title p { font-size: 0.75rem; font-weight: 800; color: #6366f1; text-transform: uppercase; letter-spacing: 1px; }
-    .page-title h1 { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 16px; }
+    .brand-icon {
+      background-color: #18191c;
+      color: #ffffff;
+      padding: 6px 10px;
+      border-radius: 12px;
+      font-size: 1rem;
+    }
 
-    .dashboard-card { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
-    .card-title { font-size: 1.05rem; font-weight: 800; color: #0f172a; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .nav-links-desktop {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-    @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+    .nav-links-desktop a {
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-    .form-group label { font-size: 0.8rem; font-weight: 700; color: #64748b; }
-    .form-control { background-color: #f8fafc; border: 1px solid #e2e8f0; color: #0f172a; padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; outline: none; font-weight: 600; transition: border 0.2s; }
-    .form-control:focus { border-color: #6366f1; background-color: #ffffff; }
+    .nav-links-desktop a:hover,
+    .nav-links-desktop a.active {
+      background-color: #18191c;
+      color: #ffffff;
+    }
 
-    .btn-submit { width: 100%; background-color: #18191c; color: #ffffff; font-weight: 800; font-size: 0.95rem; padding: 14px; border-radius: 12px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(24, 25, 28, 0.15); transition: all 0.2s; }
-    .btn-submit:hover { background-color: #0f172a; }
+    .user-profile-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f8fafc;
+      padding: 6px 14px;
+      border-radius: 30px;
+      border: 1px solid #e2e8f0;
+    }
 
-    .btn-import { background-color: #10b981; color: #ffffff; font-weight: 700; font-size: 0.85rem; padding: 8px 14px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-    .btn-import:hover { background-color: #059669; }
+    .user-avatar {
+      width: 30px;
+      height: 30px;
+      background: #e0e7ff;
+      color: #4f46e5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
 
-    .btn-cancel { background-color: #f1f5f9; color: #475569; font-weight: 700; padding: 14px; border-radius: 12px; border: 1px solid #cbd5e1; cursor: pointer; width: 100%; }
+    .btn-hamburger-mobile {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: #0f172a;
+      cursor: pointer;
+    }
 
-    .table-responsive { overflow-x: auto; margin-top: 12px; }
-    .db-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left; }
-    .db-table th { background-color: #f8fafc; color: #64748b; padding: 10px 12px; border-bottom: 2px solid #e2e8f0; font-size: 0.75rem; text-transform: uppercase; white-space: nowrap; font-weight: 800; }
-    .db-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; white-space: nowrap; }
-    
-    .btn-action-group { display: flex; gap: 6px; }
-    .btn-edit-sm { background: #e0e7ff; border: 1px solid #c7d2fe; color: #3730a3; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 700; }
-    .btn-danger-sm { background: #fee2e2; border: 1px solid #fecaca; color: #ef4444; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 700; }
-    .badge-kategori { background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
-    .badge-active-rental { background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; }
+    .mobile-sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+    }
+
+    .mobile-sidebar-overlay.active {
+      display: block;
+    }
+
+    .mobile-sidebar {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 280px;
+      height: 100%;
+      background-color: #18191c;
+      color: #ffffff;
+      z-index: 210;
+      transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px 20px;
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .mobile-sidebar.active {
+      left: 0;
+    }
+
+    .mobile-nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .mobile-nav-menu a {
+      color: #94a3b8;
+      text-decoration: none;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mobile-nav-menu a.active,
+    .mobile-nav-menu a:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+
+    main {
+      max-width: 950px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 20px 60px 20px;
+      flex: 1;
+    }
+
+    .page-title p {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #6366f1;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .page-title h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 16px;
+    }
+
+    .dashboard-card {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 768px) {
+
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #64748b;
+    }
+
+    .form-control {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #0f172a;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      outline: none;
+      font-weight: 600;
+      transition: border 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: #6366f1;
+      background-color: #ffffff;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background-color: #18191c;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(24, 25, 28, 0.15);
+      transition: all 0.2s;
+    }
+
+    .btn-submit:hover {
+      background-color: #0f172a;
+    }
+
+    .btn-import {
+      background-color: #10b981;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-import:hover {
+      background-color: #059669;
+    }
+
+    .btn-cancel {
+      background-color: #f1f5f9;
+      color: #475569;
+      font-weight: 700;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+
+    .db-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    .db-table th {
+      background-color: #f8fafc;
+      color: #64748b;
+      padding: 10px 12px;
+      border-bottom: 2px solid #e2e8f0;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      white-space: nowrap;
+      font-weight: 800;
+    }
+
+    .db-table td {
+      padding: 12px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+      white-space: nowrap;
+    }
+
+    .btn-action-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-edit-sm {
+      background: #e0e7ff;
+      border: 1px solid #c7d2fe;
+      color: #3730a3;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .btn-danger-sm {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      color: #ef4444;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .badge-kategori {
+      background: #e0e7ff;
+      color: #3730a3;
+      border: 1px solid #c7d2fe;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .badge-active-rental {
+      background: #dcfce7;
+      color: #166534;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
 
     @media (max-width: 900px) {
-      .nav-links-desktop { display: none; }
-      .btn-hamburger-mobile { display: block; }
-      .desktop-navbar { padding: 12px 20px; }
-      main { padding: 16px; }
+      .nav-links-desktop {
+        display: none;
+      }
+
+      .btn-hamburger-mobile {
+        display: block;
+      }
+
+      .desktop-navbar {
+        padding: 12px 20px;
+      }
+
+      main {
+        padding: 16px;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <!-- DESKTOP NAVBAR -->
   <header class="desktop-navbar">
     <div style="display: flex; align-items: center; gap: 12px;">
       <button class="btn-hamburger-mobile" onclick="toggleMobileSidebar()"><i class="fa-solid fa-bars"></i></button>
-      <div class="brand"><div class="brand-icon">🎯</div><span>SCORING<span style="color:#6366f1;">PTU</span></span></div>
+      <div class="brand">
+        <div class="brand-icon">🎯</div><span>SCORING<span style="color:#6366f1;">PTU</span></span>
+      </div>
     </div>
 
     <nav class="nav-links-desktop">
-      <a href="{{ url('/home') }}"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
-      <a href="{{ url('/scoring') }}"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
-      <a href="{{ url('/riwayat') }}"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
-      <a href="{{ url('/pendaftaran') }}" class="active"><i class="fa-solid fa-users"></i> Registrasi</a>
+      <a href="home.html"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
+      <a href="scoring.html"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
+      <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
+      <a href="pendaftaran.html" class="active"><i class="fa-solid fa-users"></i> Registrasi</a>
 
       <div class="role-selector-wrapper">
         <select id="app-role-picker-desktop" class="role-select" onchange="switchRole(this.value)">
@@ -133,34 +469,34 @@
     <div>
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div class="brand" style="color:#fff;">
-          <div class="brand-icon" style="background:#fff; color:#18191c;">🎯</div>
-          <span>SCORING<span style="color:#818cf8;">PTU</span></span>
+          <div class="brand-icon" style="background:#fff; color:#18191c;">🎯</div><span>SCORING<span
+              style="color:#818cf8;">PTU</span></span>
         </div>
-        <button onclick="toggleMobileSidebar()" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+        <button onclick="toggleMobileSidebar()"
+          style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;"><i
+            class="fa-solid fa-xmark"></i></button>
       </div>
 
       <nav class="mobile-nav-menu">
-        <a href="{{ url('/home') }}"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
-        <a href="{{ url('/scoring') }}"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
-        <a href="{{ url('/riwayat') }}"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
-        <a href="{{ url('/pendaftaran') }}" class="active"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
+        <a href="home.html"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
+        <a href="scoring.html"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
+        <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
+        <a href="pendaftaran.html" class="active"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
 
-        <!-- DROPDOWN PERAN MOBILE -->
         <div class="role-selector-wrapper" style="margin-top: 10px;">
-          <select id="app-role-picker-mobile" class="role-select" style="width: 100%;" onchange="switchRole(this.value)">
+          <select id="app-role-picker-mobile" class="role-select" style="width: 100%;"
+            onchange="switchRole(this.value)">
             <option value="scorer">📱 Scorer (HP)</option>
             <option value="display">🖥️ Live Display</option>
-            <option value="admin">⚙️ Admin / Panitia</option>
+            <option value="admin" selected>⚙️ Admin / Panitia</option>
           </select>
         </div>
       </nav>
     </div>
 
-        <!-- Letakkan di dalam sidebar, di bawah menu -->
+    <!-- FOOTER KHUSUS DI DALAM SIDEBAR (TAMPIL DI HP) -->
     <div class="mobile-footer-text" style="font-size: 0.75rem; color: #94a3b8; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
-      <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah &bull; Dibuat dng Laravel</p>
+      <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah</p>
     </div>
   </aside>
 
@@ -171,16 +507,18 @@
     </div>
 
     <!-- PANEL KONTROL MASA SEWA KLIEN (Hanya Muncul untuk Admin Utama) -->
-    <div class="dashboard-card" id="rental-panel-card" style="border-color: #fde047; background: #fffbeb; display: none;">
+    <div class="dashboard-card" id="rental-panel-card"
+      style="border-color: #fde047; background: #fffbeb; display: none;">
       <div class="card-title" style="color: #92400e;">
         <span><i class="fa-solid fa-clock"></i> Panel Kontrol Masa Sewa Klien (Admin)</span>
         <span class="badge-active-rental" id="total-clients-badge">Total Akun Klien: 0</span>
       </div>
-      
+
       <div class="form-group">
         <label style="color: #92400e;">Pilih Akun Klien dari Dropdown atau Ketik Manual:</label>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <select id="client-dropdown" class="form-control" style="flex: 1; min-width: 200px;" onchange="document.getElementById('target-client-email').value = this.value; checkSelectedClientStatus();">
+          <select id="client-dropdown" class="form-control" style="flex: 1; min-width: 200px;"
+            onchange="document.getElementById('target-client-email').value = this.value; checkSelectedClientStatus();">
             <option value="">-- Pilih dari daftar akun klien --</option>
           </select>
         </div>
@@ -188,7 +526,8 @@
 
       <div class="form-group" style="margin-top: 8px;">
         <label style="color: #92400e;">Email Klien / Penyewa:</label>
-        <input type="email" id="target-client-email" class="form-control" placeholder="Contoh: bima@gmail.com" oninput="checkSelectedClientStatus()">
+        <input type="email" id="target-client-email" class="form-control" placeholder="Contoh: bima@gmail.com"
+          oninput="checkSelectedClientStatus()">
       </div>
 
       <div class="grid-2" style="align-items: end; margin-top: 10px;">
@@ -197,10 +536,12 @@
           <input type="number" id="rental-days-input" class="form-control" min="1" value="2">
         </div>
         <div style="display: flex; gap: 8px;">
-          <button type="button" class="btn-submit" style="background-color: #d97706;" onclick="adminSetClientDuration()">
+          <button type="button" class="btn-submit" style="background-color: #d97706;"
+            onclick="adminSetClientDuration()">
             <i class="fa-solid fa-check-circle"></i> Update Sewa Klien
           </button>
-          <button type="button" class="btn-danger-sm" style="padding: 14px;" onclick="adminLockClient()" title="Kunci Akses Klien">
+          <button type="button" class="btn-danger-sm" style="padding: 14px;" onclick="adminLockClient()"
+            title="Kunci Akses Klien">
             <i class="fa-solid fa-lock"></i> Kunci Klien
           </button>
         </div>
@@ -212,12 +553,14 @@
     <div class="dashboard-card" style="border-color: #a7f3d0; background: #ecfdf5;">
       <div class="card-title" style="color: #065f46;">
         <span><i class="fa-solid fa-file-excel"></i> Import Massal dari File Excel / CSV</span>
-        <button class="btn-import" onclick="document.getElementById('excel-file-input').click()"><i class="fa-solid fa-folder-open"></i> Pilih File Excel / CSV</button>
+        <button class="btn-import" onclick="document.getElementById('excel-file-input').click()"><i
+            class="fa-solid fa-folder-open"></i> Pilih File Excel / CSV</button>
       </div>
       <input type="file" id="excel-file-input" accept="*/*" style="display: none;" onchange="handleExcelUpload(event)">
 
       <p style="font-size: 0.8rem; color: #047857; line-height: 1.5; font-weight: 500;">
-        * Upload file Excel/CSV dng urutan kolom: <strong>No. Registrasi | Nama Lengkap | No. HP/WA | Tgl Lahir | Jenis Kelamin | Alamat Domisili | Kab/Kota | Provinsi | Klub Panahan | Kategori Busur</strong>.
+        * Upload file Excel/CSV dengan urutan kolom: <strong>No. Registrasi | Nama Lengkap | No. HP/WA | Tgl Lahir |
+          Jenis Kelamin | Alamat Domisili | Kab/Kota | Provinsi | Klub Panahan | Kategori Busur</strong>.
       </p>
     </div>
 
@@ -291,7 +634,8 @@
 
         <div style="display: flex; gap: 10px; margin-top: 10px;" id="btn-container">
           <button type="submit" class="btn-submit" id="btn-save-text">+ Simpan Registrasi Peserta</button>
-          <button type="button" class="btn-cancel" id="btn-cancel-edit" style="display: none;" onclick="cancelEdit()">Batal Edit</button>
+          <button type="button" class="btn-cancel" id="btn-cancel-edit" style="display: none;"
+            onclick="cancelEdit()">Batal Edit</button>
         </div>
       </form>
     </div>
@@ -300,9 +644,10 @@
     <div class="dashboard-card">
       <div class="card-title">
         <span>👥 Database Peserta Terdaftar</span>
-        
+
         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-          <select id="filter-kategori" class="form-control" style="font-size:0.8rem; padding:6px 12px;" onchange="renderDatabase()">
+          <select id="filter-kategori" class="form-control" style="font-size:0.8rem; padding:6px 12px;"
+            onchange="renderDatabase()">
             <option value="ALL">Semua Kategori</option>
             <option value="Traditional Bow">Traditional Bow</option>
             <option value="Kasumedangan">Kasumedangan</option>
@@ -341,12 +686,9 @@
     </div>
   </main>
 
-  <!-- Letakkan di bawah, pastikan ada class="desktop-footer" -->
-  <footer class="desktop-footer" style="background: #222; color: white; text-align: center; padding: 20px; margin-top: 50px;">
-    <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah &bull; Dibuat dng Laravel</p>
+<footer class="desktop-footer" style="background: #222; color: white; text-align: center; padding: 20px; margin-top: 50px;">
+    <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah</p>
   </footer>
-
-  
   <script>
     function getActiveUser() {
       return JSON.parse(localStorage.getItem('activeArcheryUser')) || { name: 'Admin Tamu', email: 'guest@archery.com', club: 'Independen' };
@@ -358,19 +700,19 @@
     }
 
     // =========================================================================
-    // 1. CEK HAK AKSES ADMIN UTAMA & MUAT DROPDOWN AKUN KLIEN (ADMIN DISARING)
+    // 1. CEK HAK AKSES ADMIN UTAMA & MUAT DROPDOWN AKUN KLIEN
     // =========================================================================
     function checkIfAdmin() {
       const activeUser = getActiveUser();
       const adminEmail = "mimin@gmail.com"; // Email akun admin utama
-      
+
       const rentalPanel = document.getElementById('rental-panel-card');
       if (rentalPanel) {
         if (activeUser.email === adminEmail) {
-          rentalPanel.style.display = 'block'; // Tampilkan panel khusus admin
-          loadClientDropdownList();            // Muat daftar akun klien (admin bersih dari list)
+          rentalPanel.style.display = 'block';
+          loadClientDropdownList();
         } else {
-          rentalPanel.style.display = 'none';  // Sembunyikan untuk klien biasa
+          rentalPanel.style.display = 'none';
         }
       }
     }
@@ -380,36 +722,58 @@
       if (!dropdown) return;
 
       dropdown.innerHTML = `<option value="">-- Pilih dari daftar akun klien --</option>`;
-      
-      let clientEmails = [];
+
+      let clientEmails = new Set();
       const adminEmail = "mimin@gmail.com";
 
-      // Scan seluruh key localStorage untuk mencari data masa sewa
+      // 1. Scan data KLIEN yang sudah punya masa sewa (Aktif / Kadaluwarsa)
       for (let i = 0; i < localStorage.length; i++) {
         let key = localStorage.key(i);
         if (key.startsWith('archeryRentalExpiry_')) {
           let email = key.replace('archeryRentalExpiry_', '');
-          
-          // PENTING: Kecualikan akun admin agar tidak masuk ke dropdown klien
-          if (email !== adminEmail) {
-            clientEmails.push(email);
-          }
+          if (email !== adminEmail) clientEmails.add(email);
         }
       }
 
+      // 2. Scan data AKUN BARU yang belum punya masa sewa (Pending)
+      // Kita asumsikan data akun terdaftar disimpan di key 'registeredUsers' atau sejenisnya oleh auth.js
+      // Jika Anda menyimpan daftar user di key lain, silakan sesuaikan nama key-nya di bawah:
+      const registeredUsersRaw = localStorage.getItem('registeredUsers') || localStorage.getItem('archeryUsers') || '[]';
+      try {
+        const usersList = JSON.parse(registeredUsersRaw);
+        if (Array.isArray(usersList)) {
+          usersList.forEach(user => {
+            if (user.email && user.email !== adminEmail) {
+              clientEmails.add(user.email);
+            }
+          });
+        }
+      } catch (e) { console.warn("Gagal membaca list user terdaftar."); }
+
+      const clientEmailsArray = Array.from(clientEmails);
+
       // Update badge jumlah total akun klien
       const badge = document.getElementById('total-clients-badge');
-      if (badge) badge.innerText = `Total Akun Klien: ${clientEmails.length}`;
+      if (badge) badge.innerText = `Total Akun Klien: ${clientEmailsArray.length}`;
 
-      clientEmails.forEach(email => {
+      // 3. Render ke dalam Dropdown
+      clientEmailsArray.forEach(email => {
         let opt = document.createElement('option');
         opt.value = email;
-        
+
         let expiryTime = parseInt(localStorage.getItem(`archeryRentalExpiry_${email}`)) || 0;
-        let isExpired = new Date().getTime() > expiryTime;
-        let statusText = isExpired ? "❌ [Kedaluwarsa]" : "✅ [Aktif]";
-        
-        opt.innerText = `${email} ${statusText}`;
+
+        if (expiryTime === 0) {
+          // Belum punya masa sewa = Belum dikonfirmasi oleh admin
+          opt.innerText = `⏳ [Belum Dikonfirmasi] ${email}`;
+          opt.style.color = "#b45309"; // Warna agak kekuningan/orange
+          opt.style.fontWeight = "bold";
+        } else {
+          let isExpired = new Date().getTime() > expiryTime;
+          let statusText = isExpired ? "❌ [Kedaluwarsa]" : "✅ [Aktif]";
+          opt.innerText = `${email} ${statusText}`;
+        }
+
         dropdown.appendChild(opt);
       });
     }
@@ -417,7 +781,7 @@
     function checkSelectedClientStatus() {
       const email = document.getElementById('target-client-email').value.trim().toLowerCase();
       const infoBox = document.getElementById('target-client-info');
-      
+
       if (!email) {
         if (infoBox) infoBox.innerText = "";
         return;
@@ -427,7 +791,7 @@
       let expiryTime = localStorage.getItem(rentalKey);
 
       if (!expiryTime) {
-        if (infoBox) infoBox.innerText = `⚠️ Akun (${email}) belum memiliki catatan durasi sewa di sistem.`;
+        if (infoBox) infoBox.innerText = `⚠️ Akun (${email}) adalah Pendaftar Baru. Silakan tentukan durasi di atas dan klik "Update Sewa Klien" untuk mengaktifkannya.`;
       } else {
         let expiryDate = new Date(parseInt(expiryTime));
         let isExpired = new Date().getTime() > parseInt(expiryTime);
@@ -454,10 +818,10 @@
 
       const rentalKey = `archeryRentalExpiry_${clientEmail}`;
       const newExpiry = new Date().getTime() + (days * 24 * 60 * 60 * 1000);
-      
+
       localStorage.setItem(rentalKey, newExpiry);
       alert(`✅ Sukses! Masa sewa untuk klien (${clientEmail}) berhasil diatur selama ${days} hari ke depan.`);
-      
+
       loadClientDropdownList();
       checkSelectedClientStatus();
     }
@@ -514,25 +878,19 @@
         throw new Error("Akses ditolak: Masa sewa habis.");
       }
     }
-    
+
     function toggleMobileSidebar() {
       document.getElementById('mobile-sidebar').classList.toggle('active');
       document.getElementById('mobile-overlay').classList.toggle('active');
     }
 
     function switchRole(role) {
-    if (role === 'admin') {
-        window.location.href = '/pendaftaran';
-    } else if (role === 'display') {
-        window.location.href = '/display';
-    } else if (role === 'scorer') {
-        window.location.href = '/scoring';
+      if (role === 'admin') window.location.href = 'pendaftaran.html';
+      else if (role === 'display') window.location.href = 'display.html';
+      else if (role === 'scorer') window.location.href = 'scoring.html';
     }
 
-}
-
-
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       checkRentalExpiration();
       checkIfAdmin();
 
@@ -555,11 +913,11 @@
 
       const currentDBKey = getAccountDBKey();
       let currentDB = JSON.parse(localStorage.getItem(currentDBKey)) || [];
-      
+
       if (currentDB.length === 0) {
         const now = new Date();
         const timestamp = now.toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
-        
+
         const initialUserPeserta = {
           id: Date.now(),
           timestamp: timestamp,
@@ -575,7 +933,7 @@
           klub: activeUser.club || 'Independen',
           kategori: 'Traditional Bow'
         };
-        
+
         currentDB.push(initialUserPeserta);
         localStorage.setItem(currentDBKey, JSON.stringify(currentDB));
       }
@@ -744,7 +1102,7 @@
 
       if (isCSV) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
           let text = e.target.result;
           if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
 
@@ -788,7 +1146,7 @@
         reader.readAsText(file, 'UTF-8');
       } else {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
           try {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: 'array' });
@@ -854,4 +1212,5 @@
     }
   </script>
 </body>
+
 </html>
