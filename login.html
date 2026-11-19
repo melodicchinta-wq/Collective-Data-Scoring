@@ -126,8 +126,8 @@
         <div
           style="font-size: 0.7rem; color: #64748b; margin-bottom: 6px; font-weight: 700; text-transform: uppercase;">💳
           Pembayaran Sewa / Aktivasi:</div>
-        <div class="bank-item"><span>Bank BJB:</span> <span style="color:#4f46e5;">1234-5678-9010</span></div>
-        <div class="bank-item"><span>DANA / OVO:</span> <span style="color:#0284c7;">0812-3456-7890</span></div>
+        <div class="bank-item"><span>Bank BRI :</span> <span style="color:#4f46e5;">4440 0100 8483 501</span></div>
+        <div class="bank-item"><span>DANA :</span> <span style="color:#0284c7;">0895 3244 20419</span></div>
       </div>
 
       <!-- KOTAK QR CODE WHATSAPP -->
@@ -178,7 +178,7 @@
           Halo <strong>${name}</strong>, email <strong>${email}</strong> telah direkam oleh sistem. Silakan lakukan pembayaran aktivasi dan hubungi Admin agar akses web Anda segera dibuka melalui Panel Admin.
         `;
 
-        const adminPhone = "621234567890"; // Ganti dengan nomor WhatsApp Admin kamu
+        const adminPhone = "62895324420419"; // Ganti dengan nomor WhatsApp Admin kamu
         const waText = `Halo Mimin, aku mau mendaftar & mengaktifkan akun website SCORINGPTU:%0A- Nama: ${name}%0A- Email: ${email}%0A- Klub: ${club}%0A%0ABerikut aku lampirkan bukti pembayarannya yaw.`;
 
         const finalWaUrl = `https://api.whatsapp.com/send?phone=${adminPhone}&text=${waText}`;
@@ -203,7 +203,7 @@
           Akun <strong>${name}</strong> (${email}) sedang menunggu aktivasi atau masa sewanya telah berakhir. Silakan konfirmasi pembayaran ke Admin.
         `;
 
-        const adminPhone = "621234567890";
+        const adminPhone = "62895324420419";
         const waText = `Halo Mimin, aku mau konfirmasi aktivasi/perpanjangan akun SCORINGPTU:%0A- Nama: ${name}%0A- Email: ${email}%0A- Klub: ${club}`;
 
         const finalWaUrl = `https://api.whatsapp.com/send?phone=${adminPhone}&text=${waText}`;
