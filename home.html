@@ -1,35 +1,20 @@
-
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Setup Latihan Panahan - SCORINGPTU</title>
+  <title>Papan Skor & Leaderboard - SCORINGPTU</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
   <style>
-    /* 1. Pengaturan Default (Tampilan Desktop) */
-.desktop-footer {
-  display: block; /* Munculkan footer di bawah */
-}
-.mobile-footer-text {
-  display: none; /* Sembunyikan footer di sidebar */
-}
-
-/* 2. Pengaturan untuk HP (Layar di bawah 900px) */
-@media (max-width: 900px) {
-  .desktop-footer {
-    display: none; /* Sembunyikan footer bawah di HP */
-  }
-  .mobile-footer-text {
-    display: block; /* Munculkan footer di dalam sidebar HP */
-  }
-}
     .role-selector-wrapper {
       position: relative;
       display: inline-block;
     }
+
     .role-select {
       background-color: #18191c;
       color: #ffffff;
@@ -42,9 +27,11 @@
       outline: none;
       transition: all 0.2s ease;
     }
+
     .role-select:hover {
       background-color: #0f172a;
     }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -109,15 +96,10 @@
       gap: 8px;
     }
 
-    .nav-links-desktop a:hover, .nav-links-desktop a.active {
+    .nav-links-desktop a:hover,
+    .nav-links-desktop a.active {
       background-color: #18191c;
       color: #ffffff;
-    }
-
-    .header-right-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
     }
 
     .user-profile-header {
@@ -179,7 +161,7 @@
       flex-direction: column;
       justify-content: space-between;
       padding: 24px 20px;
-      box-shadow: 10px 0 30px rgba(0,0,0,0.2);
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
     }
 
     .mobile-sidebar.active {
@@ -204,7 +186,8 @@
       gap: 12px;
     }
 
-    .mobile-nav-menu a.active, .mobile-nav-menu a:hover {
+    .mobile-nav-menu a.active,
+    .mobile-nav-menu a:hover {
       background-color: rgba(255, 255, 255, 0.15);
       color: #ffffff;
     }
@@ -220,203 +203,622 @@
     .page-navigation {
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
       margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .btn-back {
-      width: 40px;
-      height: 40px;
+    .btn-change-setup {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 12px;
       color: #0f172a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 0.9rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-      transition: all 0.2s;
-    }
-
-    .btn-back:hover {
-      background: #f8fafc;
-      transform: translateX(-2px);
-    }
-
-    .mode-toggle-card {
-      background: #ffffff;
-      padding: 6px;
-      border-radius: 16px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 20px;
-      border: 1px solid #e2e8f0;
-    }
-
-    .btn-mode {
-      padding: 12px;
+      padding: 8px 14px;
       border-radius: 12px;
-      border: none;
+      font-size: 0.8rem;
       font-weight: 700;
-      font-size: 0.88rem;
       cursor: pointer;
-      background: transparent;
-      color: #64748b;
-      display: flex;
+      text-decoration: none;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn-mode.active {
-      background-color: #18191c;
-      color: #ffffff;
-      box-shadow: 0 4px 12px rgba(24, 25, 28, 0.15);
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
     }
 
     .dashboard-card {
       background: #ffffff;
       border-radius: 20px;
-      padding: 24px;
+      padding: 20px 16px;
       margin-bottom: 20px;
       border: 1px solid #e2e8f0;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      overflow-x: hidden;
     }
 
-    .card-header-title {
-      font-size: 1rem;
+    .session-info {
+      font-size: 0.75rem;
       font-weight: 800;
-      color: #0f172a;
+      color: #6366f1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .archer-selector {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
       margin-bottom: 16px;
+      scrollbar-width: thin;
+    }
+
+    .btn-archer-tab {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #64748b;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-archer-tab.active {
+      background-color: #e0e7ff;
+      border-color: #c7d2fe;
+      color: #3730a3;
+    }
+
+    .arrow-boxes {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .arrow-box {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      height: 52px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    @media (max-width: 650px) {
-      .grid-2 { grid-template-columns: 1fr; }
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 14px;
-    }
-
-    .form-group label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #64748b;
-    }
-
-    .form-control {
-      background-color: #f8fafc;
-      border: 1px solid #e2e8f0;
-      color: #0f172a;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      outline: none;
-      font-weight: 600;
-      width: 100%;
-    }
-
-    .form-control:focus {
-      border-color: #6366f1;
-      background-color: #ffffff;
-    }
-
-    .grid-buttons {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-      gap: 10px;
-    }
-
-    .btn-option {
-      background-color: #f8fafc;
-      border: 1px solid #e2e8f0;
-      color: #475569;
-      padding: 12px 8px;
-      border-radius: 14px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
+      justify-content: center;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #4f46e5;
+      padding: 0 4px;
       text-align: center;
     }
 
-    .btn-option.active {
-      background-color: #e0e7ff;
-      color: #3730a3;
-      border-color: #c7d2fe;
-    }
-
-    .btn-link {
-      background: none;
-      border: none;
-      color: #4f46e5;
-      font-size: 0.8rem;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-    }
-
-    .participant-row {
-      background-color: #f8fafc;
-      border: 1px solid #e2e8f0;
-      padding: 12px;
-      border-radius: 16px;
-      margin-bottom: 10px;
+    .input-mode-toggle {
       display: grid;
-      grid-template-columns: 2fr 2fr 1fr 1fr auto;
-      gap: 10px;
-      align-items: center;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
     }
 
-    @media (max-width: 768px) {
-      .participant-row {
-        grid-template-columns: 1fr;
-        gap: 8px;
-      }
-    }
-
-    .btn-danger {
-      background-color: #fee2e2;
-      border: 1px solid #fecaca;
-      color: #ef4444;
-      padding: 10px 14px;
-      border-radius: 10px;
-      cursor: pointer;
+    .btn-input-mode {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #64748b;
+      padding: 10px 5px;
+      border-radius: 12px;
       font-weight: 700;
+      font-size: 0.75rem;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 4px;
+      text-align: center;
     }
 
-    .btn-submit {
+    .btn-input-mode.active {
+      background: #fbbf24;
+      border-color: #f59e0b;
+      color: #78350f;
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
+    }
+
+    .virtual-target-card {
+      background: #18191c;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .target-wrapper {
+      position: relative;
       width: 100%;
+      max-width: 300px;
+      height: 300px;
+      border: 2px solid #334155;
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #000;
+      touch-action: none;
+      cursor: grab;
+      margin-top: 10px;
+    }
+
+    .target-wrapper:active {
+      cursor: grabbing;
+    }
+
+    .canvas-container {
+      position: absolute;
+      transform-origin: 0 0;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    .zoom-controls {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-ref-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e0e7ff;
+      color: #3730a3;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .btn-ref-link:hover {
+      background: #c7d2fe;
+    }
+
+    .target-face {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      background-color: #0f172a;
+      cursor: pointer;
+    }
+
+    .t-ring {
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      cursor: pointer;
+      font-weight: 800;
+      transition: transform 0.1s;
+    }
+
+    .t-ring:hover {
+      transform: scale(1.02);
+    }
+
+    .ring-1 {
+      width: 135%;
+      height: 135%;
+      background: #ffffff;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
+      font-size: 0.75rem;
+    }
+
+    .ring-2 {
+      width: 122%;
+      height: 122%;
+      background: #ffffff;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
+      font-size: 0.75rem;
+    }
+
+    .ring-3 {
+      width: 110%;
+      height: 110%;
+      background: #1e1e1e;
+      color: #ffffff;
+      border: 1px solid #334155;
+      font-size: 0.75rem;
+    }
+
+    .ring-4 {
+      width: 98%;
+      height: 98%;
+      background: #1e1e1e;
+      color: #ffffff;
+      border: 1px solid #334155;
+      font-size: 0.75rem;
+    }
+
+    .ring-5 {
+      width: 86%;
+      height: 86%;
+      background: #0284c7;
+      color: #ffffff;
+      border: 1px solid #38bdf8;
+      font-size: 0.8rem;
+    }
+
+    .ring-6 {
+      width: 73%;
+      height: 73%;
+      background: #0284c7;
+      color: #ffffff;
+      border: 1px solid #38bdf8;
+      font-size: 0.8rem;
+    }
+
+    .ring-7 {
+      width: 60%;
+      height: 60%;
+      background: #dc2626;
+      color: #ffffff;
+      border: 1px solid #f87171;
+      font-size: 0.85rem;
+    }
+
+    .ring-8 {
+      width: 47%;
+      height: 47%;
+      background: #dc2626;
+      color: #ffffff;
+      border: 1px solid #f87171;
+      font-size: 0.85rem;
+    }
+
+    .ring-9 {
+      width: 34%;
+      height: 34%;
+      background: #fbbf24;
+      color: #78350f;
+      border: 1px solid #fef08a;
+      font-size: 0.9rem;
+    }
+
+    .ring-10 {
+      width: 20%;
+      height: 20%;
+      background: #fbbf24;
+      color: #78350f;
+      border: 1px solid #fef08a;
+      font-size: 0.9rem;
+    }
+
+    .ring-x {
+      width: 7%;
+      height: 7%;
+      background: #fbbf24;
+      color: #78350f;
+      border: 1px solid #d97706;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 900;
+      z-index: 10;
+    }
+
+    .numpad-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .btn-num {
+      height: 50px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s;
+      line-height: 1.1;
+    }
+
+    .btn-num:active {
+      transform: scale(0.96);
+    }
+
+    .btn-num small {
+      font-size: 0.65rem;
+      font-weight: 700;
+      opacity: 0.85;
+    }
+
+    .num-x,
+    .num-10,
+    .num-9 {
+      background-color: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde047;
+    }
+
+    .num-x-wbn {
+      background-color: #e0e7ff;
+      color: #3730a3;
+      border: 1px solid #a5b4fc;
+    }
+
+    .num-8,
+    .num-7 {
+      background-color: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    .num-6,
+    .num-5 {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    .num-4,
+    .num-3 {
+      background-color: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+
+    .num-2,
+    .num-1 {
+      background-color: #f8fafc;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+
+    .num-m {
+      background-color: #18191c;
+      color: #ffffff;
+    }
+
+    .btn-save-rambahan {
       background-color: #18191c;
       color: #ffffff;
       font-weight: 800;
-      font-size: 1rem;
-      padding: 16px;
-      border-radius: 16px;
+      padding: 14px;
+      border-radius: 12px;
       border: none;
       cursor: pointer;
-      box-shadow: 0 6px 20px rgba(24, 25, 28, 0.15);
+      font-size: 0.95rem;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(24, 25, 28, 0.15);
+      text-align: center;
+      text-decoration: none;
+      display: block;
+    }
+
+    .participants-summary-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .participant-summary-card {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    }
+
+    .participant-summary-card.active-card {
+      border: 2px solid #6366f1;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.1);
+    }
+
+    .p-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .p-card-name {
+      font-weight: 800;
+      color: #0f172a;
+      font-size: 1rem;
+    }
+
+    .p-card-club {
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+
+    .p-card-total-badge {
+      background-color: #e0e7ff;
+      color: #3730a3;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 0.85rem;
+    }
+
+    .end-history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .end-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      gap: 8px;
+    }
+
+    .end-label {
+      font-weight: 700;
+      color: #4f46e5;
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .end-dots {
+      color: #334155;
+      letter-spacing: 1px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex: 1;
+      text-align: center;
+      overflow-x: auto;
+    }
+
+    .end-total {
+      font-weight: 800;
+      color: #0f172a;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+
+    .podium-container {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+      align-items: flex-end;
+    }
+
+    .podium-box {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 18px 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    }
+
+    .podium-box.rank-1-box {
+      border-color: #fbbf24;
+      background: linear-gradient(to bottom, #ffffff, #fffbeb);
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px rgba(251, 191, 36, 0.15);
+    }
+
+    .podium-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #fef3c7;
+      color: #d97706;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: 10px;
+      border: 2px solid #fde047;
+    }
+
+    .podium-name {
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: #0f172a;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
+    .podium-club {
+      font-size: 0.7rem;
+      color: #64748b;
+      margin-bottom: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
+    .podium-score-badge {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #4f46e5;
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+
+    .leaderboard-table th {
+      text-align: left;
+      font-size: 0.7rem;
+      color: #64748b;
+      padding: 8px 4px;
+      border-bottom: 2px solid #f1f5f9;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .leaderboard-table td {
+      padding: 12px 4px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.85rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-detail-icon {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      color: #4f46e5;
+      padding: 5px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .btn-detail-icon:hover {
+      background: #e0e7ff;
     }
 
     .modal {
@@ -431,301 +833,442 @@
       z-index: 1000;
     }
 
-    .modal.active { display: flex; }
+    .modal.active {
+      display: flex;
+    }
 
     .modal-content {
-      background: #ffffff;
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
       border-radius: 24px;
       width: 100%;
       max-width: 420px;
       padding: 24px;
-      border: 1px solid #e2e8f0;
-    }
-
-    .modal-item-list {
-      max-height: 180px;
+      max-height: 80vh;
       overflow-y: auto;
-      margin-bottom: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .modal-item {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      padding: 10px 14px;
-      border-radius: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.85rem;
-      font-weight: 600;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     }
 
     @media (max-width: 900px) {
+      .nav-links-desktop {
+        display: none;
+      }
+
+      .btn-hamburger-mobile {
+        display: block;
+      }
+
+      .desktop-navbar {
+        padding: 12px 16px;
+      }
+
+      main {
+        padding: 16px 12px;
+      }
+
+      .dashboard-card {
+        padding: 16px 12px;
+        border-radius: 16px;
+      }
+
+      .podium-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .podium-box {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .podium-box.rank-1-box {
+        transform: none;
+      }
+    }
+    /* PENGATURAN FOOTER DESKTOP VS MOBILE */
+    .desktop-footer {
+      display: block; /* Default tampil di desktop */
+    }
+    .mobile-footer-text {
+      display: none; /* Default disembunyikan di desktop */
+    }
+
+    /* BREAKPOINT: RESPONSIVE HP VS LAPTOP */
+    @media (max-width: 900px) {
       .nav-links-desktop { display: none; }
       .btn-hamburger-mobile { display: block; }
-      .desktop-navbar { padding: 12px 16px; }
-      main { padding: 16px 12px; }
-      .dashboard-card { padding: 16px; border-radius: 16px; }
+      .desktop-navbar { padding: 12px 20px; }
+      main { padding: 16px; }
+
+      /* Footer desktop disembunyikan di HP */
+      .desktop-footer { display: none; }
+      /* Footer dipindah ke sidebar khusus HP */
+      .mobile-footer-text { display: block; }
     }
   </style>
 </head>
+
 <body>
 
   <header class="desktop-navbar">
     <div style="display: flex; align-items: center; gap: 12px;">
-      <button class="btn-hamburger-mobile" onclick="toggleMobileSidebar()">
-        <i class="fa-solid fa-bars"></i>
-      </button>
+      <button class="btn-hamburger-mobile" onclick="toggleMobileSidebar()"><i class="fa-solid fa-bars"></i></button>
       <div class="brand">
-        <div class="brand-icon">🎯</div>
-        <span>SCORING<span style="color:#6366f1;">PTU</span></span>
+        <div class="brand-icon">🎯</div><span>SCORING<span style="color:#6366f1;">PTU</span></span>
       </div>
     </div>
-
     <nav class="nav-links-desktop">
-      <a href="{{ url('/home') }}" class="active"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
-      <a href="{{ url('/scoring') }}"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
-      <a href="{{ url('/riwayat') }}"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
-      <a href="{{ url('/pendaftaran') }}"><i class="fa-solid fa-users"></i> Registrasi</a>
-      <a href="{{ url('/index') }}"><i class="fa-solid fa-table"></i> Public Score</a>
-
+      <a href="home.html"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
+      <a href="scoring.html" class="active"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
+      <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
+      <a href="pendaftaran.html"><i class="fa-solid fa-users"></i> Registrasi</a>
       <div class="role-selector-wrapper">
         <select id="app-role-picker-desktop" class="role-select" onchange="switchRole(this.value)">
-          <option value="scorer">📱 Scorer (HP)</option>
+          <option value="scorer" selected>📱 Scorer (HP)</option>
           <option value="display">🖥️ Live Display</option>
-          <option value="admin" selected>⚙️ Admin / Panitia</option>
+          <option value="admin">⚙️ Admin / Panitia</option>
         </select>
       </div>
     </nav>
-
-    <div class="header-right-actions">
-      <div class="user-profile-header">
-        <div class="user-avatar" id="user-avatar-box">A</div>
-        <div style="display: flex; flex-direction: column; line-height: 1.2;">
-          <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;" id="user-name-text">Archer Pro</span>
-          <span style="font-size: 0.7rem; color: #64748b; font-weight: 600;" id="user-club-text">Klub Panahan</span>
-        </div>
+    <div class="user-profile-header">
+      <div class="user-avatar" id="user-avatar-box">A</div>
+      <div style="display: flex; flex-direction: column; line-height: 1.2;">
+        <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;" id="user-name-text">SCORINGPTU</span>
+        <span style="font-size: 0.7rem; color: #64748b; font-weight: 600;" id="user-club-text">Klub Panahan</span>
       </div>
     </div>
   </header>
 
-  <!-- MOBILE SIDEBAR -->
   <div class="mobile-sidebar-overlay" id="mobile-overlay" onclick="toggleMobileSidebar()"></div>
   <aside class="mobile-sidebar" id="mobile-sidebar">
     <div>
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div class="brand" style="color:#fff;">
-          <div class="brand-icon" style="background:#fff; color:#18191c;">🎯</div>
-          <span>SCORING<span style="color:#818cf8;">PTU</span></span>
+          <div class="brand-icon" style="background:#fff; color:#18191c;">🎯</div><span>SCORING<span
+              style="color:#818cf8;">PTU</span></span>
         </div>
-        <button onclick="toggleMobileSidebar()" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+        <button onclick="toggleMobileSidebar()"
+          style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;"><i
+            class="fa-solid fa-xmark"></i></button>
       </div>
-
       <nav class="mobile-nav-menu">
-        <a href="{{ url('/home') }}"class="active"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
-        <a href="{{ url('/scoring') }}"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
-        <a href="{{ url('/riwayat') }}"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
-        <a href="{{ url('/pendaftaran') }}"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
-
-        <!-- DROPDOWN PERAN MOBILE -->
+        <a href="home.html"><i class="fa-solid fa-sliders"></i> Setup Latihan</a>
+        <a href="scoring.html" class="active"><i class="fa-solid fa-bullseye"></i> Papan Skor</a>
+        <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Sesi</a>
+        <a href="pendaftaran.html"><i class="fa-solid fa-users"></i> Registrasi Peserta</a>
         <div class="role-selector-wrapper" style="margin-top: 10px;">
-          <select id="app-role-picker-mobile" class="role-select" style="width: 100%;" onchange="switchRole(this.value)">
-            <option value="scorer">📱 Scorer (HP)</option>
+          <select id="app-role-picker-mobile" class="role-select" style="width: 100%;"
+            onchange="switchRole(this.value)">
+            <option value="scorer" selected>📱 Scorer (HP)</option>
             <option value="display">🖥️ Live Display</option>
             <option value="admin">⚙️ Admin / Panitia</option>
           </select>
         </div>
       </nav>
     </div>
-
-        <!-- Letakkan di dalam sidebar, di bawah menu -->
+    <!-- FOOTER KHUSUS DI DALAM SIDEBAR (TAMPIL DI HP) -->
     <div class="mobile-footer-text" style="font-size: 0.75rem; color: #94a3b8; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px;">
-      <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah &bull; Dibuat dng Laravel</p>
+      <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah</p>
     </div>
-  </aside> <!-- Penutup sidebar -->
+  </aside>
 
   <main>
-    <div class="page-navigation">
-      <button class="btn-back" onclick="window.history.back()"><i class="fa-solid fa-chevron-left"></i></button>
-      <div>
-        <span style="font-size: 0.75rem; font-weight: 800; color: #6366f1; text-transform: uppercase;">PENGATURAN SESI</span>
-        <h1 style="font-size: 1.3rem; font-weight: 800; color: #0f172a;">Atur Latihan & Event</h1>
-      </div>
-    </div>
-
-    <div class="mode-toggle-card">
-      <button type="button" class="btn-mode" id="btn-solo" onclick="setMode('solo')">
-        <i class="fa-solid fa-user"></i> Solo (Sendiri)
-      </button>
-      <button type="button" class="btn-mode active" id="btn-group" onclick="setMode('group')">
-        <i class="fa-solid fa-users"></i> Bareng-Bareng / Event
-      </button>
-    </div>
-
-    <form onsubmit="event.preventDefault();">
-      <div class="dashboard-card" id="event-info-card">
-        <div class="card-header-title">
-          <span>🚩 Informasi Acara / Latihan Bersama</span>
+    <div id="page-scoring">
+      <div class="page-navigation">
+        <div>
+          <span class="session-info" id="sc-info">TRADITIONAL • 18 M</span>
+          <h1 style="font-size: 1.3rem; font-weight: 800; color: #0f172a;" id="sc-rambahan-title">Rambahan 1 dari 5</h1>
         </div>
-        <div class="grid-2">
-          <div class="form-group">
-            <label>Nama Acara / Sesi Latihan</label>
-            <input type="text" id="event-name" class="form-control" value="Internal Match Sumedang">
-          </div>
-          <div class="form-group">
-            <label>Lokasi / Lapangan</label>
-            <input type="text" id="event-location" class="form-control" value="Lapangan Panahan Sumedang">
-          </div>
-        </div>
+        <button class="btn-change-setup" onclick="restartToSetup()"><i class="fa-solid fa-gear"></i> Ubah Setup</button>
       </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <p style="font-size:0.75rem; color:#64748b; font-weight:700; text-transform: uppercase;" id="sc-giliran-label">
+          Giliran Pemanah:</p>
+        <span id="sc-arrow-info" style="font-size: 0.8rem; font-weight: 700; color: #4f46e5;">3 Arrow</span>
+      </div>
+      <div class="archer-selector" id="sc-archer-tabs"></div>
 
       <div class="dashboard-card">
-        <div class="form-group">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <label>Jenis Busur / Kategori</label>
-            <button type="button" class="btn-link" onclick="openModal('busur')">+ Kelola Kategori</button>
-          </div>
-          <select class="form-control" id="select-busur">
-            <option value="Traditional Bow">Traditional Bow</option>
-            <option value="Kasumedangan">Kasumedangan</option>
-            <option value="Recurve Bow">Recurve Bow</option>
-            <option value="Compound Bow">Compound Bow</option>
-            <option value="Barebow">Barebow</option>
-          </select>
+        <p style="font-size:0.85rem; color:#0f172a; margin-bottom:12px; font-weight:700;" id="sc-current-archer-label">
+          Poin Arrow:</p>
+        <div class="arrow-boxes" id="sc-arrow-boxes"></div>
+
+        <div class="input-mode-toggle">
+          <button type="button" class="btn-input-mode active" id="btn-mode-keypad"
+            onclick="switchInputMode('keypad')"><i class="fa-solid fa-calculator"></i> Keypad</button>
+          <button type="button" class="btn-input-mode" id="btn-mode-target" onclick="switchInputMode('target')"><i
+              class="fa-solid fa-bullseye"></i> Target Bulat</button>
+          <button type="button" class="btn-input-mode" id="btn-mode-walet" onclick="switchInputMode('walet')"><i
+              class="fa-solid fa-caret-up"></i> Target Walet</button>
         </div>
 
-        <div class="form-group" style="margin-top: 18px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <label>Jarak Tembak</label>
-            <button type="button" class="btn-link" onclick="openModal('jarak')">+ Tambah Jarak</button>
-          </div>
-          <div class="grid-buttons" id="grid-jarak">
-            <button type="button" class="btn-option" onclick="selectJarak(this)">5 m</button>
-            <button type="button" class="btn-option" onclick="selectJarak(this)">10 m</button>
-            <button type="button" class="btn-option" onclick="selectJarak(this)">15 m</button>
-            <button type="button" class="btn-option active" onclick="selectJarak(this)">18 m</button>
-            <button type="button" class="btn-option" onclick="selectJarak(this)">20 m</button>
-            <button type="button" class="btn-option" onclick="selectJarak(this)">30 m</button>
-            <button type="button" class="btn-option" onclick="selectJarak(this)">50 m</button>
+        <div id="container-keypad" class="numpad-grid">
+          <button type="button" class="btn-num num-x" onclick="inputScore('X(10)')">X<small>(10)</small></button>
+          <button type="button" class="btn-num num-x-wbn" onclick="inputScore('X(6)')">X<small>(6)</small></button>
+          <button type="button" class="btn-num num-10" onclick="inputScore('10')">10</button>
+          <button type="button" class="btn-num num-9" onclick="inputScore('9')">9</button>
+          <button type="button" class="btn-num num-8" onclick="inputScore('8')">8</button>
+          <button type="button" class="btn-num num-7" onclick="inputScore('7')">7</button>
+          <button type="button" class="btn-num num-6" onclick="inputScore('6')">6</button>
+          <button type="button" class="btn-num num-5" onclick="inputScore('5')">5</button>
+          <button type="button" class="btn-num num-4" onclick="inputScore('4')">4</button>
+          <button type="button" class="btn-num num-3" onclick="inputScore('3')">3</button>
+          <button type="button" class="btn-num num-2" onclick="inputScore('2')">2</button>
+          <button type="button" class="btn-num num-1" onclick="inputScore('1')">1</button>
+          <button type="button" class="btn-num num-m" style="grid-column: span 4;" onclick="inputScore('M')">M (Miss -
+            0)</button>
+        </div>
+
+        <div id="container-target" class="virtual-target-card" style="display: none;"
+          onclick="handleVirtualTargetClick(event)">
+          <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:30px; font-weight:700; text-align:center;"><i
+              class="fa-solid fa-hand-pointer"></i> Klik lingkaran angka (1-10, X) atau luar target untuk Miss (M)</div>
+          <div class="target-face" onclick="handleVirtualTargetClick(event)">
+            <div class="t-ring ring-1" onclick="event.stopPropagation(); inputScore('1')"><span
+                style="position:absolute; top:1px;">1</span></div>
+            <div class="t-ring ring-2" onclick="event.stopPropagation(); inputScore('2')"><span
+                style="position:absolute; top:1px;">2</span></div>
+            <div class="t-ring ring-3" onclick="event.stopPropagation(); inputScore('3')"><span
+                style="position:absolute; top:1px;">3</span></div>
+            <div class="t-ring ring-4" onclick="event.stopPropagation(); inputScore('4')"><span
+                style="position:absolute; top:1px;">4</span></div>
+            <div class="t-ring ring-5" onclick="event.stopPropagation(); inputScore('5')"><span
+                style="position:absolute; top:1px;">5</span></div>
+            <div class="t-ring ring-6" onclick="event.stopPropagation(); inputScore('6')"><span
+                style="position:absolute; top:1px;">6</span></div>
+            <div class="t-ring ring-7" onclick="event.stopPropagation(); inputScore('7')"><span
+                style="position:absolute; top:1px;">7</span></div>
+            <div class="t-ring ring-8" onclick="event.stopPropagation(); inputScore('8')"><span
+                style="position:absolute; top:1px;">8</span></div>
+            <div class="t-ring ring-9" onclick="event.stopPropagation(); inputScore('9')"><span
+                style="position:absolute; top:1px;">9</span></div>
+            <div class="t-ring ring-10" onclick="event.stopPropagation(); inputScore('10')"><span
+                style="position:absolute; top:1px;">10</span></div>
+            <div class="ring-x" onclick="event.stopPropagation(); inputScore('X')">X</div>
           </div>
         </div>
 
-        <div class="grid-2" style="margin-top: 18px;">
-          <div class="form-group">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <label>Arrow per Rambahan</label>
-              <button type="button" class="btn-link" onclick="openModal('arrow')">+ Custom</button>
-            </div>
-            <select class="form-control" id="select-arrow">
-              <option value="3">3 Arrow</option>
-              <option value="6">6 Arrow</option>
-            </select>
+        <div id="container-walet" class="virtual-target-card" style="display: none;">
+          <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:5px; font-weight:700; text-align:center;"><i
+              class="fa-solid fa-hand-pointer"></i> Klik foto target segitiga untuk input skor otomatis</div>
+          <div class="target-wrapper" id="targetWrapper">
+            <div class="canvas-container" id="canvasContainer"><canvas id="targetCanvas"></canvas></div>
           </div>
+          <div class="zoom-controls">
+            <button type="button" class="btn-change-setup" onclick="zoomTarget(1.2)">🔍 +</button>
+            <button type="button" class="btn-change-setup" onclick="zoomTarget(0.8)">🔍 -</button>
+            <button type="button" class="btn-change-setup" onclick="resetTargetView()">Reset View</button>
+            <a href="target.jpg" target="_blank" rel="noopener noreferrer" class="btn-ref-link"><i
+                class="fa-solid fa-image"></i> Buka Foto Target</a>
+          </div>
+        </div>
 
-          <div class="form-group">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <label>Jumlah Rambahan (End)</label>
-              <button type="button" class="btn-link" onclick="openModal('rambahan')">+ Custom</button>
-            </div>
-            <select class="form-control" id="select-rambahan">
-              <option value="5">5 Rambahan</option>
-              <option value="6" selected>6 Rambahan</option>
-              <option value="10">10 Rambahan</option>
-              <option value="12">12 Rambahan</option>
-            </select>
-          </div>
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-top: 10px;">
+          <button type="button" class="btn-change-setup"
+            style="background:#f1f5f9; justify-content:center; padding:14px; font-weight:800;" onclick="undoScore()"><i
+              class="fa-solid fa-delete-left"></i> Undo</button>
+          <button type="button" class="btn-save-rambahan" onclick="nextTurnOrRambahan()">Simpan Rambahan <i
+              class="fa-solid fa-arrow-right"></i></button>
         </div>
       </div>
 
-      <div class="dashboard-card" id="participants-card">
-        <div class="card-header-title" style="flex-wrap: wrap; gap: 8px;">
-          <span>👥 Daftar Peserta Panahan</span>
-          
-          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <select id="db-category-picker" class="form-control" style="font-size:0.8rem; padding:8px 12px; border-color:#6366f1; color:#4f46e5; background:#e0e7ff; width: auto;" onchange="loadParticipantsFromDBCategory(this.value)">
-              <option value="">🔍 Ambil dari DB...</option>
-              <option value="ALL">✨ Semua Peserta DB</option>
-              <option value="Traditional Bow">Traditional Bow</option>
-              <option value="Kasumedangan">Kasumedangan</option>
-              <option value="Recurve Bow">Recurve Bow</option>
-            </select>
-            
-            <button type="button" class="btn-link" onclick="addParticipantRow()" style="background: #18191c; color:#ffffff; padding:8px 14px; border-radius:10px; text-decoration:none; white-space: nowrap;">+ Manual</button>
-          </div>
-        </div>
+      <p
+        style="font-size:0.75rem; color:#64748b; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom: 10px;">
+        Rekap Hasil Skor Sesi:</p>
+      <div class="participants-summary-grid" id="participants-summary-grid"></div>
+    </div>
 
-        <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
-          <button type="button" class="btn-link" onclick="openModal('bantalan')" style="font-size: 0.8rem; background: #f8fafc; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 8px;"><i class="fa-solid fa-bullseye"></i> + Kelola Opsi Bantalan</button>
-          <button type="button" class="btn-link" onclick="openModal('sesi')" style="font-size: 0.8rem; background: #f8fafc; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 8px;"><i class="fa-solid fa-layer-group"></i> + Kelola Opsi Sesi</button>
+    <div id="page-leaderboard" style="display: none;">
+      <div class="page-navigation">
+        <div>
+          <span class="session-info">HASIL AKHIR SESI</span>
+          <h1 style="font-size: 1.3rem; font-weight: 800; color: #0f172a;">🏆 Peringkat Teratas (Leaderboard)</h1>
         </div>
-        
-        <div id="participant-list"></div>
       </div>
-
-      <button type="button" class="btn-submit" onclick="goToScoring()">
-        <span>Mulai Sesi & Scoring</span>
-        <i class="fa-solid fa-arrow-right"></i>
-      </button>
-    </form>
+      <div class="podium-container" id="podium-container"></div>
+      <div class="dashboard-card">
+        <p style="font-size:0.8rem; color:#4f46e5; font-weight:800; margin-bottom:12px; text-transform:uppercase;">
+          Daftar Seluruh Peserta</p>
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Pemanah</th>
+              <th style="text-align:center;">X Count</th>
+              <th style="text-align:right;">Skor Total</th>
+              <th style="text-align:center;">Detail</th>
+            </tr>
+          </thead>
+          <tbody id="lb-table-body"></tbody>
+        </table>
+      </div>
+      <button type="button" class="btn-save-rambahan" style="text-align:center;" onclick="proceedToNextSession()"><i
+          class="fa-solid fa-arrow-right"></i> Lanjut ke Sesi Berikutnya</button>
+    </div>
   </main>
 
-  <div class="modal" id="modal-crud">
+  <div class="modal" id="modal-detail">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h3 id="modal-title" style="font-size: 1.1rem; font-weight: 800; color: #0f172a;">Kelola Opsi</h3>
-        <button onclick="closeModal()" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:#64748b;"><i class="fa-solid fa-xmark"></i></button>
+        <h3 id="modal-archer-title" style="color: #0f172a; font-size: 1.1rem; font-weight: 800;">Detail Rambahan</h3>
+        <button type="button" onclick="closeDetailModal()"
+          style="background:none; border:none; color:#64748b; cursor:pointer; font-size:1.2rem;"><i
+            class="fa-solid fa-xmark"></i></button>
       </div>
-
-      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-        <input type="text" id="modal-input" class="form-control" placeholder="Ketik opsi baru..." style="flex: 1;">
-        <button onclick="saveNewCategory()" style="padding: 0 16px; border-radius:12px; font-weight:700; cursor:pointer; border:none; background:#18191c; color:#fff;">Simpan</button>
-      </div>
-
-      <p style="font-size:0.75rem; color:#64748b; margin-bottom:8px; font-weight:700;">DAFTAR PILIHAN AKTIF:</p>
-      <div class="modal-item-list" id="modal-item-list"></div>
-
-      <button onclick="closeModal()" class="form-control" style="width: 100%; cursor:pointer; font-weight:700; background:#f1f5f9; border:none;">Selesai</button>
+      <div class="end-history-list" id="modal-end-list"></div>
+      <button type="button" onclick="closeDetailModal()" class="btn-save-rambahan"
+        style="margin-top:16px; background:#f1f5f9; color:#0f172a;">Tutup</button>
     </div>
   </div>
-
-  <!-- Letakkan di bawah, pastikan ada class="desktop-footer" -->
-  <footer class="desktop-footer" style="background: #222; color: white; text-align: center; padding: 20px; margin-top: 50px;">
-    <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah &bull; Dibuat dng Laravel</p>
+<footer class="desktop-footer" style="background: #222; color: white; text-align: center; padding: 20px; margin-top: 50px;">
+    <p>Copyright &copy; 2026 &bull; Mela Aulia Syarifah</p>
   </footer>
-
-
   <script>
-    let activeType = '';
-    let isSoloMode = false;
-    
-    let masterBantalan = ["Bantalan 1", "Bantalan 2", "Bantalan 3", "Bantalan 4", "Bantalan 5"];
-    let masterSesi = ["Sesi 1", "Sesi 2", "Sesi 3"];
-
     function getCurrentAccountKey() {
       const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
-      if (!activeUser || !activeUser.email) return 'default_user';
-      return String(activeUser.email).trim().toLowerCase().replace(/[^a-z0-9@._-]/g, '_');
+      if (!activeUser) return 'guest';
+      const rawId = activeUser.email || activeUser.username || activeUser.id || activeUser.name || 'guest';
+      return String(rawId).trim().toLowerCase().replace(/[^a-z0-9@._-]/g, '_');
     }
 
-    function loadActiveUserProfile() {
-      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
-      if (activeUser) {
-        const nameText = document.getElementById('user-name-text');
-        const clubText = document.getElementById('user-club-text');
-        const avatarBox = document.getElementById('user-avatar-box');
+    const currentAccountKey = getCurrentAccountKey();
 
-        if (nameText && activeUser.name) nameText.innerText = activeUser.name;
-        if (clubText && activeUser.club) clubText.innerText = activeUser.club;
-        if (avatarBox && activeUser.name) {
-          const initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-          avatarBox.innerText = initials || 'A';
+    let appConfig = JSON.parse(localStorage.getItem(`archeryConfig_${currentAccountKey}`))
+      || JSON.parse(localStorage.getItem('archeryConfig'))
+      || {
+      eventName: 'Internal Match',
+      location: 'Lapangan Panahan',
+      busur: 'Traditional Bow',
+      jarak: '18 m',
+      arrowCount: 3,
+      totalEnd: 5,
+      participants: [
+        { name: 'Pemanah Utama', club: 'Independen', bantalan: 'Bantalan 1', sesi: 'Sesi 1', scores: [] }
+      ]
+    };
+
+    function saveConfigPerAccount() {
+      appConfig.ownerAccount = currentAccountKey;
+      localStorage.setItem(`archeryConfig_${currentAccountKey}`, JSON.stringify(appConfig));
+      localStorage.setItem('archeryConfig', JSON.stringify(appConfig));
+    }
+
+    // Helper nilai & label skor (X Modern = 10, X_WBN = 6)
+    function formatScoreLabel(code) {
+      if (code === 'X_WBN') return 'X (WBN)';
+      return code;
+    }
+
+    function getScoreNumericValue(code) {
+      if (code === 'X') return 10;
+      if (code === 'X_WBN') return 6;
+      if (code === 'M' || code === undefined || code === null) return 0;
+      return parseInt(code, 10) || 0;
+    }
+
+    function calculateArcherStats(p) {
+      let totalScore = 0;
+      let totalX = 0;
+      let totalXWbn = 0;
+
+      (p.scores || []).forEach(endArr => {
+        endArr.forEach(code => {
+          totalScore += getScoreNumericValue(code);
+          if (code === 'X') totalX += 1;
+          else if (code === 'X_WBN') totalXWbn += 1;
+        });
+      });
+
+      return { totalScore, totalX, totalXWbn };
+    }
+
+    let currentEnd = 1;
+    let activeSessionIndex = 0;
+    let activeArcherIndex = 0;
+    let currentArrowsInput = [];
+
+    const canvas = document.getElementById('targetCanvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const container = document.getElementById('canvasContainer');
+    const wrapper = document.getElementById('targetWrapper');
+    const waletImg = new Image();
+    waletImg.src = "target.jpg";
+
+    let scale = 1, posX = 0, posY = 0, isDragging = false, startX, startY;
+
+    waletImg.onload = () => {
+      canvas.width = waletImg.width;
+      canvas.height = waletImg.height;
+      drawTargetCanvas();
+      resetTargetView();
+    };
+
+    function drawTargetCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(waletImg, 0, 0);
+      currentArrowsInput.forEach((shot) => {
+        if (shot.x && shot.y) {
+          ctx.beginPath();
+          ctx.arc(shot.x, shot.y, 12, 0, 2 * Math.PI);
+          ctx.fillStyle = 'rgba(255, 0, 0, 0.85)';
+          ctx.fill();
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = '#fff';
+          ctx.stroke();
+          ctx.fillStyle = '#fff';
+          ctx.font = 'bold 10px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(formatScoreLabel(shot.val), shot.x, shot.y);
         }
+      });
+    }
+
+    function zoomTarget(factor) { scale = Math.min(Math.max(0.5, scale * factor), 4); updateTargetTransform(); }
+    function resetTargetView() {
+      if (!waletImg.width) return;
+      scale = wrapper.clientWidth / waletImg.width;
+      posX = 0;
+      posY = 0;
+      updateTargetTransform();
+    }
+    function updateTargetTransform() { container.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
+
+    wrapper.addEventListener('pointerdown', (e) => { isDragging = true; startX = e.clientX - posX; startY = e.clientY - posY; });
+    window.addEventListener('pointermove', (e) => { if (!isDragging) return; posX = e.clientX - startX; posY = e.clientY - startY; updateTargetTransform(); });
+    window.addEventListener('pointerup', () => { isDragging = false; });
+
+    canvas.addEventListener('click', (e) => {
+      if (currentArrowsInput.length >= appConfig.arrowCount) { alert("Arrow sudah penuh untuk rambahan ini!"); return; }
+      const rect = canvas.getBoundingClientRect();
+      const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+      const pixel = ctx.getImageData(clickX, clickY, 1, 1).data;
+      const scoreVal = calculateWaletScore(pixel[0], pixel[1], pixel[2], clickX, clickY);
+
+      currentArrowsInput.push({ val: scoreVal, x: clickX, y: clickY });
+      drawTargetCanvas();
+      renderArrowBoxes();
+      syncLiveState();
+    });
+
+    function calculateWaletScore(r, g, b, x, y) {
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const distance = Math.hypot(x - centerX, y - centerY);
+      if (distance > canvas.width * 0.38) return 'M';
+      if (r > 160 && g > 140 && b < 120) {
+        const centerDist = Math.hypot(x - centerX, y - (canvas.height * 0.52));
+        return centerDist < canvas.width * 0.12 ? '6' : '1';
       }
+      if (r > 140 && g < 110 && b < 110) return '5';
+      if (r < 120 && g > 90 && b > 140) return '4';
+      if (r < 90 && g < 90 && b < 90) return '2';
+      if (r > 180 && g > 180 && b > 180) return distance > canvas.width * 0.32 ? 'M' : '3';
+      return 'M';
     }
 
     function toggleMobileSidebar() {
@@ -733,333 +1276,444 @@
       document.getElementById('mobile-overlay').classList.toggle('active');
     }
 
-    function setMode(mode) {
-      const btnSolo = document.getElementById('btn-solo');
-      const btnGroup = document.getElementById('btn-group');
-      const eventInfo = document.getElementById('event-info-card');
-      const participants = document.getElementById('participants-card');
+    function switchInputMode(mode) {
+      document.getElementById('btn-mode-keypad').classList.remove('active');
+      document.getElementById('btn-mode-target').classList.remove('active');
+      document.getElementById('btn-mode-walet').classList.remove('active');
+      document.getElementById('container-keypad').style.display = 'none';
+      document.getElementById('container-target').style.display = 'none';
+      document.getElementById('container-walet').style.display = 'none';
 
-      if(mode === 'solo') {
-        isSoloMode = true;
-        btnSolo.classList.add('active');
-        btnGroup.classList.remove('active');
-        eventInfo.style.display = 'none';
-        participants.style.display = 'none';
+      if (mode === 'keypad') { document.getElementById('btn-mode-keypad').classList.add('active'); document.getElementById('container-keypad').style.display = 'grid'; }
+      else if (mode === 'target') { document.getElementById('btn-mode-target').classList.add('active'); document.getElementById('container-target').style.display = 'flex'; }
+      else if (mode === 'walet') { document.getElementById('btn-mode-walet').classList.add('active'); document.getElementById('container-walet').style.display = 'flex'; resetTargetView(); }
+    }
+
+    function handleVirtualTargetClick(event) { inputScore('M'); }
+
+    function loadActiveUserProfile() {
+      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
+      if (activeUser) {
+        document.getElementById('user-name-text').innerText = activeUser.name || 'Archer Pro';
+        document.getElementById('user-club-text').innerText = activeUser.club || 'Klub Panahan';
+        if (activeUser.name) {
+          const nameParts = activeUser.name.trim().split(' ').filter(n => n.length > 0);
+          document.getElementById('user-avatar-box').innerText = nameParts.length >= 2 ? (nameParts[0][0] + nameParts[1][0]).toUpperCase() : nameParts[0][0].toUpperCase();
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadActiveUserProfile);
+
+    function getUniqueSessions() {
+      let sessions = [];
+      appConfig.participants.forEach(p => {
+        let s = p.sesi || 'Sesi 1';
+        if (!sessions.includes(s)) sessions.push(s);
+      });
+      return sessions.sort();
+    }
+
+    function initScoring() {
+      const uniqueSessions = getUniqueSessions();
+      if (activeSessionIndex >= uniqueSessions.length) activeSessionIndex = 0;
+      const currentSessionName = uniqueSessions[activeSessionIndex] || 'Sesi 1';
+
+      document.getElementById('sc-info').innerText = `${appConfig.busur} • ${appConfig.jarak}`;
+      document.getElementById('sc-rambahan-title').innerText = `${currentSessionName} • Rambahan ${currentEnd} dari ${appConfig.totalEnd}`;
+      document.getElementById('sc-arrow-info').innerText = `${appConfig.arrowCount} Arrow`;
+
+      const currentSessionParticipants = appConfig.participants.filter(p => (p.sesi || 'Sesi 1') === currentSessionName);
+      document.getElementById('sc-giliran-label').innerText = `Giliran Pemanah (${currentSessionName}):`;
+
+      const tabsContainer = document.getElementById('sc-archer-tabs');
+      tabsContainer.innerHTML = '';
+
+      currentSessionParticipants.forEach((p) => {
+        const globalIdx = appConfig.participants.indexOf(p);
+        const btn = document.createElement('button');
+        btn.className = `btn-archer-tab ${globalIdx === activeArcherIndex ? 'active' : ''}`;
+        btn.innerText = `${p.name} [${p.bantalan || 'Bantalan 1'}]`;
+        btn.onclick = () => {
+          activeArcherIndex = globalIdx;
+          currentArrowsInput = [];
+          syncLiveState();
+          initScoring();
+        };
+        tabsContainer.appendChild(btn);
+      });
+
+      const activeP = appConfig.participants[activeArcherIndex];
+      if (!activeP || (activeP.sesi || 'Sesi 1') !== currentSessionName) {
+        const firstInSession = appConfig.participants.findIndex(p => (p.sesi || 'Sesi 1') === currentSessionName);
+        if (firstInSession !== -1) activeArcherIndex = firstInSession;
+      }
+
+      const currentActiveP = appConfig.participants[activeArcherIndex];
+      document.getElementById('sc-current-archer-label').innerText = `Poin Arrow ${currentActiveP.name} (${currentActiveP.bantalan || 'Bantalan 1'}) (Rambahan ${currentEnd}):`;
+
+      renderArrowBoxes();
+      renderAllParticipantsSummary();
+      drawTargetCanvas();
+    }
+
+    function renderArrowBoxes() {
+      const container = document.getElementById('sc-arrow-boxes');
+      container.style.gridTemplateColumns = `repeat(${appConfig.arrowCount}, 1fr)`;
+      container.innerHTML = '';
+      for (let i = 0; i < appConfig.arrowCount; i++) {
+        const box = document.createElement('div');
+        box.className = 'arrow-box';
+        const item = currentArrowsInput[i];
+        const rawVal = item ? (typeof item === 'object' ? item.val : item) : null;
+        box.innerText = rawVal ? formatScoreLabel(rawVal) : '-';
+        container.appendChild(box);
+      }
+    }
+
+    function syncLiveState() {
+      appConfig.activeLiveInput = { archerIndex: activeArcherIndex, arrows: currentArrowsInput.map(i => typeof i === 'object' ? i.val : i) };
+      saveConfigPerAccount();
+    }
+
+    function inputScore(val) {
+      if (currentArrowsInput.length < appConfig.arrowCount) {
+        currentArrowsInput.push({ val: val, x: null, y: null });
+        renderArrowBoxes();
+        drawTargetCanvas();
+        syncLiveState();
       } else {
-        isSoloMode = false;
-        btnGroup.classList.add('active');
-        btnSolo.classList.remove('active');
-        eventInfo.style.display = 'block';
-        participants.style.display = 'block';
+        alert("Arrow sudah penuh, silakan simpan rambahan atau undo.");
       }
     }
 
-    function selectJarak(element) {
-      const buttons = document.querySelectorAll('#grid-jarak .btn-option');
-      buttons.forEach(btn => btn.classList.remove('active'));
-      element.classList.add('active');
-    }
+    function undoScore() { currentArrowsInput.pop(); renderArrowBoxes(); drawTargetCanvas(); syncLiveState(); }
 
-    function addParticipantRow(nama = '', klub = '', defaultBantalan = '', defaultSesi = '') {
-      const list = document.getElementById('participant-list');
-      if (!list) return;
-      
-      const row = document.createElement('div');
-      row.className = 'participant-row';
-      
-      let bantalanOptions = masterBantalan.map(b => `<option value="${b}" ${b === defaultBantalan ? 'selected' : ''}>${b}</option>`).join('');
-      let sesiOptions = masterSesi.map(s => `<option value="${s}" ${s === defaultSesi ? 'selected' : ''}>${s}</option>`).join('');
-
-      row.innerHTML = `
-        <input type="text" class="form-control p-name" placeholder="Nama Pemanah" value="${nama}">
-        <input type="text" class="form-control p-club" placeholder="Nama Klub" value="${klub}">
-        <select class="form-control p-bantalan" title="Nomor Bantalan">${bantalanOptions}</select>
-        <select class="form-control p-sesi" title="Sesi">${sesiOptions}</select>
-        <button type="button" class="btn-danger" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i> Hapus</button>
-      `;
-      list.appendChild(row);
-    }
-
-    function loadParticipantsFromDBCategory(selectedCategory) {
-      if (!selectedCategory) return;
-
-      const db = JSON.parse(localStorage.getItem('archeryDatabase')) || [];
-      if (db.length === 0) {
-        alert('Database peserta masih kosong! Silakan daftarkan dulu di halaman Registrasi.');
-        document.getElementById('db-category-picker').value = "";
+    function nextTurnOrRambahan() {
+      if (currentArrowsInput.length < appConfig.arrowCount) {
+        alert(`Harap isi lengkap ${appConfig.arrowCount} arrow terlebih dahulu!`);
         return;
       }
 
-      let matchedParticipants = selectedCategory === 'ALL' ? db : db.filter(p => p.kategori && p.kategori.toLowerCase() === selectedCategory.toLowerCase());
+      const plainValues = currentArrowsInput.map(i => typeof i === 'object' ? i.val : i);
+      appConfig.participants[activeArcherIndex].scores.push(plainValues);
+      appConfig.activeLiveInput = null;
+      saveConfigPerAccount();
 
-      if (matchedParticipants.length === 0) {
-        alert(`Tidak ditemukan peserta di database untuk kategori "${selectedCategory}".`);
-        document.getElementById('db-category-picker').value = "";
-        return;
+      currentArrowsInput = [];
+
+      const uniqueSessions = getUniqueSessions();
+      const currentSessionName = uniqueSessions[activeSessionIndex];
+      const currentSessionParticipants = appConfig.participants.filter(p => (p.sesi || 'Sesi 1') === currentSessionName);
+
+      let localIdx = currentSessionParticipants.findIndex(p => appConfig.participants.indexOf(p) === activeArcherIndex);
+      localIdx++;
+
+      if (localIdx < currentSessionParticipants.length) {
+        activeArcherIndex = appConfig.participants.indexOf(currentSessionParticipants[localIdx]);
+        initScoring();
+      } else {
+        currentEnd++;
+        if (currentEnd <= appConfig.totalEnd) {
+          const firstInSession = appConfig.participants.findIndex(p => (p.sesi || 'Sesi 1') === currentSessionName);
+          if (firstInSession !== -1) activeArcherIndex = firstInSession;
+          initScoring();
+        } else {
+          showSessionLeaderboard(currentSessionName);
+        }
       }
+    }
 
-      const list = document.getElementById('participant-list');
-      list.innerHTML = ''; 
+    function showSessionLeaderboard(sessionName) {
+      document.getElementById('page-scoring').style.display = 'none';
+      document.getElementById('page-leaderboard').style.display = 'block';
 
-      matchedParticipants.forEach(p => {
-        addParticipantRow(p.nama, p.klub || 'Independen');
+      const headerTitle = document.querySelector('#page-leaderboard .session-info');
+      if (headerTitle) headerTitle.innerText = `HASIL AKHIR — ${sessionName.toUpperCase()}`;
+
+      const sessionParticipants = appConfig.participants.filter(p => (p.sesi || 'Sesi 1') === sessionName);
+
+      sessionParticipants.forEach(p => {
+        const stats = calculateArcherStats(p);
+        p.totalScore = stats.totalScore;
+        p.totalX = stats.totalX;
+        p.totalXWbn = stats.totalXWbn;
       });
 
-      if (selectedCategory !== 'ALL') {
-        const selectBusur = document.getElementById('select-busur');
-        if (selectBusur) selectBusur.value = selectedCategory;
-      }
+      sessionParticipants.sort((a, b) =>
+        b.totalScore !== a.totalScore
+          ? b.totalScore - a.totalScore
+          : (b.totalX + b.totalXWbn) - (a.totalX + a.totalXWbn)
+      );
 
-      document.getElementById('db-category-picker').value = "";
+      renderSessionPodium(sessionParticipants);
+      renderSessionLeaderboardTable(sessionParticipants);
     }
 
-    function openModal(type) {
-      activeType = type;
-      const modal = document.getElementById('modal-crud');
-      const title = document.getElementById('modal-title');
-      document.getElementById('modal-input').value = '';
-      
-      if(type === 'busur') title.innerText = 'Kelola Jenis Busur';
-      if(type === 'jarak') title.innerText = 'Kelola Jarak Tembak';
-      if(type === 'arrow') title.innerText = 'Kelola Arrow per Rambahan';
-      if(type === 'rambahan') title.innerText = 'Kelola Jumlah Rambahan';
-      if(type === 'bantalan') title.innerText = 'Kelola Opsi Bantalan';
-      if(type === 'sesi') title.innerText = 'Kelola Opsi Sesi';
-      
-      renderModalItems();
-      modal.classList.add('active');
-    }
+    function proceedToNextSession() {
+      const uniqueSessions = getUniqueSessions();
+      activeSessionIndex++;
+      currentEnd = 1;
 
-    function closeModal() {
-      document.getElementById('modal-crud').classList.remove('active');
-    }
+      if (activeSessionIndex < uniqueSessions.length) {
+        const nextSessionName = uniqueSessions[activeSessionIndex];
+        const firstNextSession = appConfig.participants.findIndex(p => (p.sesi || 'Sesi 1') === nextSessionName);
+        if (firstNextSession !== -1) activeArcherIndex = firstNextSession;
 
-    function renderModalItems() {
-      const itemList = document.getElementById('modal-item-list');
-      itemList.innerHTML = '';
-      
-      if(activeType === 'busur' || activeType === 'arrow' || activeType === 'rambahan') {
-        const selectId = activeType === 'busur' ? 'select-busur' : (activeType === 'arrow' ? 'select-arrow' : 'select-rambahan');
-        const selectElem = document.getElementById(selectId);
-        Array.from(selectElem.options).forEach(opt => {
-          const div = document.createElement('div');
-          div.className = 'modal-item';
-          div.innerHTML = `<span>${opt.value}</span> <button onclick="deleteOption('${selectId}', '${opt.value}')" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>`;
-          itemList.appendChild(div);
-        });
-      } else if(activeType === 'bantalan') {
-        masterBantalan.forEach(b => {
-          const div = document.createElement('div');
-          div.className = 'modal-item';
-          div.innerHTML = `<span>${b}</span> <button onclick="deleteCustomOption('bantalan', '${b}')" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>`;
-          itemList.appendChild(div);
-        });
-      } else if(activeType === 'sesi') {
-        masterSesi.forEach(s => {
-          const div = document.createElement('div');
-          div.className = 'modal-item';
-          div.innerHTML = `<span>${s}</span> <button onclick="deleteCustomOption('sesi', '${s}')" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>`;
-          itemList.appendChild(div);
-        });
-      } else if(activeType === 'jarak') {
-        const buttons = document.querySelectorAll('#grid-jarak .btn-option');
-        buttons.forEach(btn => {
-          const div = document.createElement('div');
-          div.className = 'modal-item';
-          div.innerHTML = `<span>${btn.innerText}</span> <button onclick="deleteJarakButton('${btn.innerText}')" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>`;
-          itemList.appendChild(div);
-        });
+        document.getElementById('page-leaderboard').style.display = 'none';
+        document.getElementById('page-scoring').style.display = 'block';
+        initScoring();
+      } else {
+        showFinalLeaderboard();
       }
     }
 
-    function saveNewCategory() {
-      const val = document.getElementById('modal-input').value.trim();
-      if(!val) return alert('Isi teks dulu ya!');
-      
-      if(activeType === 'busur' || activeType === 'arrow' || activeType === 'rambahan') {
-        const selectId = activeType === 'busur' ? 'select-busur' : (activeType === 'arrow' ? 'select-arrow' : 'select-rambahan');
-        document.getElementById(selectId).add(new Option(val, val, true, true));
-      } else if(activeType === 'bantalan') {
-        if(!masterBantalan.includes(val)) masterBantalan.push(val);
-      } else if(activeType === 'sesi') {
-        if(!masterSesi.includes(val)) masterSesi.push(val);
-      } else if(activeType === 'jarak') {
-        const gridJarak = document.getElementById('grid-jarak');
-        const newBtn = document.createElement('button');
-        newBtn.type = 'button';
-        newBtn.className = 'btn-option';
-        newBtn.innerText = val.includes('m') ? val : val + ' m';
-        newBtn.onclick = function() { selectJarak(this); };
-        gridJarak.appendChild(newBtn);
-      }
-      document.getElementById('modal-input').value = '';
-      renderModalItems();
+    function formatXBadge(p) {
+      const parts = [];
+      if (p.totalX > 0) parts.push(`${p.totalX}X`);
+      if (p.totalXWbn > 0) parts.push(`${p.totalXWbn}X WBN`);
+      return parts.length > 0 ? parts.join(' • ') : '0X';
     }
 
-    function deleteOption(selectId, value) {
-      const selectElem = document.getElementById(selectId);
-      for(let i=0; i<selectElem.options.length; i++) {
-        if(selectElem.options[i].value === value) { selectElem.remove(i); break; }
-      }
-      renderModalItems();
-    }
+    function renderSessionPodium(participantsList) {
+      const container = document.getElementById('podium-container');
+      container.innerHTML = '';
+      const isMobile = window.innerWidth <= 900;
+      const podiumOrder = isMobile ? [0, 1, 2] : [1, 0, 2];
 
-    function deleteCustomOption(type, val) {
-      if(type === 'bantalan') masterBantalan = masterBantalan.filter(b => b !== val);
-      if(type === 'sesi') masterSesi = masterSesi.filter(s => s !== val);
-      renderModalItems();
-    }
+      podiumOrder.forEach(rankIdx => {
+        const p = participantsList[rankIdx];
+        if (!p) return;
+        const isRank1 = (rankIdx === 0);
+        const nameParts = (p.name || 'User').trim().split(' ').filter(n => n.length > 0);
+        let initials = nameParts.length >= 2 ? (nameParts[0][0] + nameParts[1][0]).toUpperCase() : nameParts[0][0].toUpperCase();
 
-    function deleteJarakButton(labelText) {
-      document.querySelectorAll('#grid-jarak .btn-option').forEach(btn => {
-        if(btn.innerText === labelText) btn.remove();
+        const box = document.createElement('div');
+        box.className = `podium-box ${isRank1 ? 'rank-1-box' : ''}`;
+        box.innerHTML = `
+          <div style="font-size: 0.75rem; font-weight:800; color: ${isRank1 ? '#d97706' : '#64748b'}; margin-bottom:4px;">#${rankIdx + 1}</div>
+          <div class="podium-avatar">${initials}</div>
+          <div class="podium-name">${p.name}</div>
+          <div class="podium-club">${p.club || 'Independen'}</div>
+          <div class="podium-score-badge">${p.totalScore} Poin</div>
+        `;
+        container.appendChild(box);
       });
-      renderModalItems();
+    }
+
+    function renderSessionLeaderboardTable(participantsList) {
+      const tbody = document.getElementById('lb-table-body');
+      tbody.innerHTML = '';
+      participantsList.forEach((p, idx) => {
+        const tr = document.createElement('tr');
+        const globalIdx = appConfig.participants.indexOf(p);
+        tr.innerHTML = `
+          <td style="width: 12%;"><strong>#${idx + 1}</strong></td>
+          <td style="width: 34%;">
+            <strong style="color:#0f172a; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</strong>
+            <span style="font-size:0.7rem; color:#64748b; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.club || 'Independen'}</span>
+          </td>
+          <td style="text-align:center; width: 22%;"><span style="background:#fef3c7; color:#b45309; padding:2px 6px; border-radius:6px; font-weight:800; font-size:0.7rem; white-space:nowrap;">${formatXBadge(p)}</span></td>
+          <td style="text-align:right; font-weight:800; color:#4f46e5; font-size: 0.9rem; width: 16%; white-space:nowrap;">${p.totalScore}</td>
+          <td style="text-align:center; width: 16%;"><button type="button" class="btn-detail-icon" onclick="openDetailModal(${globalIdx})"><i class="fa-solid fa-list"></i> Detail</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function showFinalLeaderboard() {
+      const headerTitle = document.querySelector('#page-leaderboard .session-info');
+      if (headerTitle) headerTitle.innerText = `HASIL AKHIR GABUNGAN (SEMUA SESI)`;
+
+      appConfig.participants.forEach(p => {
+        const stats = calculateArcherStats(p);
+        p.totalScore = stats.totalScore;
+        p.totalX = stats.totalX;
+        p.totalXWbn = stats.totalXWbn;
+      });
+
+      appConfig.participants.sort((a, b) =>
+        b.totalScore !== a.totalScore
+          ? b.totalScore - a.totalScore
+          : (b.totalX + b.totalXWbn) - (a.totalX + a.totalXWbn)
+      );
+
+      saveToHistory();
+
+      const container = document.getElementById('podium-container');
+      container.innerHTML = '';
+      const isMobile = window.innerWidth <= 900;
+      const podiumOrder = isMobile ? [0, 1, 2] : [1, 0, 2];
+
+      podiumOrder.forEach(rankIdx => {
+        const p = appConfig.participants[rankIdx];
+        if (!p) return;
+        const isRank1 = (rankIdx === 0);
+        const nameParts = (p.name || 'User').trim().split(' ').filter(n => n.length > 0);
+        let initials = nameParts.length >= 2 ? (nameParts[0][0] + nameParts[1][0]).toUpperCase() : nameParts[0][0].toUpperCase();
+
+        const box = document.createElement('div');
+        box.className = `podium-box ${isRank1 ? 'rank-1-box' : ''}`;
+        box.innerHTML = `
+          <div style="font-size: 0.75rem; font-weight:800; color: ${isRank1 ? '#d97706' : '#64748b'}; margin-bottom:4px;">#${rankIdx + 1}</div>
+          <div class="podium-avatar">${initials}</div>
+          <div class="podium-name">${p.name}</div>
+          <div class="podium-club">${p.club || 'Independen'} • ${p.sesi || 'Sesi 1'}</div>
+          <div class="podium-score-badge">${p.totalScore} Poin</div>
+        `;
+        container.appendChild(box);
+      });
+
+      const tbody = document.getElementById('lb-table-body');
+      tbody.innerHTML = '';
+      appConfig.participants.forEach((p, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="width: 12%;"><strong>#${idx + 1}</strong></td>
+          <td style="width: 34%;">
+            <strong style="color:#0f172a; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</strong>
+            <span style="font-size:0.7rem; color:#64748b; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.club || 'Independen'} (${p.sesi || 'Sesi 1'})</span>
+          </td>
+          <td style="text-align:center; width: 22%;"><span style="background:#fef3c7; color:#b45309; padding:2px 6px; border-radius:6px; font-weight:800; font-size:0.7rem; white-space:nowrap;">${formatXBadge(p)}</span></td>
+          <td style="text-align:right; font-weight:800; color:#4f46e5; font-size: 0.9rem; width: 16%; white-space:nowrap;">${p.totalScore}</td>
+          <td style="text-align:center; width: 16%;"><button type="button" class="btn-detail-icon" onclick="openDetailModal(${idx})"><i class="fa-solid fa-list"></i> Detail</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const actionButton = document.querySelector('#page-leaderboard button.btn-save-rambahan');
+      if (actionButton) {
+        actionButton.innerHTML = `<i class="fa-solid fa-rotate-right"></i> Ulangi / Setup Baru`;
+        actionButton.onclick = () => restartToSetup();
+      }
+    }
+
+    function renderAllParticipantsSummary() {
+      const gridContainer = document.getElementById('participants-summary-grid');
+      gridContainer.innerHTML = '';
+
+      appConfig.participants.forEach((p, pIdx) => {
+        let totalPoin = 0;
+        let endRowsHTML = '';
+
+        p.scores.forEach((endArr, eIdx) => {
+          let endSum = 0;
+          endArr.forEach(code => { endSum += getScoreNumericValue(code); });
+          totalPoin += endSum;
+
+          const formattedArrows = endArr.map(code => formatScoreLabel(code)).join(' • ');
+          endRowsHTML += `
+            <div class="end-row">
+              <div class="end-label">End ${eIdx + 1}</div>
+              <div class="end-dots">${formattedArrows}</div>
+              <div style="display:flex; align-items:center;"><span class="end-total">${endSum} Poin</span></div>
+            </div>
+          `;
+        });
+
+        const card = document.createElement('div');
+        card.className = `participant-summary-card ${pIdx === activeArcherIndex ? 'active-card' : ''}`;
+        card.innerHTML = `
+          <div class="p-card-header">
+            <div>
+              <div class="p-card-name">${p.name} ${pIdx === activeArcherIndex ? '🎯 (Aktif)' : ''}</div>
+              <div class="p-card-club">${p.club} • <span style="color:#4f46e5; font-weight:700;">${p.bantalan || 'Bantalan 1'}</span> (${p.sesi || 'Sesi 1'})</div>
+            </div>
+            <div class="p-card-total-badge">Total: ${totalPoin} Poin</div>
+          </div>
+          <div class="end-history-list">${endRowsHTML || '<p style="font-size:0.75rem; color:#64748b; font-style:italic; text-align:center;">Belum ada rambahan tersimpan.</p>'}</div>
+        `;
+        gridContainer.appendChild(card);
+      });
+    }
+
+    function saveToHistory() {
+      const historyKey = `archeryHistory_${currentAccountKey}`;
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      const newHistoryItem = {
+        eventName: appConfig.eventName || 'Sesi Latihan Panahan',
+        location: appConfig.location || 'Lapangan Panahan',
+        date: dateStr, busur: appConfig.busur, jarak: appConfig.jarak,
+        arrowCount: appConfig.arrowCount, totalEnd: appConfig.totalEnd, participants: appConfig.participants
+      };
+
+      let historyList = JSON.parse(localStorage.getItem(historyKey)) || [];
+      if (!appConfig.isSavedToHistory) {
+        historyList.unshift(newHistoryItem);
+        localStorage.setItem(historyKey, JSON.stringify(historyList));
+        appConfig.isSavedToHistory = true;
+        saveConfigPerAccount();
+      }
     }
 
     function switchRole(role) {
-    if (role === 'admin') {
-        window.location.href = '/pendaftaran';
-    } else if (role === 'display') {
-        window.location.href = '/display';
-    } else if (role === 'scorer') {
-        window.location.href = '/scoring';
+      if (role === 'admin') window.location.href = 'pendaftaran.html';
+      else if (role === 'display') window.location.href = 'display.html';
+      else if (role === 'scorer') window.location.href = 'scoring.html';
     }
 
-}
-
-    document.addEventListener("DOMContentLoaded", function() {
-      console.log("Data User:", localStorage.getItem('activeArcheryUser')); // <--- TAMBAHKAN INI
-loadActiveUserProfile();
-      loadActiveUserProfile();
-
+    document.addEventListener("DOMContentLoaded", function () {
       const path = window.location.pathname;
-      let currentRole = 'admin';
-      
+      let currentRole = 'scorer';
       if (path.includes('display.html')) currentRole = 'display';
       else if (path.includes('scoring.html')) currentRole = 'scorer';
       else if (path.includes('pendaftaran.html') || path.includes('home.html')) currentRole = 'admin';
-
       const deskPicker = document.getElementById('app-role-picker-desktop');
       const mobPicker = document.getElementById('app-role-picker-mobile');
-      
       if (deskPicker) deskPicker.value = currentRole;
       if (mobPicker) mobPicker.value = currentRole;
-
-      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser'));
-      const accountKey = getCurrentAccountKey();
-      const savedConfig = JSON.parse(localStorage.getItem(`archeryConfig_${accountKey}`));
-      const savedParticipants = JSON.parse(localStorage.getItem(`savedParticipants_${accountKey}`));
-
-      const list = document.getElementById('participant-list');
-      if (list) {
-        list.innerHTML = '';
-        if (savedParticipants && savedParticipants.length > 0) {
-          savedParticipants.forEach(p => {
-            if (p.bantalan && !masterBantalan.includes(p.bantalan)) masterBantalan.push(p.bantalan);
-            if (p.sesi && !masterSesi.includes(p.sesi)) masterSesi.push(p.sesi);
-            addParticipantRow(p.name, p.club || 'Independen', p.bantalan || 'Bantalan 1', p.sesi || 'Sesi 1');
-          });
-        } else {
-          addParticipantRow(
-            activeUser ? activeUser.name : 'Pemanah Utama',
-            activeUser ? (activeUser.club || 'Independen') : 'Independen'
-          );
-        }
-      }
-
-      if (savedConfig) {
-        if (savedConfig.eventName && !savedConfig.eventName.startsWith('Latihan Solo')) {
-          document.getElementById('event-name').value = savedConfig.eventName;
-        }
-        if (savedConfig.location) document.getElementById('event-location').value = savedConfig.location;
-        if (savedConfig.busur) {
-          const selectBusur = document.getElementById('select-busur');
-          const exists = Array.from(selectBusur.options).some(o => o.value === savedConfig.busur);
-          if (!exists) selectBusur.add(new Option(savedConfig.busur, savedConfig.busur));
-          selectBusur.value = savedConfig.busur;
-        }
-        if (savedConfig.arrowCount) {
-          const selectArrow = document.getElementById('select-arrow');
-          const exists = Array.from(selectArrow.options).some(o => String(o.value) === String(savedConfig.arrowCount));
-          if (!exists) selectArrow.add(new Option(savedConfig.arrowCount, savedConfig.arrowCount));
-          selectArrow.value = savedConfig.arrowCount;
-        }
-        if (savedConfig.totalEnd) {
-          const selectRambahan = document.getElementById('select-rambahan');
-          const exists = Array.from(selectRambahan.options).some(o => String(o.value) === String(savedConfig.totalEnd));
-          if (!exists) selectRambahan.add(new Option(savedConfig.totalEnd, savedConfig.totalEnd));
-          selectRambahan.value = savedConfig.totalEnd;
-        }
-        if (savedConfig.jarak) {
-          document.querySelectorAll('#grid-jarak .btn-option').forEach(btn => {
-            btn.classList.toggle('active', btn.innerText === savedConfig.jarak);
-          });
-        }
-      }
     });
 
-    function goToScoring() {
-      const activeUser = JSON.parse(localStorage.getItem('activeArcheryUser')) || { name: 'Pemanah Solo', club: 'Independen' };
-      const accountKey = getCurrentAccountKey();
-      const activeJarakBtn = document.querySelector('#grid-jarak .btn-option.active');
-      const jarakVal = activeJarakBtn ? activeJarakBtn.innerText : '18 m';
-      
-      let participants = [];
-
-      if (isSoloMode) {
-        participants.push({
-          name: activeUser.name,
-          club: activeUser.club || 'Independen',
-          bantalan: 'Bantalan 1',
-          sesi: 'Sesi 1',
-          scores: []
+    function openDetailModal(pIdx) {
+      const p = appConfig.participants[pIdx];
+      document.getElementById('modal-archer-title').innerText = `Rincian: ${p.name}`;
+      const listContainer = document.getElementById('modal-end-list');
+      listContainer.innerHTML = '';
+      if (p.scores.length === 0) listContainer.innerHTML = `<p style="font-size:0.85rem; color:#64748b; text-align:center;">Belum ada data rambahan.</p>`;
+      else {
+        p.scores.forEach((endArr, eIdx) => {
+          let endSum = 0;
+          endArr.forEach(code => { endSum += getScoreNumericValue(code); });
+          const formattedArrows = endArr.map(code => formatScoreLabel(code)).join(' • ');
+          const row = document.createElement('div');
+          row.className = 'end-row';
+          row.innerHTML = `<div class="end-label">End ${eIdx + 1}</div><div class="end-dots">${formattedArrows}</div><div class="end-total">${endSum} Poin</div>`;
+          listContainer.appendChild(row);
         });
-      } else {
-        const names = document.querySelectorAll('.p-name');
-        const clubs = document.querySelectorAll('.p-club');
-        const bantalans = document.querySelectorAll('.p-bantalan');
-        const sesis = document.querySelectorAll('.p-sesi');
-
-        for(let i=0; i<names.length; i++) {
-          if(names[i].value.trim() !== '') {
-            participants.push({
-              name: names[i].value.trim(),
-              club: clubs[i].value.trim() || 'Independen',
-              bantalan: bantalans[i] ? bantalans[i].value : 'Bantalan 1',
-              sesi: sesis[i] ? sesis[i].value : 'Sesi 1',
-              scores: []
-            });
-          }
-        }
-
-        if (participants.length > 0) {
-          const cleanRoster = participants.map(({ name, club, bantalan, sesi }) => ({ name, club, bantalan, sesi }));
-          localStorage.setItem(`savedParticipants_${accountKey}`, JSON.stringify(cleanRoster));
-        }
       }
-
-      if(participants.length === 0) {
-        alert('Masukkan minimal 1 peserta untuk memulai!');
-        return;
-      }
-
-      const config = {
-        ownerAccount: accountKey,
-        eventName: isSoloMode ? `Latihan Solo - ${activeUser.name}` : (document.getElementById('event-name').value || 'Internal Match'),
-        location: document.getElementById('event-location') ? document.getElementById('event-location').value : 'Lapangan Panahan',
-        busur: document.getElementById('select-busur').value,
-        jarak: jarakVal,
-        arrowCount: parseInt(document.getElementById('select-arrow').value),
-        totalEnd: parseInt(document.getElementById('select-rambahan').value),
-        participants: participants
-      };
-
-      localStorage.setItem(`archeryConfig_${accountKey}`, JSON.stringify(config));
-      localStorage.setItem('archeryConfig', JSON.stringify(config));
-
-      window.location.href = 'scoring.html';
+      document.getElementById('modal-detail').classList.add('active');
     }
+
+    function closeDetailModal() { document.getElementById('modal-detail').classList.remove('active'); }
+
+    function restartToSetup() {
+      const accountKey = getCurrentAccountKey();
+
+      if (appConfig && Array.isArray(appConfig.participants) && appConfig.participants.length > 0) {
+        const preservedParticipants = appConfig.participants.map(p => ({
+          name: p.name,
+          club: p.club || 'Independen',
+          bantalan: p.bantalan || 'Bantalan 1',
+          sesi: p.sesi || 'Sesi 1',
+          scores: []
+        }));
+
+        localStorage.setItem(`savedParticipants_${accountKey}`, JSON.stringify(preservedParticipants));
+
+        appConfig.participants = preservedParticipants;
+        delete appConfig.isSavedToHistory;
+        delete appConfig.activeLiveInput;
+        localStorage.setItem(`archeryConfig_${accountKey}`, JSON.stringify(appConfig));
+      }
+
+      localStorage.removeItem('archeryConfig');
+      window.location.replace('home.html');
+    }
+
+    initScoring();
   </script>
 </body>
+
 </html>
